@@ -76,9 +76,19 @@ const TimelinePeriod = ({ period, periodIndex, firearms, onDrop, onRemoveFirearm
     onDrop(firearmData, periodIndex);
   };
 
-  const handleClick = () => {
-    if (isSelectionMode) {
+  const handleClick = (e) => {
+    // Only handle period selection if clicking on the drop zone itself, not on a firearm
+    if (isSelectionMode && e.target === e.currentTarget) {
       onPeriodSelect(periodIndex);
+    }
+  };
+
+  const handleFirearmClick = (firearm, e) => {
+    e.stopPropagation(); // Prevent event bubbling to parent drop zone
+    
+    // Only allow removal if NOT in selection mode
+    if (!isSelectionMode) {
+      onRemoveFirearm(firearm, periodIndex);
     }
   };
 
@@ -95,12 +105,16 @@ const TimelinePeriod = ({ period, periodIndex, firearms, onDrop, onRemoveFirearm
         onClick={handleClick}
       >
         {firearms.map((firearm) => (
-          <FirearmCard
+          <div
             key={firearm.id}
-            firearm={firearm}
-            inTimeline={true}
-            onClick={() => onRemoveFirearm(firearm, periodIndex)}
-          />
+            onClick={(e) => handleFirearmClick(firearm, e)}
+            className={isSelectionMode ? 'disabled-interaction' : ''}
+          >
+            <FirearmCard
+              firearm={firearm}
+              inTimeline={true}
+            />
+          </div>
         ))}
         {firearms.length === 0 && (
           <div className="drop-placeholder">

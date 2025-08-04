@@ -359,10 +359,48 @@ body {
   transform: scale(1.02);
 }
 
-/* Timeline Selection Mode */
+/* Timeline firearms interaction states */
+.disabled-interaction {
+  pointer-events: none;
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.disabled-interaction .firearm-card {
+  cursor: not-allowed;
+  filter: grayscale(30%);
+  border-color: #666 !important;
+}
+
+.disabled-interaction .firearm-card:hover {
+  transform: scale(0.9) !important;
+  background: linear-gradient(145deg, #2a2a2a, #363636) !important;
+  box-shadow: none !important;
+}
+
+/* Enhanced drop zone interaction during selection */
 .drop-zone.selectable {
   cursor: pointer;
   transition: all 0.3s ease;
+  position: relative;
+}
+
+.drop-zone.selectable::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: transparent;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.drop-zone.highlighted::before {
+  background: rgba(218, 165, 32, 0.05);
+  border: 2px solid rgba(218, 165, 32, 0.3);
+  border-radius: 10px;
 }
 
 .drop-zone.highlighted {
