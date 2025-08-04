@@ -36,13 +36,29 @@ const timePeriods = [
 
 // Firearm Card Component
 const FirearmCard = ({ firearm, isDragging = false, inTimeline = false, onDragStart, onDragEnd, onClick, isSelected = false, isSelectionMode = false }) => {
+  
+  const handleDragStart = (e) => {
+    if (onDragStart && !isSelectionMode) {
+      onDragStart(e, firearm);
+    } else if (isSelectionMode) {
+      // Prevent dragging during selection mode to avoid conflicts
+      e.preventDefault();
+    }
+  };
+
+  const handleClick = (e) => {
+    if (onClick) {
+      onClick(firearm, e);
+    }
+  };
+
   return (
     <div
       className={`firearm-card ${isDragging ? 'dragging' : ''} ${inTimeline ? 'in-timeline' : ''} ${isSelected ? 'selected' : ''} ${isSelectionMode && !isSelected ? 'dimmed' : ''}`}
       draggable={!inTimeline && !isSelectionMode}
-      onDragStart={(e) => onDragStart && onDragStart(e, firearm)}
+      onDragStart={handleDragStart}
       onDragEnd={onDragEnd}
-      onClick={() => onClick && onClick(firearm)}
+      onClick={handleClick}
     >
       {isSelected && (
         <div className="selection-indicator">
@@ -65,20 +81,29 @@ const TimelinePeriod = ({ period, periodIndex, firearms, onDrop, onRemoveFirearm
     setIsDragOver(true);
   };
 
-  const handleDragLeave = () => {
-    setIsDragOver(false);
+  const handleDragLeave = (e) => {
+    // Only set drag over to false if we're actually leaving the drop zone
+    if (!e.currentTarget.contains(e.relatedTarget)) {
+      setIsDragOver(false);
+    }
   };
 
   const handleDrop = (e) => {
     e.preventDefault();
     setIsDragOver(false);
-    const firearmData = JSON.parse(e.dataTransfer.getData('text/plain'));
-    onDrop(firearmData, periodIndex);
+    
+    try {
+      const firearmData = JSON.parse(e.dataTransfer.getData('text/plain'));
+      onDrop(firearmData, periodIndex);
+    } catch (error) {
+      console.error('Error parsing drag data:', error);
+    }
   };
 
   const handleClick = (e) => {
     // Only handle period selection if clicking on the drop zone itself, not on a firearm
-    if (isSelectionMode && e.target === e.currentTarget) {
+    // And only if we're in selection mode
+    if (isSelectionMode && (e.target === e.currentTarget || e.target.classList.contains('drop-placeholder'))) {
       onPeriodSelect(periodIndex);
     }
   };
@@ -117,7 +142,7 @@ const TimelinePeriod = ({ period, periodIndex, firearms, onDrop, onRemoveFirearm
           </div>
         ))}
         {firearms.length === 0 && (
-          <div className="drop-placeholder">
+          <div className="drop-placeholder" onClick={handleClick}>
             {isSelectionMode ? 'Click to place here' : 'Drop firearms here'}
           </div>
         )}
@@ -282,10 +307,14 @@ function App() {
 
   // Handle drag end
   const handleDragEnd = () => {
-    setGameState(prev => ({ ...prev, draggedFirearm: null }));
+    setGameState(prev => ({ 
+      ...prev, 
+      draggedFirearm: null,
+      // Don't reset selection mode during drag operations
+    }));
   };
 
-  // Handle drop on timeline
+  // Handle drop on timeline (for drag and drop)
   const handleDrop = (firearm, periodIndex) => {
     setGameState(prev => {
       // Remove from bank if it's there
@@ -303,7 +332,10 @@ function App() {
         ...prev,
         bank: newBank,
         timeline: newTimeline,
-        draggedFirearm: null
+        draggedFirearm: null,
+        // Reset selection mode after successful drag and drop
+        selectedFirearm: null,
+        selectionMode: false
       };
     });
   };
