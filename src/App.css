@@ -162,6 +162,7 @@ body {
   transform: rotate(5deg) scale(1.05);
   cursor: grabbing;
   z-index: 1000;
+  box-shadow: 0 15px 30px rgba(218, 165, 32, 0.5);
 }
 
 .firearm-card.in-timeline {
@@ -175,6 +176,20 @@ body {
 .firearm-card.in-timeline:hover {
   background: linear-gradient(145deg, #cc4444, #aa3333);
   transform: scale(0.85);
+}
+
+/* Draggable state for bank firearms */
+.firearm-card[draggable="true"] {
+  cursor: grab;
+}
+
+.firearm-card[draggable="true"]:active {
+  cursor: grabbing;
+}
+
+/* Non-draggable state during selection mode */
+.firearm-card[draggable="false"] {
+  cursor: pointer;
 }
 
 /* Selection Mode Styles */
@@ -353,10 +368,11 @@ body {
 }
 
 .drop-zone.drag-over {
-  background: rgba(218, 165, 32, 0.1);
+  background: rgba(218, 165, 32, 0.15);
   border-color: #daa520;
   border-style: solid;
   transform: scale(1.02);
+  box-shadow: 0 0 15px rgba(218, 165, 32, 0.4);
 }
 
 /* Timeline firearms interaction states */
