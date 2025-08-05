@@ -118,6 +118,13 @@ const MobileCardStack = ({ ammunition, onAmmoSelect, onPeriodSelect, selectedAmm
 
   const minSwipeDistance = 50;
 
+  // Reset currentCardIndex when ammunition array changes
+  useEffect(() => {
+    if (currentCardIndex >= ammunition.length) {
+      setCurrentCardIndex(Math.max(0, ammunition.length - 1));
+    }
+  }, [ammunition.length, currentCardIndex]);
+
   const onTouchStart = (e) => {
     setTouchEnd(null);
     setTouchStart(e.targetTouches[0].clientX);
