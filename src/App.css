@@ -102,16 +102,34 @@ body {
   flex-direction: column;
 }
 
-.ammunition-bank h2 {
-  text-align: center;
-  margin-bottom: 20px;
-  color: #daa520;
-  font-size: 1.6rem;
-  min-height: 2em;
+.ammunition-bank-header {
+  min-height: 80px;
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-bottom: 20px;
+}
+
+.ammunition-bank h2 {
+  text-align: center;
+  margin: 0;
+  color: #daa520;
+  font-size: 1.6rem;
+  position: absolute;
+  width: 100%;
   transition: all 0.3s ease;
+}
+
+.ammunition-bank h2.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.ammunition-bank h2.hidden {
+  opacity: 0;
+  transform: translateY(-10px);
+  pointer-events: none;
 }
 
 .ammunition-grid {
@@ -303,11 +321,21 @@ body {
   font-size: 1rem;
   backdrop-filter: blur(8px);
   box-shadow: 0 4px 12px rgba(218, 165, 32, 0.2);
-  animation: slideInHelp 0.3s ease-out;
-  margin-bottom: 25px;
   max-width: 800px;
-  margin-left: auto;
-  margin-right: auto;
+  width: 100%;
+  position: absolute;
+  transition: all 0.3s ease;
+}
+
+.selection-help.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.selection-help.hidden {
+  opacity: 0;
+  transform: translateY(10px);
+  pointer-events: none;
 }
 
 @keyframes slideInHelp {

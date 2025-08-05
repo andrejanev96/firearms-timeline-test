@@ -787,18 +787,16 @@ function App() {
           </>
         ) : (
           <>
-            {/* Selection Help - Above Everything */}
-            {gameState.selectionMode && (
-              <div className="selection-help">
-                <p>Selected: <strong>{gameState.selectedAmmo?.name}</strong> - Click on a time period below to place it, or click the ammunition again to cancel.</p>
-              </div>
-            )}
-            
             {/* Desktop: Ammunition Bank */}
             <section className="ammunition-bank">
-              {!gameState.selectionMode && (
-                <h2>Click or drag the ammunition to their correct time periods</h2>
-              )}
+              <div className="ammunition-bank-header">
+                <h2 className={gameState.selectionMode ? 'hidden' : 'visible'}>
+                  Click or drag the ammunition to their correct time periods
+                </h2>
+                <div className={`selection-help ${gameState.selectionMode ? 'visible' : 'hidden'}`}>
+                  <p>Selected: <strong>{gameState.selectedAmmo?.name || ''}</strong> - Click on a time period below to place it, or click the ammunition again to cancel.</p>
+                </div>
+              </div>
               <div className={`ammunition-grid ${gameState.selectionMode ? 'selection-mode' : ''}`}>
                 {gameState.bank.map((ammo) => (
                   <AmmoCard
