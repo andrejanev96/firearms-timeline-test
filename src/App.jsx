@@ -10,18 +10,18 @@ const EMAILJS_CONFIG = {
 
 // Ammunition data - historically significant cartridges
 const ammunition = [
-  { id: '1', name: '.69 Caliber Ball', description: 'Brown Bess musket ammunition', correctPeriod: 0, image: '🔸' },
-  { id: '2', name: '.50 Caliber Ball', description: 'Kentucky Long Rifle ammunition', correctPeriod: 0, image: '🔸' },
-  { id: '3', name: '.58 Caliber', description: 'Civil War rifle-musket ammunition', correctPeriod: 1, image: '🔸' },
-  { id: '4', name: '.56-50 Spencer', description: 'Spencer repeating rifle cartridge', correctPeriod: 1, image: '🔸' },
-  { id: '5', name: '.44-40 Winchester', description: 'Winchester Model 1873 cartridge', correctPeriod: 2, image: '🔸' },
-  { id: '6', name: '.45 Colt', description: 'Single Action Army revolver cartridge', correctPeriod: 2, image: '🔸' },
-  { id: '7', name: '.30-06 Springfield', description: 'M1903 and M1 Garand cartridge', correctPeriod: 3, image: '🔸' },
-  { id: '8', name: '.45 ACP', description: 'Thompson SMG and M1911 pistol', correctPeriod: 4, image: '🔸' },
-  { id: '9', name: '9mm Luger', description: 'WWII and modern sidearm cartridge', correctPeriod: 4, image: '🔸' },
-  { id: '10', name: '7.62×39mm', description: 'AK-47 assault rifle cartridge', correctPeriod: 5, image: '🔸' },
-  { id: '11', name: '5.56×45mm NATO', description: 'M16 and AR-15 cartridge', correctPeriod: 5, image: '🔸' },
-  { id: '12', name: '.22 LR', description: 'Modern training and sporting cartridge', correctPeriod: 6, image: '🔸' }
+  { id: '1', name: '.69 Caliber Ball', description: 'Brown Bess musket ammunition', correctPeriod: 0, image: './images/69_caliber_ball.png' },
+  { id: '2', name: '.50 Caliber Ball', description: 'Kentucky Long Rifle ammunition', correctPeriod: 0, image: './images/50_caliber_ball.png' },
+  { id: '3', name: '.58 Caliber', description: 'Civil War rifle-musket ammunition', correctPeriod: 1, image: './images/58_caliber.png' },
+  { id: '4', name: '.56-50 Spencer', description: 'Spencer repeating rifle cartridge', correctPeriod: 1, image: './images/56-50_spencer.png' },
+  { id: '5', name: '.44-40 Winchester', description: 'Winchester Model 1873 cartridge', correctPeriod: 2, image: './images/44-40_winchester.png' },
+  { id: '6', name: '.45 Colt', description: 'Single Action Army revolver cartridge', correctPeriod: 2, image: './images/45_colt.png' },
+  { id: '7', name: '.30-06 Springfield', description: 'M1903 and M1 Garand cartridge', correctPeriod: 3, image: './images/30-06_springfield.png' },
+  { id: '8', name: '.45 ACP', description: 'Thompson SMG and M1911 pistol', correctPeriod: 4, image: './images/45_acp.png' },
+  { id: '9', name: '9mm Luger', description: 'WWII and modern sidearm cartridge', correctPeriod: 4, image: './images/9mm_luger.png' },
+  { id: '10', name: '7.62×39mm', description: 'AK-47 assault rifle cartridge', correctPeriod: 5, image: './images/762x39mm.png' },
+  { id: '11', name: '5.56×45mm NATO', description: 'M16 and AR-15 cartridge', correctPeriod: 5, image: './images/556x45_nato.png' },
+  { id: '12', name: '.22 LR', description: 'Modern training and sporting cartridge', correctPeriod: 6, image: './images/22_lr.png' }
 ];
 
 const timePeriods = [
