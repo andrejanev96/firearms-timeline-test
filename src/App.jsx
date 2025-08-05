@@ -12,7 +12,7 @@ const EMAILJS_CONFIG = {
 const ammunition = [
   { id: '1', name: '.69 Caliber Ball', description: 'Brown Bess musket ammunition', correctPeriod: 0, image: '🔸' },
   { id: '2', name: '.50 Caliber Ball', description: 'Kentucky Long Rifle ammunition', correctPeriod: 0, image: '🔸' },
-  { id: '3', name: '.58 Caliber Minié Ball', description: 'Civil War rifle-musket ammunition', correctPeriod: 1, image: '🔸' },
+  { id: '3', name: '.58 Caliber', description: 'Civil War rifle-musket ammunition', correctPeriod: 1, image: '🔸' },
   { id: '4', name: '.56-50 Spencer', description: 'Spencer repeating rifle cartridge', correctPeriod: 1, image: '🔸' },
   { id: '5', name: '.44-40 Winchester', description: 'Winchester Model 1873 cartridge', correctPeriod: 2, image: '🔸' },
   { id: '6', name: '.45 Colt', description: 'Single Action Army revolver cartridge', correctPeriod: 2, image: '🔸' },
