@@ -760,29 +760,41 @@ function App() {
             From musket balls to modern cartridges: Can you correctly place these 12 iconic American ammunition types on our timeline?
           </p>
           
-          {/* Progress Bar */}
-          <div className="progress-container">
-            <div className="progress-bar">
-              <div 
-                className="progress-fill"
-                style={{ width: `${progress}%` }}
-              />
+          {/* Progress Bar - Desktop Only */}
+          {!gameState.isMobile && (
+            <div className="progress-container">
+              <div className="progress-bar">
+                <div 
+                  className="progress-fill"
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
+              <p className="progress-text">
+                {gameState.bank.length} card{gameState.bank.length !== 1 ? 's' : ''} remaining
+              </p>
             </div>
-            <p className="progress-text">
-              {totalPlaced} of 12 ammunition types placed
-            </p>
-          </div>
+          )}
         </header>
 
         {/* Mobile Card Stack Interface */}
         {gameState.isMobile ? (
-          <MobileCardStack
-            ammunition={gameState.bank}
-            onAmmoSelect={handleAmmoSelect}
-            onPeriodSelect={handlePeriodSelect}
-            selectedAmmo={gameState.selectedAmmo}
-            showTimeline={gameState.showMobileTimeline}
-          />
+          <>
+            <MobileCardStack
+              ammunition={gameState.bank}
+              onAmmoSelect={handleAmmoSelect}
+              onPeriodSelect={handlePeriodSelect}
+              selectedAmmo={gameState.selectedAmmo}
+              showTimeline={gameState.showMobileTimeline}
+            />
+            {/* Cards Remaining Counter - Below Card Stack */}
+            {!gameState.showMobileTimeline && gameState.bank.length > 0 && (
+              <div className="cards-remaining-container">
+                <p className="cards-remaining-text">
+                  {gameState.bank.length} card{gameState.bank.length !== 1 ? 's' : ''} remaining
+                </p>
+              </div>
+            )}
+          </>
         ) : (
           <>
             {/* Desktop: Ammunition Bank */}
