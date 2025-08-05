@@ -472,11 +472,11 @@ const ResultsModal = ({ results, onSubmitEmail, isLoading, onClose }) => {
                 />
               </div>
               <div className="checkbox-group">
-                <label className="checkbox-label" onClick={() => setFormData({...formData, optIn: !formData.optIn})}>
+                <label className="checkbox-label">
                   <input
                     type="checkbox"
                     checked={formData.optIn}
-                    onChange={() => {}}
+                    onChange={(e) => setFormData({...formData, optIn: e.target.checked})}
                   />
                   <span className="checkmark"></span>
                   I would like to receive the Ammo.com BULLETin for weekly ammo discounts

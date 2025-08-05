@@ -939,7 +939,11 @@ body {
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: linear-gradient(135deg, rgba(218, 165, 32, 0.9), rgba(184, 134, 11, 0.9));
+  background: linear-gradient(
+    135deg,
+    rgba(218, 165, 32, 0.9),
+    rgba(184, 134, 11, 0.9)
+  );
   border: 1px solid rgba(218, 165, 32, 0.6);
   color: white;
   font-size: 12px;
@@ -1001,7 +1005,11 @@ body {
 
 .remove-card-btn:hover {
   opacity: 1;
-  background: linear-gradient(135deg, rgba(220, 53, 69, 0.9), rgba(200, 35, 51, 0.9));
+  background: linear-gradient(
+    135deg,
+    rgba(220, 53, 69, 0.9),
+    rgba(200, 35, 51, 0.9)
+  );
   border-color: rgba(220, 53, 69, 0.6);
   transform: scale(1.15);
   box-shadow: 0 3px 10px rgba(220, 53, 69, 0.3);
@@ -1012,7 +1020,11 @@ body {
   bottom: -8px;
   left: 50%;
   transform: translateX(-50%);
-  background: linear-gradient(135deg, rgba(218, 165, 32, 0.95), rgba(184, 134, 11, 0.95));
+  background: linear-gradient(
+    135deg,
+    rgba(218, 165, 32, 0.95),
+    rgba(184, 134, 11, 0.95)
+  );
   color: white;
   padding: 2px 8px;
   border-radius: 10px;
@@ -1257,6 +1269,7 @@ body {
   cursor: pointer;
   color: #cccccc;
   line-height: 1.5;
+  user-select: none;
 }
 
 .checkbox-label input[type="checkbox"] {
@@ -1417,7 +1430,6 @@ body {
   }
 }
 
-
 /* Mobile and Tablet Responsiveness */
 @media (max-width: 1024px) {
   body {
@@ -1498,6 +1510,7 @@ body {
 
   .success-message {
     padding: 35px 25px;
+    max-width: 400px;
   }
 
   .selection-indicator {
