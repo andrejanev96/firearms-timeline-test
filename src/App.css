@@ -501,8 +501,9 @@ body {
   z-index: 1000;
   display: flex;
   flex-direction: column;
-  padding: 20px;
+  padding: 15px;
   animation: slideUp 0.3s ease-out;
+  overflow-y: auto;
 }
 
 @keyframes slideUp {
@@ -516,35 +517,44 @@ body {
 
 .mobile-timeline-header {
   text-align: center;
-  margin-bottom: 30px;
-  padding: 20px;
+  margin-bottom: 20px;
+  padding: 15px;
   background: rgba(218, 165, 32, 0.1);
-  border-radius: 15px;
+  border-radius: 12px;
   border: 2px solid rgba(218, 165, 32, 0.3);
+  flex-shrink: 0;
 }
 
 .mobile-timeline-header h3 {
   color: #daa520;
-  margin-bottom: 10px;
-  font-size: 1.3rem;
+  margin-bottom: 8px;
+  font-size: 1.1rem;
+}
+
+.mobile-timeline-header p {
+  color: #cccccc;
+  font-size: 0.9rem;
+  margin: 0;
 }
 
 .mobile-timeline-periods {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 10px;
   overflow-y: auto;
+  padding-bottom: 20px;
 }
 
 .mobile-timeline-period {
   background: rgba(255, 255, 255, 0.05);
   border: 2px solid rgba(218, 165, 32, 0.3);
-  border-radius: 15px;
-  padding: 20px;
+  border-radius: 12px;
+  padding: 15px;
   cursor: pointer;
   transition: all 0.3s ease;
   text-align: center;
+  flex-shrink: 0;
 }
 
 .mobile-timeline-period:hover {
@@ -554,15 +564,16 @@ body {
 }
 
 .mobile-period-label {
-  font-size: 1.2rem;
+  font-size: 1rem;
   font-weight: 600;
   color: #daa520;
-  margin-bottom: 5px;
+  margin-bottom: 4px;
+  line-height: 1.2;
 }
 
 .mobile-period-years {
   color: #cccccc;
-  font-size: 1rem;
+  font-size: 0.85rem;
 }
 
 /* Mobile Complete Section */
