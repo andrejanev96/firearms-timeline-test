@@ -293,24 +293,21 @@ body {
 
 /* Selection Help Message */
 .selection-help {
-  position: absolute;
-  top: 80px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: calc(100% - 40px);
-  max-width: 600px;
   text-align: center;
   background: rgba(218, 165, 32, 0.15);
   border: 1px solid rgba(218, 165, 32, 0.4);
   border-radius: 15px;
-  padding: 12px 20px;
+  padding: 15px 20px;
   color: #daa520;
   font-weight: 500;
-  font-size: 0.95rem;
-  z-index: 10;
+  font-size: 1rem;
   backdrop-filter: blur(8px);
   box-shadow: 0 4px 12px rgba(218, 165, 32, 0.2);
   animation: slideInHelp 0.3s ease-out;
+  margin-bottom: 25px;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 @keyframes slideInHelp {

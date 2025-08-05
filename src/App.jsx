@@ -760,20 +760,18 @@ function App() {
             From musket balls to modern cartridges: Can you correctly place these 12 iconic American ammunition types on our timeline?
           </p>
           
-          {/* Progress Bar - Desktop Only */}
-          {!gameState.isMobile && (
-            <div className="progress-container">
-              <div className="progress-bar">
-                <div 
-                  className="progress-fill"
-                  style={{ width: `${progress}%` }}
-                />
-              </div>
-              <p className="progress-text">
-                {gameState.bank.length} card{gameState.bank.length !== 1 ? 's' : ''} remaining
-              </p>
+          {/* Progress Bar */}
+          <div className="progress-container">
+            <div className="progress-bar">
+              <div 
+                className="progress-fill"
+                style={{ width: `${progress}%` }}
+              />
             </div>
-          )}
+            <p className="progress-text">
+              {gameState.bank.length} card{gameState.bank.length !== 1 ? 's' : ''} remaining
+            </p>
+          </div>
         </header>
 
         {/* Mobile Card Stack Interface */}
@@ -786,24 +784,20 @@ function App() {
               selectedAmmo={gameState.selectedAmmo}
               showTimeline={gameState.showMobileTimeline}
             />
-            {/* Cards Remaining Counter - Below Card Stack */}
-            {!gameState.showMobileTimeline && gameState.bank.length > 0 && (
-              <div className="cards-remaining-container">
-                <p className="cards-remaining-text">
-                  {gameState.bank.length} card{gameState.bank.length !== 1 ? 's' : ''} remaining
-                </p>
-              </div>
-            )}
           </>
         ) : (
           <>
+            {/* Selection Help - Above Everything */}
+            {gameState.selectionMode && (
+              <div className="selection-help">
+                <p>Selected: <strong>{gameState.selectedAmmo?.name}</strong> - Click on a time period below to place it, or click the ammunition again to cancel.</p>
+              </div>
+            )}
+            
             {/* Desktop: Ammunition Bank */}
             <section className="ammunition-bank">
-              <h2>Click or drag the ammunition to their correct time periods</h2>
-              {gameState.selectionMode && (
-                <div className="selection-help">
-                  <p>Selected: <strong>{gameState.selectedAmmo?.name}</strong> - Click on a time period below to place it, or click the ammunition again to cancel.</p>
-                </div>
+              {!gameState.selectionMode && (
+                <h2>Click or drag the ammunition to their correct time periods</h2>
               )}
               <div className={`ammunition-grid ${gameState.selectionMode ? 'selection-mode' : ''}`}>
                 {gameState.bank.map((ammo) => (
