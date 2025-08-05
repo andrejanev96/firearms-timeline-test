@@ -64,7 +64,9 @@ const AmmoCard = ({ ammo, isDragging = false, inTimeline = false, onDragStart, o
           ✓ Selected - Choose a time period
         </div>
       )}
-      <div className="ammo-image">{ammo.image}</div>
+      <div className="ammo-image">
+      <img src={ammo.image} alt={ammo.name} style={{ width: '100%', height: 'auto' }} />
+    </div>
       <div className="ammo-name">{ammo.name}</div>
       <div className="ammo-description">{ammo.description}</div>
       {isMobile && isTopCard && (
