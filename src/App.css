@@ -96,6 +96,10 @@ body {
 /* Desktop Ammunition Bank */
 .ammunition-bank {
   margin-bottom: 30px;
+  position: relative;
+  min-height: 420px;
+  display: flex;
+  flex-direction: column;
 }
 
 .ammunition-bank h2 {
@@ -103,6 +107,11 @@ body {
   margin-bottom: 20px;
   color: #daa520;
   font-size: 1.6rem;
+  min-height: 2em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
 }
 
 .ammunition-grid {
@@ -113,12 +122,21 @@ body {
   background: rgba(255, 255, 255, 0.05);
   border-radius: 20px;
   border: 2px dashed rgba(218, 165, 32, 0.3);
-  min-height: 200px;
+  min-height: 280px;
   justify-items: center;
   place-items: center;
   max-width: 1200px;
   margin: 0 auto;
   grid-auto-rows: minmax(200px, auto);
+  flex: 1;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.ammunition-grid.selection-mode {
+  border-color: rgba(218, 165, 32, 0.5);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 20px rgba(218, 165, 32, 0.1);
 }
 
 .empty-bank {
@@ -168,16 +186,59 @@ body {
 }
 
 .ammo-card.in-timeline {
-  transform: scale(0.9);
+  transform: scale(0.85);
   cursor: pointer;
   background: linear-gradient(145deg, #2a2a2a, #363636);
-  max-width: none;
-  width: 100%;
+  max-width: 160px;
+  width: 160px;
+  min-height: 130px;
+  margin: 0;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+  border-radius: 12px;
+  overflow: hidden;
 }
 
-.ammo-card.in-timeline:hover {
+.timeline-card-wrapper {
+  grid-column: 1;
+  grid-row: 1;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: center center;
+}
+
+/* Timeline card wrapper - clean and contained */
+.timeline-card-wrapper {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: center center;
+  position: relative;
+}
+
+/* Hover effects for timeline cards */
+.timeline-card-wrapper:hover {
+  transform: translateY(-5px) scale(1.05);
+  z-index: 10;
+}
+
+.timeline-card-wrapper:hover .ammo-card.in-timeline {
   background: linear-gradient(145deg, #cc4444, #aa3333);
-  transform: scale(0.85);
+  box-shadow: 0 8px 20px rgba(204, 68, 68, 0.6);
+  transform: scale(0.9);
+}
+
+/* Smooth card transition animation */
+.card-carousel .timeline-card-wrapper {
+  animation: cardSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes cardSlideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.7);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 /* Selection Mode Styles */
@@ -232,14 +293,35 @@ body {
 
 /* Selection Help Message */
 .selection-help {
+  position: absolute;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 40px);
+  max-width: 600px;
   text-align: center;
-  background: rgba(218, 165, 32, 0.1);
-  border: 1px solid rgba(218, 165, 32, 0.3);
-  border-radius: 10px;
-  padding: 15px;
-  margin-bottom: 20px;
+  background: rgba(218, 165, 32, 0.15);
+  border: 1px solid rgba(218, 165, 32, 0.4);
+  border-radius: 15px;
+  padding: 12px 20px;
   color: #daa520;
   font-weight: 500;
+  font-size: 0.95rem;
+  z-index: 10;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 12px rgba(218, 165, 32, 0.2);
+  animation: slideInHelp 0.3s ease-out;
+}
+
+@keyframes slideInHelp {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
 }
 
 .ammo-image {
@@ -277,6 +359,8 @@ body {
   display: flex;
   flex-direction: column;
   position: relative;
+  touch-action: pan-y pinch-zoom;
+  overflow-x: hidden;
 }
 
 .mobile-progress {
@@ -320,6 +404,8 @@ body {
   margin: 10px 0;
   height: 380px;
   perspective: 1000px;
+  touch-action: pan-y pinch-zoom;
+  overflow: hidden;
 }
 
 .stacked-card {
@@ -696,6 +782,13 @@ body {
 .timeline-section {
   margin: 30px 0;
   padding: 20px 0;
+  transition: all 0.3s ease;
+}
+
+.timeline-section.selection-active {
+  background: rgba(218, 165, 32, 0.02);
+  border-radius: 15px;
+  padding: 30px 10px;
 }
 
 .timeline-container {
@@ -765,16 +858,122 @@ body {
 }
 
 .drop-zone {
-  min-height: 160px;
+  min-height: 180px;
   background: rgba(255, 255, 255, 0.05);
   border: 2px dashed rgba(218, 165, 32, 0.3);
   border-radius: 12px;
-  padding: 10px;
+  padding: 15px;
   display: flex;
-  flex-direction: column;
-  gap: 8px;
+  align-items: center;
+  justify-content: center;
   transition: all 0.3s ease;
   position: relative;
+  overflow: hidden;
+}
+
+/* Card Carousel for Multiple Cards */
+.card-carousel {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.card-carousel > * {
+  pointer-events: auto;
+}
+
+.carousel-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(218, 165, 32, 0.9), rgba(184, 134, 11, 0.9));
+  border: 1px solid rgba(218, 165, 32, 0.6);
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 15;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(4px);
+}
+
+.carousel-arrow:hover {
+  background: linear-gradient(135deg, #daa520, #b8860b);
+  transform: translateY(-50%) scale(1.15);
+  box-shadow: 0 3px 8px rgba(218, 165, 32, 0.4);
+  border-color: #daa520;
+}
+
+.prev-arrow {
+  left: 2px;
+}
+
+.next-arrow {
+  right: 2px;
+}
+
+/* Remove card button */
+.remove-card-btn {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.9));
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  font-size: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 20;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  transform: scale(0.7);
+  backdrop-filter: blur(8px);
+}
+
+.timeline-card-wrapper:hover .remove-card-btn {
+  opacity: 0.8;
+  transform: scale(1);
+}
+
+.remove-card-btn:hover {
+  opacity: 1;
+  background: linear-gradient(135deg, rgba(220, 53, 69, 0.9), rgba(200, 35, 51, 0.9));
+  border-color: rgba(220, 53, 69, 0.6);
+  transform: scale(1.15);
+  box-shadow: 0 3px 10px rgba(220, 53, 69, 0.3);
+}
+
+.card-counter {
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, rgba(218, 165, 32, 0.95), rgba(184, 134, 11, 0.95));
+  color: white;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  z-index: 10;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .drop-zone.drag-over {
@@ -1172,16 +1371,17 @@ body {
   }
 }
 
-/* Mobile Responsiveness */
-@media (max-width: 1024px) {
-  .timeline-periods {
-    min-width: 900px;
-  }
-}
 
-@media (max-width: 768px) {
+/* Mobile and Tablet Responsiveness */
+@media (max-width: 1024px) {
+  body {
+    overflow-x: hidden;
+    touch-action: pan-y pinch-zoom;
+  }
+
   .container {
     padding: 10px;
+    overflow-x: hidden;
   }
 
   .header {
@@ -1270,6 +1470,43 @@ body {
     animation: none;
     background: rgba(218, 165, 32, 0.12);
     border-width: 3px;
+  }
+}
+
+/* Tablet specific optimizations */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .stacked-card {
+    width: 320px;
+    height: 420px;
+  }
+
+  .card-stack {
+    height: 450px;
+  }
+
+  .mobile-card .ammo-image {
+    width: 130px;
+    height: 130px;
+    font-size: 58px;
+  }
+
+  .mobile-card .ammo-name {
+    font-size: 1.4rem;
+  }
+
+  .mobile-card .ammo-description {
+    font-size: 1rem;
+  }
+
+  .select-btn {
+    font-size: 1.3rem;
+    padding: 20px 30px;
+  }
+
+  .nav-btn {
+    width: 70px;
+    height: 70px;
+    font-size: 2rem;
   }
 }
 

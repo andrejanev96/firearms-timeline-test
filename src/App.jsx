@@ -1,6 +1,38 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 
+// Utility functions
+const hapticFeedback = (type = 'light') => {
+  if ('vibrate' in navigator) {
+    switch (type) {
+      case 'light':
+        navigator.vibrate(20);
+        break;
+      case 'medium':
+        navigator.vibrate(40);
+        break;
+      case 'success':
+        navigator.vibrate([30, 50, 30]);
+        break;
+      default:
+        navigator.vibrate(20);
+    }
+  }
+};
+
+const preloadImage = (src) => {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(src);
+    img.onerror = () => reject(src);
+    img.src = src;
+  });
+};
+
+const preloadImages = (imageUrls) => {
+  return Promise.allSettled(imageUrls.map(preloadImage));
+};
+
 // EmailJS Configuration
 const EMAILJS_CONFIG = {
   SERVICE_ID: 'service_jq7svch',
@@ -92,7 +124,17 @@ const MobileCardStack = ({ ammunition, onAmmoSelect, onPeriodSelect, selectedAmm
   };
 
   const onTouchMove = (e) => {
-    setTouchEnd(e.targetTouches[0].clientX);
+    if (!touchStart) return;
+    
+    const currentTouch = e.targetTouches[0].clientX;
+    const distance = touchStart - currentTouch;
+    
+    // Prevent horizontal scrolling/navigation if we detect a horizontal swipe
+    if (Math.abs(distance) > 10) {
+      e.preventDefault();
+    }
+    
+    setTouchEnd(currentTouch);
   };
 
   const onTouchEnd = () => {
@@ -104,9 +146,11 @@ const MobileCardStack = ({ ammunition, onAmmoSelect, onPeriodSelect, selectedAmm
 
     if (isLeftSwipe && currentCardIndex < ammunition.length - 1) {
       setCurrentCardIndex(currentCardIndex + 1);
+      hapticFeedback('light');
     }
     if (isRightSwipe && currentCardIndex > 0) {
       setCurrentCardIndex(currentCardIndex - 1);
+      hapticFeedback('light');
     }
   };
 
@@ -118,7 +162,10 @@ const MobileCardStack = ({ ammunition, onAmmoSelect, onPeriodSelect, selectedAmm
         <div className="mobile-timeline-header">
           <button 
             className="back-btn"
-            onClick={() => onAmmoSelect(null)}
+            onClick={() => {
+              onAmmoSelect(null);
+              hapticFeedback('light');
+            }}
           >
             ← Back
           </button>
@@ -137,7 +184,10 @@ const MobileCardStack = ({ ammunition, onAmmoSelect, onPeriodSelect, selectedAmm
             <div
               key={period.id}
               className="mobile-timeline-period"
-              onClick={() => onPeriodSelect(index)}
+              onClick={() => {
+                onPeriodSelect(index);
+                hapticFeedback('success');
+              }}
             >
               <div className="mobile-period-label">{period.name}</div>
               <div className="mobile-period-years">{period.years}</div>
@@ -188,7 +238,12 @@ const MobileCardStack = ({ ammunition, onAmmoSelect, onPeriodSelect, selectedAmm
                 ammo={ammo}
                 isMobile={true}
                 isTopCard={offset === 0}
-                onClick={() => offset === 0 && onAmmoSelect(ammo)}
+                onClick={() => {
+                  if (offset === 0) {
+                    onAmmoSelect(ammo);
+                    hapticFeedback('medium');
+                  }
+                }}
               />
             </div>
           );
@@ -198,20 +253,33 @@ const MobileCardStack = ({ ammunition, onAmmoSelect, onPeriodSelect, selectedAmm
       <div className="mobile-navigation">
         <button 
           className="nav-btn prev-btn"
-          onClick={() => currentCardIndex > 0 && setCurrentCardIndex(currentCardIndex - 1)}
+          onClick={() => {
+            if (currentCardIndex > 0) {
+              setCurrentCardIndex(currentCardIndex - 1);
+              hapticFeedback('light');
+            }
+          }}
           disabled={currentCardIndex === 0}
         >
           ←
         </button>
         <button 
           className="select-btn"
-          onClick={() => onAmmoSelect(currentAmmo)}
+          onClick={() => {
+            onAmmoSelect(currentAmmo);
+            hapticFeedback('medium');
+          }}
         >
           Select This Ammo
         </button>
         <button 
           className="nav-btn next-btn"
-          onClick={() => currentCardIndex < ammunition.length - 1 && setCurrentCardIndex(currentCardIndex + 1)}
+          onClick={() => {
+            if (currentCardIndex < ammunition.length - 1) {
+              setCurrentCardIndex(currentCardIndex + 1);
+              hapticFeedback('light');
+            }
+          }}
           disabled={currentCardIndex === ammunition.length - 1}
         >
           →
@@ -224,6 +292,7 @@ const MobileCardStack = ({ ammunition, onAmmoSelect, onPeriodSelect, selectedAmm
 // Timeline Period Component
 const TimelinePeriod = ({ period, periodIndex, ammunition, onDrop, onRemoveAmmo, onPeriodSelect, isSelectionMode, isHighlighted }) => {
   const [isDragOver, setIsDragOver] = useState(false);
+  const [currentCardIndex, setCurrentCardIndex] = useState(0);
 
   const handleDragOver = (e) => {
     e.preventDefault();
@@ -274,18 +343,64 @@ const TimelinePeriod = ({ period, periodIndex, ammunition, onDrop, onRemoveAmmo,
         onDrop={handleDrop}
         onClick={handleClick}
       >
-        {ammunition.map((ammo) => (
-          <div
-            key={ammo.id}
-            onClick={(e) => handleAmmoClick(ammo, e)}
-            className={isSelectionMode ? 'disabled-interaction' : ''}
-          >
-            <AmmoCard
-              ammo={ammo}
-              inTimeline={true}
-            />
+        {ammunition.length > 0 && (
+          <div className="card-carousel">
+            {/* Navigation arrows - only show if more than 1 card */}
+            {ammunition.length > 1 && (
+              <>
+                <button 
+                  className="carousel-arrow prev-arrow"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setCurrentCardIndex(prev => prev > 0 ? prev - 1 : ammunition.length - 1);
+                    hapticFeedback('light');
+                  }}
+                >
+                  ‹
+                </button>
+                <button 
+                  className="carousel-arrow next-arrow"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setCurrentCardIndex(prev => prev < ammunition.length - 1 ? prev + 1 : 0);
+                    hapticFeedback('light');
+                  }}
+                >
+                  ›
+                </button>
+              </>
+            )}
+            
+            {/* Current card display */}
+            <div className={`timeline-card-wrapper ${isSelectionMode ? 'disabled-interaction' : ''}`}>
+              <AmmoCard
+                ammo={ammunition[currentCardIndex]}
+                inTimeline={true}
+              />
+              {/* Remove button */}
+              {!isSelectionMode && (
+                <button 
+                  className="remove-card-btn"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleAmmoClick(ammunition[currentCardIndex], e);
+                    hapticFeedback('medium');
+                  }}
+                  title="Remove this card"
+                >
+                  ×
+                </button>
+              )}
+            </div>
+            
+            {/* Card counter */}
+            {ammunition.length > 1 && (
+              <div className="card-counter">
+                {currentCardIndex + 1} / {ammunition.length}
+              </div>
+            )}
           </div>
-        ))}
+        )}
         {ammunition.length === 0 && (
           <div className="drop-placeholder" onClick={handleClick}>
             {isSelectionMode ? 'Click to place here' : 'Drop ammunition here'}
@@ -388,10 +503,11 @@ function App() {
     showMobileTimeline: false
   });
 
-  // Check if mobile on mount and resize
+  // Check if mobile/tablet on mount and resize
   useEffect(() => {
     const checkMobile = () => {
-      setGameState(prev => ({ ...prev, isMobile: window.innerWidth <= 768 }));
+      // Include tablets (up to 1024px) in mobile experience
+      setGameState(prev => ({ ...prev, isMobile: window.innerWidth <= 1024 }));
     };
     
     checkMobile();
@@ -399,11 +515,18 @@ function App() {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // Initialize EmailJS
+  // Initialize EmailJS and preload images
   useEffect(() => {
     if (typeof window.emailjs !== 'undefined') {
       window.emailjs.init(EMAILJS_CONFIG.PUBLIC_KEY);
     }
+    
+    // Preload all ammunition images for smooth swiping
+    const imageUrls = ammunition.map(ammo => ammo.image);
+    preloadImages(imageUrls).then((results) => {
+      const successCount = results.filter(result => result.status === 'fulfilled').length;
+      console.log(`Preloaded ${successCount}/${imageUrls.length} images`);
+    });
   }, []);
 
   // Calculate progress
@@ -452,6 +575,11 @@ function App() {
     if (!gameState.selectedAmmo) return;
     
     const ammo = gameState.selectedAmmo;
+    
+    // Add haptic feedback for successful placement
+    if (!gameState.isMobile) {
+      hapticFeedback('success');
+    }
     
     setGameState(prev => {
       const newBank = prev.bank.filter(a => a.id !== ammo.id);
@@ -663,7 +791,7 @@ function App() {
                   <p>Click on a time period below to place your selected ammunition, or click the ammunition again to cancel.</p>
                 </div>
               )}
-              <div className="ammunition-grid">
+              <div className={`ammunition-grid ${gameState.selectionMode ? 'selection-mode' : ''}`}>
                 {gameState.bank.map((ammo) => (
                   <AmmoCard
                     key={ammo.id}
@@ -685,7 +813,7 @@ function App() {
             </section>
 
             {/* Desktop: Timeline */}
-            <section className="timeline-section">
+            <section className={`timeline-section ${gameState.selectionMode ? 'selection-active' : ''}`}>
               <div className="timeline-container">
                 <div className="timeline-line"></div>
                 <div className="timeline-periods">
