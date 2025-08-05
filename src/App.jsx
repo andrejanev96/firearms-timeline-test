@@ -116,8 +116,21 @@ const MobileCardStack = ({ ammunition, onAmmoSelect, onPeriodSelect, selectedAmm
     return (
       <div className="mobile-timeline-overlay">
         <div className="mobile-timeline-header">
-          <h3>Selected: {selectedAmmo?.name}</h3>
-          <p>Choose the correct time period</p>
+          <button 
+            className="back-btn"
+            onClick={() => onAmmoSelect(null)}
+          >
+            ← Back
+          </button>
+          <div className="selected-ammo-info">
+            <div className="selected-ammo-image">
+              <img src={selectedAmmo?.image} alt={selectedAmmo?.name} />
+            </div>
+            <div className="selected-ammo-text">
+              <h3>{selectedAmmo?.name}</h3>
+              <p>Choose the correct time period</p>
+            </div>
+          </div>
         </div>
         <div className="mobile-timeline-periods">
           {timePeriods.map((period, index) => (
@@ -401,12 +414,21 @@ function App() {
   // Handle ammunition selection (both desktop and mobile)
   const handleAmmoSelect = (ammo) => {
     if (gameState.isMobile) {
-      // Mobile: Show timeline overlay
-      setGameState(prev => ({
-        ...prev,
-        selectedAmmo: ammo,
-        showMobileTimeline: true
-      }));
+      if (ammo === null) {
+        // Mobile: Go back to card stack
+        setGameState(prev => ({
+          ...prev,
+          selectedAmmo: null,
+          showMobileTimeline: false
+        }));
+      } else {
+        // Mobile: Show timeline overlay
+        setGameState(prev => ({
+          ...prev,
+          selectedAmmo: ammo,
+          showMobileTimeline: true
+        }));
+      }
     } else {
       // Desktop: Selection mode
       if (gameState.selectionMode && gameState.selectedAmmo?.id === ammo.id) {
