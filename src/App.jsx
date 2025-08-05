@@ -799,15 +799,10 @@ function App() {
           <>
             {/* Desktop: Ammunition Bank */}
             <section className="ammunition-bank">
-              <h2>
-                {gameState.selectionMode 
-                  ? `Selected: ${gameState.selectedAmmo?.name} - Now choose a time period below` 
-                  : 'Click or drag the ammunition to their correct time periods'
-                }
-              </h2>
+              <h2>Click or drag the ammunition to their correct time periods</h2>
               {gameState.selectionMode && (
                 <div className="selection-help">
-                  <p>Click on a time period below to place your selected ammunition, or click the ammunition again to cancel.</p>
+                  <p>Selected: <strong>{gameState.selectedAmmo?.name}</strong> - Click on a time period below to place it, or click the ammunition again to cancel.</p>
                 </div>
               )}
               <div className={`ammunition-grid ${gameState.selectionMode ? 'selection-mode' : ''}`}>
