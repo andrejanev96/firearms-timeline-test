@@ -8,20 +8,20 @@ const EMAILJS_CONFIG = {
   PUBLIC_KEY: 'k-gNX0g2hgBW5TZAR'
 };
 
-// Firearm data
-const firearms = [
-  { id: '1', name: 'Brown Bess Musket', description: 'British military musket', correctPeriod: 0, image: '🔫' },
-  { id: '2', name: 'Kentucky Long Rifle', description: 'American frontier rifle', correctPeriod: 0, image: '🔫' },
-  { id: '3', name: 'Springfield Model 1861', description: 'Union Army rifle-musket', correctPeriod: 1, image: '🔫' },
-  { id: '4', name: 'Spencer Repeating Rifle', description: 'Civil War lever-action', correctPeriod: 1, image: '🔫' },
-  { id: '5', name: 'Winchester Model 1873', description: 'The Gun That Won the West', correctPeriod: 2, image: '🔫' },
-  { id: '6', name: 'Colt Single Action Army', description: 'Peacemaker revolver', correctPeriod: 2, image: '🔫' },
-  { id: '7', name: 'Springfield M1903', description: 'WWI service rifle', correctPeriod: 3, image: '🔫' },
-  { id: '8', name: 'Thompson Submachine Gun', description: 'Tommy Gun', correctPeriod: 4, image: '🔫' },
-  { id: '9', name: 'M1 Garand', description: 'WWII semi-automatic rifle', correctPeriod: 4, image: '🔫' },
-  { id: '10', name: 'AK-47', description: 'Soviet assault rifle', correctPeriod: 5, image: '🔫' },
-  { id: '11', name: 'M16', description: 'Vietnam War service rifle', correctPeriod: 5, image: '🔫' },
-  { id: '12', name: 'AR-15', description: 'Modern sporting rifle', correctPeriod: 6, image: '🔫' }
+// Ammunition data - historically significant cartridges
+const ammunition = [
+  { id: '1', name: '.69 Caliber Ball', description: 'Brown Bess musket ammunition', correctPeriod: 0, image: '🔸' },
+  { id: '2', name: '.50 Caliber Ball', description: 'Kentucky Long Rifle ammunition', correctPeriod: 0, image: '🔸' },
+  { id: '3', name: '.58 Caliber Minié Ball', description: 'Civil War rifle-musket ammunition', correctPeriod: 1, image: '🔸' },
+  { id: '4', name: '.56-50 Spencer', description: 'Spencer repeating rifle cartridge', correctPeriod: 1, image: '🔸' },
+  { id: '5', name: '.44-40 Winchester', description: 'Winchester Model 1873 cartridge', correctPeriod: 2, image: '🔸' },
+  { id: '6', name: '.45 Colt', description: 'Single Action Army revolver cartridge', correctPeriod: 2, image: '🔸' },
+  { id: '7', name: '.30-06 Springfield', description: 'M1903 and M1 Garand cartridge', correctPeriod: 3, image: '🔸' },
+  { id: '8', name: '.45 ACP', description: 'Thompson SMG and M1911 pistol', correctPeriod: 4, image: '🔸' },
+  { id: '9', name: '9mm Luger', description: 'WWII and modern sidearm cartridge', correctPeriod: 4, image: '🔸' },
+  { id: '10', name: '7.62×39mm', description: 'AK-47 assault rifle cartridge', correctPeriod: 5, image: '🔸' },
+  { id: '11', name: '5.56×45mm NATO', description: 'M16 and AR-15 cartridge', correctPeriod: 5, image: '🔸' },
+  { id: '12', name: '.22 LR', description: 'Modern training and sporting cartridge', correctPeriod: 6, image: '🔸' }
 ];
 
 const timePeriods = [
@@ -34,46 +34,180 @@ const timePeriods = [
   { name: 'Modern Era', years: '1990-Present', id: 'modern' }
 ];
 
-// Firearm Card Component
-const FirearmCard = ({ firearm, isDragging = false, inTimeline = false, onDragStart, onDragEnd, onClick, isSelected = false, isSelectionMode = false }) => {
+// Ammunition Card Component
+const AmmoCard = ({ ammo, isDragging = false, inTimeline = false, onDragStart, onDragEnd, onClick, isSelected = false, isSelectionMode = false, isMobile = false, isTopCard = false }) => {
   
   const handleDragStart = (e) => {
-    if (onDragStart && !isSelectionMode) {
-      onDragStart(e, firearm);
-    } else if (isSelectionMode) {
-      // Prevent dragging during selection mode to avoid conflicts
+    if (onDragStart && !isSelectionMode && !isMobile) {
+      onDragStart(e, ammo);
+    } else if (isSelectionMode || isMobile) {
       e.preventDefault();
     }
   };
 
   const handleClick = (e) => {
     if (onClick) {
-      onClick(firearm, e);
+      onClick(ammo, e);
     }
   };
 
   return (
     <div
-      className={`firearm-card ${isDragging ? 'dragging' : ''} ${inTimeline ? 'in-timeline' : ''} ${isSelected ? 'selected' : ''} ${isSelectionMode && !isSelected ? 'dimmed' : ''}`}
-      draggable={!inTimeline && !isSelectionMode}
+      className={`ammo-card ${isDragging ? 'dragging' : ''} ${inTimeline ? 'in-timeline' : ''} ${isSelected ? 'selected' : ''} ${isSelectionMode && !isSelected ? 'dimmed' : ''} ${isMobile ? 'mobile-card' : ''} ${isTopCard ? 'top-card' : ''}`}
+      draggable={!inTimeline && !isSelectionMode && !isMobile}
       onDragStart={handleDragStart}
       onDragEnd={onDragEnd}
       onClick={handleClick}
     >
-      {isSelected && (
+      {isSelected && !isMobile && (
         <div className="selection-indicator">
           ✓ Selected - Choose a time period
         </div>
       )}
-      <div className="firearm-image">{firearm.image}</div>
-      <div className="firearm-name">{firearm.name}</div>
-      <div className="firearm-description">{firearm.description}</div>
+      <div className="ammo-image">{ammo.image}</div>
+      <div className="ammo-name">{ammo.name}</div>
+      <div className="ammo-description">{ammo.description}</div>
+      {isMobile && isTopCard && (
+        <div className="mobile-card-actions">
+          <div className="swipe-hint">👈 Swipe to browse • Tap to select 👆</div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// Mobile Card Stack Component
+const MobileCardStack = ({ ammunition, onAmmoSelect, onPeriodSelect, selectedAmmo, showTimeline }) => {
+  const [currentCardIndex, setCurrentCardIndex] = useState(0);
+  const [touchStart, setTouchStart] = useState(null);
+  const [touchEnd, setTouchEnd] = useState(null);
+
+  const minSwipeDistance = 50;
+
+  const onTouchStart = (e) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+
+    if (isLeftSwipe && currentCardIndex < ammunition.length - 1) {
+      setCurrentCardIndex(currentCardIndex + 1);
+    }
+    if (isRightSwipe && currentCardIndex > 0) {
+      setCurrentCardIndex(currentCardIndex - 1);
+    }
+  };
+
+  const currentAmmo = ammunition[currentCardIndex];
+
+  if (showTimeline) {
+    return (
+      <div className="mobile-timeline-overlay">
+        <div className="mobile-timeline-header">
+          <h3>Selected: {selectedAmmo?.name}</h3>
+          <p>Choose the correct time period</p>
+        </div>
+        <div className="mobile-timeline-periods">
+          {timePeriods.map((period, index) => (
+            <div
+              key={period.id}
+              className="mobile-timeline-period"
+              onClick={() => onPeriodSelect(index)}
+            >
+              <div className="mobile-period-label">{period.name}</div>
+              <div className="mobile-period-years">{period.years}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="mobile-card-container">
+      <div className="mobile-progress">
+        <div className="progress-dots">
+          {ammunition.map((_, index) => (
+            <div
+              key={index}
+              className={`progress-dot ${index === currentCardIndex ? 'active' : ''} ${index < currentCardIndex ? 'completed' : ''}`}
+            />
+          ))}
+        </div>
+        <p className="progress-text">Card {currentCardIndex + 1} of {ammunition.length}</p>
+      </div>
+
+      <div 
+        className="card-stack"
+        onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onTouchEnd}
+      >
+        {ammunition.map((ammo, index) => {
+          const offset = index - currentCardIndex;
+          const isVisible = Math.abs(offset) <= 2;
+          
+          if (!isVisible) return null;
+
+          return (
+            <div
+              key={ammo.id}
+              className={`stacked-card ${offset === 0 ? 'current' : offset > 0 ? 'next' : 'prev'}`}
+              style={{
+                transform: `translateX(${offset * 20}px) translateY(${Math.abs(offset) * 5}px) scale(${1 - Math.abs(offset) * 0.05})`,
+                zIndex: ammunition.length - Math.abs(offset),
+                opacity: offset === 0 ? 1 : 0.7 - Math.abs(offset) * 0.2
+              }}
+            >
+              <AmmoCard
+                ammo={ammo}
+                isMobile={true}
+                isTopCard={offset === 0}
+                onClick={() => offset === 0 && onAmmoSelect(ammo)}
+              />
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="mobile-navigation">
+        <button 
+          className="nav-btn prev-btn"
+          onClick={() => currentCardIndex > 0 && setCurrentCardIndex(currentCardIndex - 1)}
+          disabled={currentCardIndex === 0}
+        >
+          ←
+        </button>
+        <button 
+          className="select-btn"
+          onClick={() => onAmmoSelect(currentAmmo)}
+        >
+          Select This Ammo
+        </button>
+        <button 
+          className="nav-btn next-btn"
+          onClick={() => currentCardIndex < ammunition.length - 1 && setCurrentCardIndex(currentCardIndex + 1)}
+          disabled={currentCardIndex === ammunition.length - 1}
+        >
+          →
+        </button>
+      </div>
     </div>
   );
 };
 
 // Timeline Period Component
-const TimelinePeriod = ({ period, periodIndex, firearms, onDrop, onRemoveFirearm, onPeriodSelect, isSelectionMode, isHighlighted }) => {
+const TimelinePeriod = ({ period, periodIndex, ammunition, onDrop, onRemoveAmmo, onPeriodSelect, isSelectionMode, isHighlighted }) => {
   const [isDragOver, setIsDragOver] = useState(false);
 
   const handleDragOver = (e) => {
@@ -82,7 +216,6 @@ const TimelinePeriod = ({ period, periodIndex, firearms, onDrop, onRemoveFirearm
   };
 
   const handleDragLeave = (e) => {
-    // Only set drag over to false if we're actually leaving the drop zone
     if (!e.currentTarget.contains(e.relatedTarget)) {
       setIsDragOver(false);
     }
@@ -93,27 +226,24 @@ const TimelinePeriod = ({ period, periodIndex, firearms, onDrop, onRemoveFirearm
     setIsDragOver(false);
     
     try {
-      const firearmData = JSON.parse(e.dataTransfer.getData('text/plain'));
-      onDrop(firearmData, periodIndex);
+      const ammoData = JSON.parse(e.dataTransfer.getData('text/plain'));
+      onDrop(ammoData, periodIndex);
     } catch (error) {
       console.error('Error parsing drag data:', error);
     }
   };
 
   const handleClick = (e) => {
-    // Only handle period selection if clicking on the drop zone itself, not on a firearm
-    // And only if we're in selection mode
     if (isSelectionMode && (e.target === e.currentTarget || e.target.classList.contains('drop-placeholder'))) {
       onPeriodSelect(periodIndex);
     }
   };
 
-  const handleFirearmClick = (firearm, e) => {
-    e.stopPropagation(); // Prevent event bubbling to parent drop zone
+  const handleAmmoClick = (ammo, e) => {
+    e.stopPropagation();
     
-    // Only allow removal if NOT in selection mode
     if (!isSelectionMode) {
-      onRemoveFirearm(firearm, periodIndex);
+      onRemoveAmmo(ammo, periodIndex);
     }
   };
 
@@ -129,21 +259,21 @@ const TimelinePeriod = ({ period, periodIndex, firearms, onDrop, onRemoveFirearm
         onDrop={handleDrop}
         onClick={handleClick}
       >
-        {firearms.map((firearm) => (
+        {ammunition.map((ammo) => (
           <div
-            key={firearm.id}
-            onClick={(e) => handleFirearmClick(firearm, e)}
+            key={ammo.id}
+            onClick={(e) => handleAmmoClick(ammo, e)}
             className={isSelectionMode ? 'disabled-interaction' : ''}
           >
-            <FirearmCard
-              firearm={firearm}
+            <AmmoCard
+              ammo={ammo}
               inTimeline={true}
             />
           </div>
         ))}
-        {firearms.length === 0 && (
+        {ammunition.length === 0 && (
           <div className="drop-placeholder" onClick={handleClick}>
-            {isSelectionMode ? 'Click to place here' : 'Drop firearms here'}
+            {isSelectionMode ? 'Click to place here' : 'Drop ammunition here'}
           </div>
         )}
       </div>
@@ -180,12 +310,12 @@ const ResultsModal = ({ results, onSubmitEmail, isLoading, onClose }) => {
             <div className="score-circle">
               <span>{results.percentage}%</span>
             </div>
-            <p>You correctly placed {results.correctCount} out of 12 firearms!</p>
+            <p>You correctly placed {results.correctCount} out of 12 ammunition types!</p>
           </div>
           
           <div className="email-form">
             <h3>Get Your Detailed Results</h3>
-            <p>Receive timeline corrections, historical context, and fascinating stories about these iconic firearms.</p>
+            <p>Receive timeline corrections, historical context, and fascinating stories about these iconic ammunition types.</p>
             
             <div className="form-container">
               <div className="form-group">
@@ -229,16 +359,30 @@ const ResultsModal = ({ results, onSubmitEmail, isLoading, onClose }) => {
 // Main App Component
 function App() {
   const [gameState, setGameState] = useState({
-    bank: firearms,
+    bank: ammunition,
     timeline: Array(7).fill().map(() => []),
     showResults: false,
     showSuccess: false,
     isLoading: false,
     results: null,
-    draggedFirearm: null,
-    selectedFirearm: null,
-    selectionMode: false
+    draggedAmmo: null,
+    selectedAmmo: null,
+    selectionMode: false,
+    // Mobile-specific state
+    isMobile: false,
+    showMobileTimeline: false
   });
+
+  // Check if mobile on mount and resize
+  useEffect(() => {
+    const checkMobile = () => {
+      setGameState(prev => ({ ...prev, isMobile: window.innerWidth <= 768 }));
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // Initialize EmailJS
   useEffect(() => {
@@ -249,106 +393,105 @@ function App() {
 
   // Calculate progress
   const totalPlaced = gameState.timeline.flat().length;
-  const progress = (totalPlaced / firearms.length) * 100;
-  const isComplete = totalPlaced === firearms.length;
+  const progress = (totalPlaced / ammunition.length) * 100;
+  const isComplete = totalPlaced === ammunition.length;
 
-  // Handle firearm selection (new click-to-place feature)
-  const handleFirearmSelect = (firearm) => {
-    if (gameState.selectionMode && gameState.selectedFirearm?.id === firearm.id) {
-      // Deselect if clicking the same firearm
+  // Handle ammunition selection (both desktop and mobile)
+  const handleAmmoSelect = (ammo) => {
+    if (gameState.isMobile) {
+      // Mobile: Show timeline overlay
       setGameState(prev => ({
         ...prev,
-        selectedFirearm: null,
-        selectionMode: false
+        selectedAmmo: ammo,
+        showMobileTimeline: true
       }));
     } else {
-      // Select new firearm
-      setGameState(prev => ({
-        ...prev,
-        selectedFirearm: firearm,
-        selectionMode: true
-      }));
+      // Desktop: Selection mode
+      if (gameState.selectionMode && gameState.selectedAmmo?.id === ammo.id) {
+        setGameState(prev => ({
+          ...prev,
+          selectedAmmo: null,
+          selectionMode: false
+        }));
+      } else {
+        setGameState(prev => ({
+          ...prev,
+          selectedAmmo: ammo,
+          selectionMode: true
+        }));
+      }
     }
   };
 
-  // Handle period selection (when in selection mode)
+  // Handle period selection
   const handlePeriodSelect = (periodIndex) => {
-    if (!gameState.selectionMode || !gameState.selectedFirearm) return;
+    if (!gameState.selectedAmmo) return;
     
-    const firearm = gameState.selectedFirearm;
+    const ammo = gameState.selectedAmmo;
     
     setGameState(prev => {
-      // Remove from bank if it's there
-      const newBank = prev.bank.filter(f => f.id !== firearm.id);
-      
-      // Remove from other timeline positions
-      const newTimeline = prev.timeline.map((periodFirearms) => 
-        periodFirearms.filter(f => f.id !== firearm.id)
+      const newBank = prev.bank.filter(a => a.id !== ammo.id);
+      const newTimeline = prev.timeline.map((periodAmmo) => 
+        periodAmmo.filter(a => a.id !== ammo.id)
       );
       
-      // Add to new position
-      newTimeline[periodIndex] = [...newTimeline[periodIndex], firearm];
+      newTimeline[periodIndex] = [...newTimeline[periodIndex], ammo];
       
       return {
         ...prev,
         bank: newBank,
         timeline: newTimeline,
-        selectedFirearm: null,
-        selectionMode: false
+        selectedAmmo: null,
+        selectionMode: false,
+        showMobileTimeline: false
       };
     });
   };
 
   // Handle drag start
-  const handleDragStart = (e, firearm) => {
-    e.dataTransfer.setData('text/plain', JSON.stringify(firearm));
-    setGameState(prev => ({ ...prev, draggedFirearm: firearm }));
+  const handleDragStart = (e, ammo) => {
+    e.dataTransfer.setData('text/plain', JSON.stringify(ammo));
+    setGameState(prev => ({ ...prev, draggedAmmo: ammo }));
   };
 
   // Handle drag end
   const handleDragEnd = () => {
     setGameState(prev => ({ 
       ...prev, 
-      draggedFirearm: null,
-      // Don't reset selection mode during drag operations
+      draggedAmmo: null,
     }));
   };
 
   // Handle drop on timeline (for drag and drop)
-  const handleDrop = (firearm, periodIndex) => {
+  const handleDrop = (ammo, periodIndex) => {
     setGameState(prev => {
-      // Remove from bank if it's there
-      const newBank = prev.bank.filter(f => f.id !== firearm.id);
-      
-      // Remove from other timeline positions
-      const newTimeline = prev.timeline.map((periodFirearms) => 
-        periodFirearms.filter(f => f.id !== firearm.id)
+      const newBank = prev.bank.filter(a => a.id !== ammo.id);
+      const newTimeline = prev.timeline.map((periodAmmo) => 
+        periodAmmo.filter(a => a.id !== ammo.id)
       );
       
-      // Add to new position
-      newTimeline[periodIndex] = [...newTimeline[periodIndex], firearm];
+      newTimeline[periodIndex] = [...newTimeline[periodIndex], ammo];
       
       return {
         ...prev,
         bank: newBank,
         timeline: newTimeline,
-        draggedFirearm: null,
-        // Reset selection mode after successful drag and drop
-        selectedFirearm: null,
+        draggedAmmo: null,
+        selectedAmmo: null,
         selectionMode: false
       };
     });
   };
 
   // Handle remove from timeline
-  const handleRemoveFirearm = (firearm, periodIndex) => {
+  const handleRemoveAmmo = (ammo, periodIndex) => {
     setGameState(prev => {
       const newTimeline = [...prev.timeline];
-      newTimeline[periodIndex] = newTimeline[periodIndex].filter(f => f.id !== firearm.id);
+      newTimeline[periodIndex] = newTimeline[periodIndex].filter(a => a.id !== ammo.id);
       
       return {
         ...prev,
-        bank: [...prev.bank, firearm].sort((a, b) => parseInt(a.id) - parseInt(b.id)),
+        bank: [...prev.bank, ammo].sort((a, b) => parseInt(a.id) - parseInt(b.id)),
         timeline: newTimeline
       };
     });
@@ -360,22 +503,22 @@ function App() {
     const correctAnswers = [];
     const incorrectAnswers = [];
     
-    gameState.timeline.forEach((periodFirearms, periodIndex) => {
-      periodFirearms.forEach(firearm => {
-        if (firearm.correctPeriod === periodIndex) {
+    gameState.timeline.forEach((periodAmmo, periodIndex) => {
+      periodAmmo.forEach(ammo => {
+        if (ammo.correctPeriod === periodIndex) {
           correctCount++;
           correctAnswers.push({
-            name: firearm.name,
+            name: ammo.name,
             period: timePeriods[periodIndex].name,
             years: timePeriods[periodIndex].years
           });
         } else {
           incorrectAnswers.push({
-            name: firearm.name,
+            name: ammo.name,
             userPeriod: timePeriods[periodIndex].name,
-            correctPeriod: timePeriods[firearm.correctPeriod].name,
-            correctYears: timePeriods[firearm.correctPeriod].years,
-            description: firearm.description
+            correctPeriod: timePeriods[ammo.correctPeriod].name,
+            correctYears: timePeriods[ammo.correctPeriod].years,
+            description: ammo.description
           });
         }
       });
@@ -383,8 +526,8 @@ function App() {
     
     return {
       correctCount,
-      totalCount: firearms.length,
-      percentage: Math.round((correctCount / firearms.length) * 100),
+      totalCount: ammunition.length,
+      percentage: Math.round((correctCount / ammunition.length) * 100),
       correctAnswers,
       incorrectAnswers
     };
@@ -453,9 +596,9 @@ function App() {
       <div className="container">
         {/* Header */}
         <header className="header">
-          <h1>Historical Firearms Timeline Test</h1>
+          <h1>Historical Ammunition Timeline Test</h1>
           <p className="subtitle">
-            From flintlocks to modern arms: Can you correctly place these 12 iconic American pieces on our timeline?
+            From musket balls to modern cartridges: Can you correctly place these 12 iconic American ammunition types on our timeline?
           </p>
           
           {/* Progress Bar */}
@@ -467,69 +610,82 @@ function App() {
               />
             </div>
             <p className="progress-text">
-              {totalPlaced} of 12 firearms placed
+              {totalPlaced} of 12 ammunition types placed
             </p>
           </div>
         </header>
 
-        {/* Firearms Bank */}
-        <section className="firearms-bank">
-          <h2>
-            {gameState.selectionMode 
-              ? `Selected: ${gameState.selectedFirearm?.name} - Now choose a time period below` 
-              : 'Click or drag the firearms to their correct time periods'
-            }
-          </h2>
-          {gameState.selectionMode && (
-            <div className="selection-help">
-              <p>Click on a time period below to place your selected firearm, or click the firearm again to cancel.</p>
-            </div>
-          )}
-          <div className="firearms-grid">
-            {gameState.bank.map((firearm) => (
-              <FirearmCard
-                key={firearm.id}
-                firearm={firearm}
-                isDragging={gameState.draggedFirearm?.id === firearm.id}
-                isSelected={gameState.selectedFirearm?.id === firearm.id}
-                isSelectionMode={gameState.selectionMode}
-                onDragStart={handleDragStart}
-                onDragEnd={handleDragEnd}
-                onClick={handleFirearmSelect}
-              />
-            ))}
-            {gameState.bank.length === 0 && (
-              <div className="empty-bank">
-                All firearms have been placed on the timeline!
+        {/* Mobile Card Stack Interface */}
+        {gameState.isMobile ? (
+          <MobileCardStack
+            ammunition={gameState.bank}
+            onAmmoSelect={handleAmmoSelect}
+            onPeriodSelect={handlePeriodSelect}
+            selectedAmmo={gameState.selectedAmmo}
+            showTimeline={gameState.showMobileTimeline}
+          />
+        ) : (
+          <>
+            {/* Desktop: Ammunition Bank */}
+            <section className="ammunition-bank">
+              <h2>
+                {gameState.selectionMode 
+                  ? `Selected: ${gameState.selectedAmmo?.name} - Now choose a time period below` 
+                  : 'Click or drag the ammunition to their correct time periods'
+                }
+              </h2>
+              {gameState.selectionMode && (
+                <div className="selection-help">
+                  <p>Click on a time period below to place your selected ammunition, or click the ammunition again to cancel.</p>
+                </div>
+              )}
+              <div className="ammunition-grid">
+                {gameState.bank.map((ammo) => (
+                  <AmmoCard
+                    key={ammo.id}
+                    ammo={ammo}
+                    isDragging={gameState.draggedAmmo?.id === ammo.id}
+                    isSelected={gameState.selectedAmmo?.id === ammo.id}
+                    isSelectionMode={gameState.selectionMode}
+                    onDragStart={handleDragStart}
+                    onDragEnd={handleDragEnd}
+                    onClick={handleAmmoSelect}
+                  />
+                ))}
+                {gameState.bank.length === 0 && (
+                  <div className="empty-bank">
+                    All ammunition has been placed on the timeline!
+                  </div>
+                )}
               </div>
-            )}
-          </div>
-        </section>
+            </section>
 
-        {/* Timeline */}
-        <section className="timeline-section">
-          <div className="timeline-container">
-            <div className="timeline-line"></div>
-            <div className="timeline-periods">
-              {timePeriods.map((period, index) => (
-                <TimelinePeriod
-                  key={period.id}
-                  period={period}
-                  periodIndex={index}
-                  firearms={gameState.timeline[index]}
-                  onDrop={handleDrop}
-                  onRemoveFirearm={handleRemoveFirearm}
-                  onPeriodSelect={handlePeriodSelect}
-                  isSelectionMode={gameState.selectionMode}
-                  isHighlighted={gameState.selectionMode}
-                />
-              ))}
-            </div>
-          </div>
-        </section>
+            {/* Desktop: Timeline */}
+            <section className="timeline-section">
+              <div className="timeline-container">
+                <div className="timeline-line"></div>
+                <div className="timeline-periods">
+                  {timePeriods.map((period, index) => (
+                    <TimelinePeriod
+                      key={period.id}
+                      period={period}
+                      periodIndex={index}
+                      ammunition={gameState.timeline[index]}
+                      onDrop={handleDrop}
+                      onRemoveAmmo={handleRemoveAmmo}
+                      onPeriodSelect={handlePeriodSelect}
+                      isSelectionMode={gameState.selectionMode}
+                      isHighlighted={gameState.selectionMode}
+                    />
+                  ))}
+                </div>
+              </div>
+            </section>
+          </>
+        )}
 
         {/* Complete Button */}
-        {isComplete && (
+        {isComplete && !gameState.isMobile && (
           <div className="complete-section">
             <button
               onClick={handleCompleteTest}
@@ -537,6 +693,22 @@ function App() {
             >
               Complete Test & See Results
             </button>
+          </div>
+        )}
+
+        {/* Mobile Complete Button */}
+        {isComplete && gameState.isMobile && (
+          <div className="mobile-complete-section">
+            <div className="mobile-completion-message">
+              <h2>🎉 Test Complete!</h2>
+              <p>You've placed all 12 ammunition types. Ready to see your results?</p>
+              <button
+                onClick={handleCompleteTest}
+                className="mobile-complete-btn"
+              >
+                Get My Results
+              </button>
+            </div>
           </div>
         )}
 
