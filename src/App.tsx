@@ -21,7 +21,8 @@ const MobileCardStack: React.FC<{
   onPeriodSelect: (periodIndex: number) => void;
   selectedFirearm: Firearm | null;
   showTimeline: boolean;
-}> = ({ firearmsList, onFirearmSelect, onPeriodSelect, selectedFirearm, showTimeline }) => {
+  orderedFirearms: (Firearm | null)[];
+}> = ({ firearmsList, onFirearmSelect, onPeriodSelect, selectedFirearm, showTimeline, orderedFirearms }) => {
   const [currentCardIndex, setCurrentCardIndex] = React.useState(0);
   const [touchStart, setTouchStart] = React.useState<number | null>(null);
   const [touchEnd, setTouchEnd] = React.useState<number | null>(null);
@@ -84,18 +85,6 @@ const MobileCardStack: React.FC<{
           >
             ← Back
           </button>
-          <button
-            className="undo-btn"
-            onClick={() => {
-              useQuizStore.getState().undoLast();
-              hapticFeedback('light');
-            }}
-            disabled={useQuizStore.getState().historyLength === 0}
-            aria-disabled={useQuizStore.getState().historyLength === 0}
-            title="Undo last action"
-          >
-            ↩ Undo
-          </button>
           <div className="selected-firearm-info">
             <div className="selected-firearm-image">
               <img src={selectedFirearm?.image} alt={selectedFirearm?.name} />
@@ -107,19 +96,30 @@ const MobileCardStack: React.FC<{
           </div>
         </div>
         <div className="mobile-timeline-periods">
-          {Array.from({length: 12}, (_, index) => (
-            <div
-              key={index}
-              className="mobile-timeline-period"
-              onClick={() => {
-                onPeriodSelect(index);
-                hapticFeedback('success');
-              }}
-            >
-              <div className="mobile-period-label">Position {index + 1}</div>
-              <div className="mobile-period-years">Chronological Order</div>
-            </div>
-          ))}
+          {Array.from({length: 12}, (_, index) => {
+            const isOccupied = orderedFirearms[index] !== null;
+            const occupiedFirearm = orderedFirearms[index];
+
+            return (
+              <div
+                key={index}
+                className={`mobile-timeline-period ${isOccupied ? 'occupied' : 'available'}`}
+                onClick={() => {
+                  if (!isOccupied) {
+                    onPeriodSelect(index);
+                    hapticFeedback('success');
+                  } else {
+                    hapticFeedback('error');
+                  }
+                }}
+              >
+                <div className="mobile-period-label">Position {index + 1}</div>
+                <div className="mobile-period-years">
+                  {isOccupied ? `Occupied by ${occupiedFirearm?.name}` : 'Available'}
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
     );
@@ -306,9 +306,65 @@ const App: React.FC = () => {
       <div className="container">
         {/* Header */}
         <header className="header">
-          <h1>American Firearms Timeline Challenge</h1>
+          <div className="title-with-flag">
+            <svg className="american-flag" width="32" height="24" viewBox="0 0 32 24" fill="none">
+              <rect width="32" height="24" fill="#B22234"/>
+              <rect width="32" height="1.85" y="1.85" fill="white"/>
+              <rect width="32" height="1.85" y="5.54" fill="white"/>
+              <rect width="32" height="1.85" y="9.23" fill="white"/>
+              <rect width="32" height="1.85" y="12.92" fill="white"/>
+              <rect width="32" height="1.85" y="16.61" fill="white"/>
+              <rect width="32" height="1.85" y="20.31" fill="white"/>
+              <rect width="12.8" height="12.92" fill="#3C3B6E"/>
+              <g fill="white">
+                <circle cx="2.13" cy="1.85" r="0.5"/>
+                <circle cx="6.4" cy="1.85" r="0.5"/>
+                <circle cx="10.67" cy="1.85" r="0.5"/>
+                <circle cx="4.27" cy="3.69" r="0.5"/>
+                <circle cx="8.53" cy="3.69" r="0.5"/>
+                <circle cx="2.13" cy="5.54" r="0.5"/>
+                <circle cx="6.4" cy="5.54" r="0.5"/>
+                <circle cx="10.67" cy="5.54" r="0.5"/>
+                <circle cx="4.27" cy="7.38" r="0.5"/>
+                <circle cx="8.53" cy="7.38" r="0.5"/>
+                <circle cx="2.13" cy="9.23" r="0.5"/>
+                <circle cx="6.4" cy="9.23" r="0.5"/>
+                <circle cx="10.67" cy="9.23" r="0.5"/>
+                <circle cx="4.27" cy="11.08" r="0.5"/>
+                <circle cx="8.53" cy="11.08" r="0.5"/>
+              </g>
+            </svg>
+            <h1>American Firearms Timeline Challenge</h1>
+            <svg className="american-flag" width="32" height="24" viewBox="0 0 32 24" fill="none">
+              <rect width="32" height="24" fill="#B22234"/>
+              <rect width="32" height="1.85" y="1.85" fill="white"/>
+              <rect width="32" height="1.85" y="5.54" fill="white"/>
+              <rect width="32" height="1.85" y="9.23" fill="white"/>
+              <rect width="32" height="1.85" y="12.92" fill="white"/>
+              <rect width="32" height="1.85" y="16.61" fill="white"/>
+              <rect width="32" height="1.85" y="20.31" fill="white"/>
+              <rect width="12.8" height="12.92" fill="#3C3B6E"/>
+              <g fill="white">
+                <circle cx="2.13" cy="1.85" r="0.5"/>
+                <circle cx="6.4" cy="1.85" r="0.5"/>
+                <circle cx="10.67" cy="1.85" r="0.5"/>
+                <circle cx="4.27" cy="3.69" r="0.5"/>
+                <circle cx="8.53" cy="3.69" r="0.5"/>
+                <circle cx="2.13" cy="5.54" r="0.5"/>
+                <circle cx="6.4" cy="5.54" r="0.5"/>
+                <circle cx="10.67" cy="5.54" r="0.5"/>
+                <circle cx="4.27" cy="7.38" r="0.5"/>
+                <circle cx="8.53" cy="7.38" r="0.5"/>
+                <circle cx="2.13" cy="9.23" r="0.5"/>
+                <circle cx="6.4" cy="9.23" r="0.5"/>
+                <circle cx="10.67" cy="9.23" r="0.5"/>
+                <circle cx="4.27" cy="11.08" r="0.5"/>
+                <circle cx="8.53" cy="11.08" r="0.5"/>
+              </g>
+            </svg>
+          </div>
           <p className="subtitle">
-            From colonial muskets to modern sporting rifles: Can you correctly order these 12 iconic American-made firearms chronologically?
+            Can you correctly order these 12 American-made firearms chronologically?
           </p>
           
           {/* Progress Bar */}
@@ -333,9 +389,10 @@ const App: React.FC = () => {
             onPeriodSelect={selectPosition}
             selectedFirearm={selectedFirearm}
             showTimeline={showMobileOrdering}
+            orderedFirearms={orderedFirearms}
           />
         ) : (
-          <>
+          <div className="quiz-sections">
             {/* Desktop: Firearms Bank */}
             <section className="firearms-bank">
               <div className="firearms-bank-header">
@@ -370,17 +427,6 @@ const App: React.FC = () => {
 
             {/* Desktop: Chronological Ordering */}
             <section className={`chronological-section ${selectionMode ? 'selection-active' : ''}`}>
-              <div className="chronological-toolbar">
-                <button
-                  onClick={() => useQuizStore.getState().undoLast()}
-                  className="undo-timeline-btn"
-                  disabled={useQuizStore.getState().historyLength === 0}
-                  aria-disabled={useQuizStore.getState().historyLength === 0}
-                  title="Undo last action"
-                >
-                  ↩ Undo
-                </button>
-              </div>
               <ChronologicalSlots
                 orderedFirearms={orderedFirearms}
                 onDrop={dropFirearm}
@@ -390,7 +436,7 @@ const App: React.FC = () => {
                 isHighlighted={selectionMode}
               />
             </section>
-          </>
+          </div>
         )}
 
         {/* Complete Button */}

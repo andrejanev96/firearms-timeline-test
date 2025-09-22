@@ -7,7 +7,7 @@ export interface QuizCompletionData {
 
 export interface AnalyticsEvent {
   event: string;
-  data?: Record<string, any>;
+  data?: Record<string, unknown>;
 }
 
 export interface TrackingEvents {

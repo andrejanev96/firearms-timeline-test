@@ -69,29 +69,42 @@ const useQuizStore = create<QuizStore>((set, get) => ({
   selectPosition: (position: number) => {
     const state = get();
     if (!state.selectedFirearm) return;
-    
+
     const firearm = state.selectedFirearm;
-    
+
+    // Check if position is occupied (reject placement for occupied positions)
+    if (state.orderedFirearms[position] !== null) {
+      // Position is occupied - reject placement and provide feedback
+      if (state.isMobile) {
+        // On mobile, stay in selection mode and show error feedback
+        // TODO: Add error feedback mechanism
+        return;
+      } else {
+        // On desktop, allow swapping (existing behavior)
+        // Continue with swap logic below
+      }
+    }
+
     state._pushHistory();
     set((state) => {
       const newBank = state.bank.filter(f => f.id !== firearm.id);
       const newOrderedFirearms = [...state.orderedFirearms];
-      
+
       // Remove firearm from any existing position
       for (let i = 0; i < newOrderedFirearms.length; i++) {
         if (newOrderedFirearms[i]?.id === firearm.id) {
           newOrderedFirearms[i] = null;
         }
       }
-      
-      // If position is occupied, move that firearm back to bank
-      if (newOrderedFirearms[position]) {
+
+      // If position is occupied and we're on desktop, move that firearm back to bank
+      if (newOrderedFirearms[position] && !state.isMobile) {
         newBank.push(newOrderedFirearms[position]!);
       }
-      
+
       // Place firearm in new position
       newOrderedFirearms[position] = firearm;
-      
+
       return {
         bank: newBank.sort((a, b) => parseInt(a.id) - parseInt(b.id)),
         orderedFirearms: newOrderedFirearms,

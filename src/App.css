@@ -30,6 +30,18 @@ body {
   padding: 20px;
 }
 
+/* Wrap bank and timeline as a vertical stack */
+.quiz-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.chronological-section {
+  position: relative;
+}
+
+
 /* Header Styles */
 .header {
   text-align: center;
@@ -46,9 +58,32 @@ body {
   position: relative;
 }
 
+.title-with-flag {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.american-flag {
+  filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.3));
+  animation: wave 3s ease-in-out infinite;
+}
+
+.american-flag:nth-child(3) {
+  animation-delay: 0.5s;
+}
+
+@keyframes wave {
+  0%, 100% { transform: rotateZ(0deg); }
+  25% { transform: rotateZ(2deg); }
+  75% { transform: rotateZ(-2deg); }
+}
+
 .header h1 {
   font-size: 3rem;
-  margin-bottom: 15px;
+  margin: 0;
   background: linear-gradient(45deg, #daa520, #b8860b);
   -webkit-background-clip: text;
   background-clip: text;
@@ -649,23 +684,6 @@ body {
   z-index: 10;
 }
 
-.undo-btn {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  color: #fff;
-  padding: 10px 14px;
-  min-width: 44px;
-  min-height: 44px;
-  border-radius: 12px;
-  font-size: 0.9rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  z-index: 10;
-}
 
 .back-btn:hover {
   background: #daa520;
@@ -743,6 +761,30 @@ body {
   transform: scale(1.02);
 }
 
+.mobile-timeline-period.occupied {
+  background: rgba(231, 76, 60, 0.1);
+  border-color: rgba(231, 76, 60, 0.5);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.mobile-timeline-period.occupied:hover {
+  background: rgba(231, 76, 60, 0.15);
+  border-color: rgba(231, 76, 60, 0.7);
+  transform: none;
+}
+
+.mobile-timeline-period.available {
+  background: rgba(76, 175, 80, 0.1);
+  border-color: rgba(76, 175, 80, 0.5);
+}
+
+.mobile-timeline-period.available:hover {
+  background: rgba(76, 175, 80, 0.15);
+  border-color: #4CAF50;
+  transform: scale(1.02);
+}
+
 .mobile-period-label {
   font-size: 1rem;
   font-weight: 600;
@@ -810,14 +852,13 @@ body {
 }
 
 /* Timeline Styles - Reduced spacing */
-.timeline-section {
+.chronological-section {
   margin: 30px 0;
   padding: 20px 0;
   transition: all 0.3s ease;
 }
 
-.timeline-section.selection-active {
-  background: rgba(218, 165, 32, 0.02);
+.chronological-section.selection-active {
   border-radius: 15px;
   padding: 30px 10px;
 }
@@ -829,15 +870,7 @@ body {
   padding: 0;
 }
 
-/* Do not impose generic line offsets; scoped styles handle placement */
-.timeline-line {
-  height: 6px;
-  background: linear-gradient(90deg, #8b4513, #daa520, #8b4513);
-  position: absolute;
-  left: 0;
-  right: 0;
-  border-radius: 3px;
-}
+/* removed global .timeline-line (unused) */
 
 .timeline-periods {
   display: flex;

@@ -1,22 +1,35 @@
 import type { TrackingEvents, QuizCompletionData } from '@/types/analytics';
 
+// Define window types for analytics services
+interface WindowWithAnalytics extends Window {
+  gtag?: (command: string, action: string, parameters?: Record<string, unknown>) => void;
+  mixpanel?: {
+    track: (event: string, properties?: Record<string, unknown>) => void;
+  };
+  posthog?: {
+    capture: (event: string, properties?: Record<string, unknown>) => void;
+  };
+}
+
 // Analytics tracking implementation
 // This is a placeholder implementation - replace with your actual analytics service
-const trackEvent = (event: string, data?: Record<string, any>) => {
+const trackEvent = (event: string, data?: Record<string, unknown>) => {
+  const win = window as WindowWithAnalytics;
+
   // Example implementations:
   // Google Analytics 4
-  if (typeof window !== 'undefined' && (window as any).gtag) {
-    (window as any).gtag('event', event, data);
+  if (typeof window !== 'undefined' && win.gtag) {
+    win.gtag('event', event, data);
   }
-  
+
   // Mixpanel
-  if (typeof window !== 'undefined' && (window as any).mixpanel) {
-    (window as any).mixpanel.track(event, data);
+  if (typeof window !== 'undefined' && win.mixpanel) {
+    win.mixpanel.track(event, data);
   }
-  
+
   // Posthog
-  if (typeof window !== 'undefined' && (window as any).posthog) {
-    (window as any).posthog.capture(event, data);
+  if (typeof window !== 'undefined' && win.posthog) {
+    win.posthog.capture(event, data);
   }
   
   // Console logging for development
@@ -57,22 +70,25 @@ export const trackQuizEvents: TrackingEvents = {
   },
 
   mailchimpSubmissionAttempt: (email: string) => {
+    const emailParts = email.split('@');
     trackEvent('mailchimp_submission_attempt', {
-      email_domain: email.split('@')[1],
+      email_domain: emailParts.length > 1 ? emailParts[1] : 'unknown',
       timestamp: new Date().toISOString(),
     });
   },
 
   mailchimpSubmissionSuccess: (email: string) => {
+    const emailParts = email.split('@');
     trackEvent('mailchimp_submission_success', {
-      email_domain: email.split('@')[1],
+      email_domain: emailParts.length > 1 ? emailParts[1] : 'unknown',
       timestamp: new Date().toISOString(),
     });
   },
 
   mailchimpSubmissionError: (email: string, error: string) => {
+    const emailParts = email.split('@');
     trackEvent('mailchimp_submission_error', {
-      email_domain: email.split('@')[1],
+      email_domain: emailParts.length > 1 ? emailParts[1] : 'unknown',
       error: error,
       timestamp: new Date().toISOString(),
     });

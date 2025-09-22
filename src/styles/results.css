@@ -243,18 +243,26 @@
   align-items: center;
   justify-content: center;
   background: rgba(218, 165, 32, 0.1);
+  padding: 10px;
+  box-sizing: border-box;
 }
 
 .percentage {
   font-size: 2.5rem;
   font-weight: bold;
   color: #fff;
+  line-height: 1;
 }
 
 .score-details {
-  font-size: 1rem;
+  font-size: 0.85rem;
   color: #ccc;
   margin-top: 5px;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
 
 .performance-info {
@@ -424,10 +432,16 @@
   .score-circle {
     width: 120px;
     height: 120px;
+    padding: 8px;
   }
-  
+
   .percentage {
-    font-size: 2rem;
+    font-size: 1.8rem;
+  }
+
+  .score-details {
+    font-size: 0.75rem;
+    margin-top: 3px;
   }
   
   .firearm-header {

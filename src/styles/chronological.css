@@ -1,10 +1,23 @@
 /* Chronological Timeline Styles */
 
+/* Screen reader only content */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .chronological-timeline {
-  padding: 10px 12px;
-  background: rgba(0, 0, 0, 0.1);
-  border-radius: 15px;
+  padding: 10px 0;
+  background: transparent; /* let the global gradient show through */
   margin: 20px 0;
+  overflow: hidden;
 }
 
 .chronological-timeline h3 {
@@ -23,7 +36,8 @@
   display: flex;
   align-items: center;
   gap: 15px;
-  padding: 0; /* remove extra vertical padding from container */
+  padding: 0 12px;
+  background: transparent;
 }
 
 .timeline-track {
@@ -32,12 +46,13 @@
   align-items: flex-start;
   gap: 10px;
   min-width: 1200px;
-  /* add small horizontal gutters so edge cards/buttons aren't clipped */
-  padding: 14px 12px 6px 12px;
+  /* consistent symmetric padding to prevent visual breaks */
+  padding: 12px;
   overflow-x: auto;
   scroll-behavior: smooth;
   cursor: grab;
   user-select: none;
+  background: transparent;
 }
 
 .timeline-track.dragging {
@@ -135,6 +150,7 @@
   align-items: center;
   position: relative;
   z-index: 2;
+  background: transparent;
 }
 
 .slot-number {
@@ -148,7 +164,7 @@
   justify-content: center;
   font-weight: bold;
   font-size: 1rem;
-  margin-bottom: 6px;
+  margin-bottom: 0;
   border: 2px solid #fff;
   position: relative;
   z-index: 3;
@@ -164,13 +180,50 @@
   justify-content: center;
   cursor: pointer;
   transition: all 0.3s ease;
-  background: rgba(218, 165, 32, 0.05);
+  background: transparent;
+  margin-top: 6px;
 }
 
 .empty-slot:hover {
   border-color: #DAA520;
   background: rgba(218, 165, 32, 0.15);
   transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(218, 165, 32, 0.3);
+  transition: all 0.2s ease;
+}
+
+/* Better hover state for timeline slots */
+.timeline-slot:hover .slot-number {
+  transform: scale(1.1);
+  transition: transform 0.2s ease;
+}
+
+/* Smooth transitions for all interactive elements */
+.timeline-slot, .empty-slot, .slot-number, .scroll-btn {
+  transition: all 0.2s ease;
+}
+
+/* Enhanced desktop interactions */
+@media (hover: hover) and (pointer: fine) {
+  /* Better desktop hover states */
+  .timeline-slot.selectable .empty-slot:hover {
+    cursor: pointer;
+    border-style: solid;
+    border-width: 4px;
+    background: rgba(218, 165, 32, 0.25);
+  }
+
+  /* Desktop-specific drag feedback */
+  .timeline-track.dragging {
+    cursor: grabbing;
+    user-select: none;
+  }
+
+  /* Improved scroll button hover for desktop */
+  .scroll-btn:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 6px 16px rgba(218, 165, 32, 0.4);
+  }
 }
 
 .slot-placeholder {
@@ -230,14 +283,32 @@
 }
 
 .timeline-slot.selectable:focus-visible {
-  outline: 2px solid #DAA520;
-  outline-offset: 4px;
+  outline: 3px solid #DAA520;
+  outline-offset: 2px;
+  background: rgba(218, 165, 32, 0.1);
+}
+
+/* Occupied position - disabled for new drops */
+.timeline-slot.occupied {
+  cursor: default;
+}
+
+.timeline-slot.occupied .empty-slot {
+  display: none; /* Hide the drop zone when occupied */
 }
 
 .timeline-slot.selectable .empty-slot {
   border-color: #DAA520;
   background: rgba(218, 165, 32, 0.2);
   animation: pulse-glow 2s infinite;
+  /* Add visual pattern for accessibility */
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 5px,
+    rgba(218, 165, 32, 0.1) 5px,
+    rgba(218, 165, 32, 0.1) 10px
+  );
 }
 
 .timeline-slot.highlighted .empty-slot {
@@ -264,90 +335,232 @@
 
 .timeline-slot.drag-over .empty-slot {
   border-color: #4CAF50;
+  border-style: solid;
+  border-width: 4px;
   background: rgba(76, 175, 80, 0.2);
   box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+  /* Add visual pattern for accessibility */
+  background-image: repeating-linear-gradient(
+    90deg,
+    transparent,
+    transparent 8px,
+    rgba(76, 175, 80, 0.3) 8px,
+    rgba(76, 175, 80, 0.3) 16px
+  );
 }
 
 .timeline-slot.drag-over .slot-placeholder {
   color: #4CAF50;
 }
 
-/* Mobile responsiveness */
+/* Large screen optimization - ensure arrows are always visible */
+@media (max-width: 1400px) and (min-width: 1201px) {
+  .timeline-track {
+    min-width: calc(100vw - 200px); /* More space for arrows + margins */
+    max-width: 1000px; /* Reduced max width */
+  }
+}
+
+/* Tablet responsiveness */
 @media (max-width: 1200px) {
   .timeline-track { min-width: 900px; }
 }
 
 @media (max-width: 1024px) {
-  .timeline-track { min-width: 800px; }
-}
-@media (max-width: 768px) {
-  .chronological-timeline {
-    padding: 20px 10px;
-  }
-  
-  .timeline-container {
-    gap: 10px;
-  }
-  
-  .scroll-btn {
-    width: 35px;
-    height: 35px;
-    font-size: 1rem;
-  }
-  
-  .timeline-track {
-    min-width: 800px;
-    gap: 5px;
-    padding: 50px 10px 20px;
-  }
-  
+  .timeline-track { min-width: 700px; } /* Reduced from 780px for better proportion */
+
   .timeline-slot {
-    min-width: 100px;
+    min-width: 55px; /* Slightly smaller */
   }
-  
+
   .firearm-wrapper {
-    width: 100px;
+    width: 55px; /* Match slot size */
   }
-  
-  .firearm-wrapper .firearm-card {
-    transform: scale(0.7);
-  }
-  
+
   .empty-slot {
-    width: 100px;
-    height: 140px;
-  }
-  
-  .chronological-timeline h3 {
-    font-size: 1.2rem;
+    width: 53px; /* Match wrapper */
+    height: 115px; /* Proportionally smaller */
   }
 }
 
-@media (max-width: 480px) {
+/* Mobile tablet (768px) - optimized for 12 fixed positions */
+@media (max-width: 768px) {
+  .chronological-timeline {
+    padding: 15px 5px;
+  }
+
   .timeline-container {
     gap: 8px;
   }
-  
+
   .scroll-btn {
-    width: 30px;
-    height: 30px;
+    width: 32px;
+    height: 32px;
     font-size: 0.9rem;
   }
-  
+
   .timeline-track {
-    min-width: 600px;
+    min-width: 580px; /* Reduced from 660px for better proportion */
+    gap: 3px; /* Reduced gap */
+    padding: 35px 8px 16px; /* Reduced top padding */
   }
-  
+
   .timeline-slot {
-    min-width: 80px;
+    min-width: 45px; /* Slightly smaller */
   }
-  
+
   .firearm-wrapper {
-    width: 80px;
+    width: 45px; /* Match slot size */
+    overflow: hidden; /* Ensure content doesn't spill */
   }
-  
+
+  .firearm-wrapper .firearm-card.in-timeline {
+    padding: 0.2rem;
+    font-size: 0.7rem;
+    width: 100% !important; /* Force card to fit wrapper */
+    max-width: 100% !important; /* Override CSS variable */
+    min-width: auto !important; /* Override any min-width */
+    height: auto;
+  }
+
   .empty-slot {
-    width: 80px;
-    height: 120px;
+    width: 43px; /* Match reduced firearm wrapper */
+    height: 95px; /* Proportionally smaller */
+    /* Better touch target for mobile */
+    min-height: 44px;
+  }
+
+  .slot-placeholder {
+    font-size: 0.7rem;
+    padding: 5px;
+    /* Improve touch readability */
+    line-height: 1.2;
+  }
+
+  .chronological-timeline h3 {
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+  }
+}
+
+/* Mobile phone (480px and below) - ultra-compact for 12 positions */
+@media (max-width: 480px) {
+  .chronological-timeline {
+    position: relative;
+  }
+
+  /* Create space above timeline for buttons */
+  .chronological-timeline h3 {
+    margin-bottom: 50px; /* Extra space for buttons */
+  }
+
+  .timeline-container {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    gap: 6px;
+  }
+
+  /* Position buttons absolutely above the timeline container */
+  .timeline-container .scroll-btn {
+    position: absolute;
+    top: -40px; /* Above the container */
+    width: 28px;
+    height: 28px;
+    font-size: 0.8rem;
+    z-index: 10;
+  }
+
+  .timeline-container .scroll-left {
+    left: 0; /* Far left */
+  }
+
+  .timeline-container .scroll-right {
+    right: 0; /* Far right */
+  }
+
+  .timeline-track {
+    flex: 1;
+  }
+}
+
+/* Specific optimization for iPhone 14 Pro Max and similar (430x932) */
+@media (max-width: 430px) and (min-height: 900px) {
+  .chronological-timeline h3 {
+    margin-bottom: 60px; /* More space for larger buttons */
+  }
+
+  .timeline-container .scroll-btn {
+    position: absolute;
+    top: -50px; /* Higher above the container */
+    width: 32px; /* Larger for easier touch */
+    height: 32px;
+    font-size: 0.9rem;
+    z-index: 15;
+  }
+
+  .timeline-container .scroll-left {
+    left: 0; /* Far left corner */
+  }
+
+  .timeline-container .scroll-right {
+    right: 0; /* Far right corner */
+  }
+}
+
+  .timeline-track {
+    min-width: 460px; /* Reduced from 540px - 12 slots × 35px + 11 gaps × 2px + padding */
+    gap: 2px; /* Reduced gap further */
+    padding: 30px 6px 12px; /* Reduced top padding */
+    margin-top: 0; /* Remove extra margin since we have padding-top on parent */
+  }
+
+  .timeline-slot {
+    min-width: 35px; /* Smaller for ultra-mobile */
+  }
+
+  .firearm-wrapper {
+    width: 35px; /* Match slot size */
+  }
+
+  .firearm-wrapper .firearm-card.in-timeline {
+    padding: 0.1rem;
+    font-size: 0.6rem;
+    width: 100% !important; /* Force card to fit wrapper */
+    max-width: 100% !important; /* Override CSS variable */
+    min-width: auto !important; /* Override any min-width */
+    height: auto;
+  }
+
+  .empty-slot {
+    width: 33px; /* Match reduced firearm wrapper */
+    height: 80px; /* Proportionally smaller */
+    /* Ensure minimum touch target even on small screens */
+    min-height: 44px;
+    min-width: 44px; /* Keep minimum touch target */
+  }
+
+  .slot-placeholder {
+    font-size: 0.6rem;
+    padding: 3px;
+    line-height: 1.1;
+  }
+
+  /* Improve touch interactions on mobile */
+  .timeline-slot.selectable .empty-slot:active {
+    background: rgba(218, 165, 32, 0.4);
+    transform: scale(0.95);
+  }
+
+  .slot-number {
+    width: 20px;
+    height: 20px;
+    font-size: 0.7rem;
+    margin-bottom: 0;
+  }
+
+  .chronological-timeline h3 {
+    font-size: 1rem;
+    margin-bottom: 6px;
   }
 }

@@ -1,6 +1,6 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import path from 'path';
+import { fileURLToPath, URL } from 'node:url';
 
 export default defineConfig({
   plugins: [react()],
@@ -10,11 +10,11 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src'),
-      '@/components': path.resolve(__dirname, './src/components'),
-      '@/stores': path.resolve(__dirname, './src/stores'),
-      '@/types': path.resolve(__dirname, './src/types'),
-      '@/utils': path.resolve(__dirname, './src/utils'),
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
+      '@/components': fileURLToPath(new URL('./src/components', import.meta.url)),
+      '@/stores': fileURLToPath(new URL('./src/stores', import.meta.url)),
+      '@/types': fileURLToPath(new URL('./src/types', import.meta.url)),
+      '@/utils': fileURLToPath(new URL('./src/utils', import.meta.url)),
     },
   },
 });
