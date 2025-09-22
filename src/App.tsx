@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useQuizStore } from '@/stores/quizStore';
 import { preloadImages } from '@/utils/images';
@@ -19,10 +19,13 @@ const MobileCardStack: React.FC<{
   firearmsList: Firearm[];
   onFirearmSelect: (firearm: Firearm | null) => void;
   onPeriodSelect: (periodIndex: number) => void;
+  onRemovePosition: (periodIndex: number) => void;
+  onOpenTimeline: () => void;
+  onComplete: () => void;
   selectedFirearm: Firearm | null;
   showTimeline: boolean;
   orderedFirearms: (Firearm | null)[];
-}> = ({ firearmsList, onFirearmSelect, onPeriodSelect, selectedFirearm, showTimeline, orderedFirearms }) => {
+}> = ({ firearmsList, onFirearmSelect, onPeriodSelect, onRemovePosition, onOpenTimeline, onComplete, selectedFirearm, showTimeline, orderedFirearms }) => {
   const [currentCardIndex, setCurrentCardIndex] = React.useState(0);
   const [touchStart, setTouchStart] = React.useState<number | null>(null);
   const [touchEnd, setTouchEnd] = React.useState<number | null>(null);
@@ -85,15 +88,22 @@ const MobileCardStack: React.FC<{
           >
             ← Back
           </button>
-          <div className="selected-firearm-info">
-            <div className="selected-firearm-image">
-              <img src={selectedFirearm?.image} alt={selectedFirearm?.name} />
+          {selectedFirearm ? (
+            <div className="selected-firearm-info">
+              <div className="selected-firearm-image">
+                <img src={selectedFirearm?.image} alt={selectedFirearm?.name} />
+              </div>
+              <div className="selected-firearm-text">
+                <h3>{selectedFirearm?.name}</h3>
+                <p>Choose the correct time period</p>
+              </div>
             </div>
-            <div className="selected-firearm-text">
-              <h3>{selectedFirearm?.name}</h3>
-              <p>Choose the correct time period</p>
+          ) : (
+            <div className="selected-firearm-text" style={{ textAlign: 'center' }}>
+              <h3 style={{ margin: 0 }}>Timeline Review</h3>
+              <p style={{ margin: 0 }}>Tap a position to view or swap after selecting a firearm.</p>
             </div>
-          </div>
+          )}
         </div>
         <div className="mobile-timeline-periods">
           {Array.from({length: 12}, (_, index) => {
@@ -105,21 +115,50 @@ const MobileCardStack: React.FC<{
                 key={index}
                 className={`mobile-timeline-period ${isOccupied ? 'occupied' : 'available'}`}
                 onClick={() => {
-                  if (!isOccupied) {
+                  // Allow selecting either empty or occupied (swap) when a firearm is selected
+                  if (selectedFirearm) {
                     onPeriodSelect(index);
                     hapticFeedback('success');
-                  } else {
-                    hapticFeedback('error');
                   }
                 }}
               >
                 <div className="mobile-period-label">Position {index + 1}</div>
-                <div className="mobile-period-years">
-                  {isOccupied ? `Occupied by ${occupiedFirearm?.name}` : 'Available'}
-                </div>
+                {isOccupied ? (
+                  <div className="mobile-period-occupied">
+                    <div className="mobile-period-years">Occupied by {occupiedFirearm?.name}</div>
+                    <button
+                      className="remove-period-btn"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onRemovePosition(index);
+                        hapticFeedback('light');
+                      }}
+                    >
+                      Remove
+                    </button>
+                  </div>
+                ) : (
+                  <div className="mobile-period-years">Available</div>
+                )}
               </div>
             );
           })}
+        </div>
+      </div>
+    );
+  }
+
+  // If all cards placed, show centered completion prompt with Timeline shortcut
+  if (firearmsList.length === 0) {
+    return (
+      <div className="mobile-card-container">
+        <div className="empty-stack-panel">
+          <h3>All cards placed</h3>
+          <p>You can still review or change your answers.</p>
+          <div className="empty-stack-actions">
+            <button className="timeline-btn" onClick={onOpenTimeline}>Timeline</button>
+            <button className="mobile-complete-btn" onClick={onComplete}>Complete Challenge</button>
+          </div>
         </div>
       </div>
     );
@@ -136,7 +175,7 @@ const MobileCardStack: React.FC<{
             />
           ))}
         </div>
-        <p className="progress-text">Card {currentCardIndex + 1} of {firearmsList.length}</p>
+        <p className="progress-text">Card {Math.min(currentCardIndex + 1, firearmsList.length)} of {firearmsList.length}</p>
       </div>
 
       <div 
@@ -155,11 +194,6 @@ const MobileCardStack: React.FC<{
             <div
               key={firearm.id}
               className={`stacked-card ${offset === 0 ? 'current' : offset > 0 ? 'next' : 'prev'}`}
-              style={{
-                transform: `translateX(${offset * 20}px) translateY(${Math.abs(offset) * 5}px) scale(${1 - Math.abs(offset) * 0.05})`,
-                zIndex: firearmsList.length - Math.abs(offset),
-                opacity: offset === 0 ? 1 : 0.7 - Math.abs(offset) * 0.2
-              }}
             >
               <FirearmCard
                 firearm={firearm}
@@ -177,6 +211,9 @@ const MobileCardStack: React.FC<{
           );
         })}
       </div>
+
+      {/* Hint above the primary action */}
+      <div className="swipe-hint-row">👈 Swipe to browse • Tap to select 👆</div>
 
       <div className="mobile-navigation">
         <button 
@@ -236,10 +273,13 @@ const App: React.FC = () => {
     setDraggedFirearm,
     removeFirearm,
     dropFirearm,
-    completeQuiz
+    completeQuiz,
+    setShowMobileOrdering
   } = useQuizStore();
+  const timelineSectionRef = useRef<HTMLElement | null>(null);
   
   const [showQuizAnimation, setShowQuizAnimation] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   // Trigger animation when entering quiz section
   useEffect(() => {
@@ -285,6 +325,11 @@ const App: React.FC = () => {
   const handleDragEnd = () => {
     setDraggedFirearm(null);
   };
+
+  // Completion flow
+  const handleComplete = () => setShowConfirm(true);
+  const confirmComplete = () => { setShowConfirm(false); completeQuiz(); };
+  const cancelComplete = () => setShowConfirm(false);
 
   // Show intro section
   if (currentSection === 'intro') {
@@ -387,6 +432,9 @@ const App: React.FC = () => {
             firearmsList={bank}
             onFirearmSelect={selectFirearm}
             onPeriodSelect={selectPosition}
+            onRemovePosition={removeFirearm}
+            onOpenTimeline={() => setShowMobileOrdering(true)}
+            onComplete={handleComplete}
             selectedFirearm={selectedFirearm}
             showTimeline={showMobileOrdering}
             orderedFirearms={orderedFirearms}
@@ -426,7 +474,7 @@ const App: React.FC = () => {
             </section>
 
             {/* Desktop: Chronological Ordering */}
-            <section className={`chronological-section ${selectionMode ? 'selection-active' : ''}`}>
+            <section ref={timelineSectionRef as React.RefObject<HTMLDivElement>} className={`chronological-section ${selectionMode ? 'selection-active' : ''}`}>
               <ChronologicalSlots
                 orderedFirearms={orderedFirearms}
                 onDrop={dropFirearm}
@@ -442,8 +490,11 @@ const App: React.FC = () => {
         {/* Complete Button */}
         {isComplete && !isMobile && (
           <div className="complete-section">
+            <button className="timeline-btn" onClick={() => timelineSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })}>
+              Timeline
+            </button>
             <button
-              onClick={completeQuiz}
+              onClick={handleComplete}
               className="complete-btn"
             >
               Complete Test & See Results
@@ -451,22 +502,30 @@ const App: React.FC = () => {
           </div>
         )}
 
-        {/* Mobile Complete Button */}
-        {isComplete && isMobile && (
-          <div className="mobile-complete-section">
-            <div className="mobile-completion-message">
-              <h2>🎉 Timeline Complete!</h2>
-              <p>You've ordered all 12 American firearms. Ready to see your results?</p>
-              <button
-                onClick={completeQuiz}
-                className="mobile-complete-btn"
-              >
-                Get My Results
-              </button>
-            </div>
+        {/* Mobile Complete CTA (non-blocking) */}
+        {isComplete && isMobile && bank.length > 0 && (
+          <div className="mobile-complete-cta">
+            <button
+              onClick={handleComplete}
+              className="mobile-complete-btn"
+            >
+              Complete Challenge
+            </button>
           </div>
         )}
       </div>
+      {showConfirm && (
+        <div className="confirm-overlay" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
+          <div className="confirm-dialog">
+            <h3 id="confirm-title">Complete Challenge?</h3>
+            <p>You can no longer edit once you continue to results.</p>
+            <div className="confirm-actions">
+              <button className="btn-secondary" onClick={cancelComplete}>Cancel</button>
+              <button className="btn-primary" onClick={confirmComplete}>Yes, Complete</button>
+            </div>
+          </div>
+        </div>
+      )}
     </motion.div>
   );
 };

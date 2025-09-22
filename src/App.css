@@ -427,37 +427,42 @@ body {
   align-items: center;
   justify-content: center;
   margin: 10px 0;
-  min-height: 380px;
-  height: 380px;
-  perspective: 1000px;
+  min-height: 280px;
+  height: 280px;
   touch-action: pan-y pinch-zoom;
   overflow: hidden;
 }
 
+
 .stacked-card {
   position: absolute;
-  width: 280px;
-  height: 360px;
+  left: 50%;
+  top: 50%;
+  width: 240px;
+  height: 280px;
   border-radius: 20px;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  transform-style: preserve-3d;
+  transition: transform 0.15s ease, filter 0.15s ease, opacity 0.15s ease;
 }
 
 .stacked-card.current {
-  z-index: 100;
-  transform: translateX(0) translateY(0) scale(1) rotateY(0deg);
+  z-index: 3;
+  transform: translate(-50%, -50%) scale(1);
+  filter: none;
+  opacity: 1;
 }
 
 .stacked-card.next {
-  z-index: 90;
-  transform: translateX(15px) translateY(10px) scale(0.95) rotateY(-5deg);
-  opacity: 0.8;
+  z-index: 2;
+  transform: translate(calc(-50% + 35px), -50%) scale(0.95);
+  filter: blur(3px);
+  opacity: 0.6;
 }
 
 .stacked-card.prev {
-  z-index: 80;
-  transform: translateX(-15px) translateY(10px) scale(0.95) rotateY(5deg);
-  opacity: 0.8;
+  z-index: 2;
+  transform: translate(calc(-50% - 35px), -50%) scale(0.95);
+  filter: blur(3px);
+  opacity: 0.6;
 }
 
 .firearm-card.mobile-card {
@@ -465,7 +470,7 @@ body {
   height: 100%;
   max-width: none;
   cursor: pointer;
-  padding: 20px 15px;
+  padding: 16px 12px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -499,9 +504,9 @@ body {
 }
 
 .mobile-card .firearm-image {
-  width: 100px;
-  height: 100px;
-  margin: 0 auto 15px;
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 12px;
   font-size: 48px;
   border-radius: 15px;
   background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
@@ -510,7 +515,7 @@ body {
 }
 
 .mobile-card .firearm-name {
-  font-size: 1.2rem;
+  font-size: 1rem;
   font-weight: bold;
   margin-bottom: 10px;
   color: #daa520;
@@ -518,17 +523,7 @@ body {
   flex-shrink: 0;
 }
 
-.mobile-card .firearm-description {
-  font-size: 0.9rem;
-  color: #cccccc;
-  text-align: center;
-  line-height: 1.4;
-  margin-bottom: 35px;
-  flex-grow: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+.mobile-card .firearm-description { display: none !important; }
 
 .mobile-card-actions {
   position: absolute;
@@ -549,6 +544,16 @@ body {
   display: inline-block;
   white-space: nowrap;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* New position for swipe hint above the action button */
+.swipe-hint-row {
+  text-align: center;
+  color: #daa520;
+  font-size: 0.85rem;
+  margin-top: 6px;
+  margin-bottom: 6px;
+  opacity: 0.9;
 }
 
 .mobile-navigation {
@@ -581,13 +586,13 @@ body {
 }
 
 .nav-btn {
-  width: 60px;
-  height: 60px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   background: rgba(218, 165, 32, 0.2);
-  border: 3px solid #daa520;
+  border: 2px solid #daa520;
   color: #daa520;
-  font-size: 1.8rem;
+  font-size: 1.2rem;
   font-weight: bold;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -615,13 +620,13 @@ body {
   background: linear-gradient(45deg, #daa520, #b8860b);
   color: white;
   border: none;
-  padding: 18px 25px;
-  border-radius: 30px;
-  font-size: 1.2rem;
+  padding: 12px 16px;
+  border-radius: 22px;
+  font-size: 1rem;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 5px 15px rgba(218, 165, 32, 0.3);
+  box-shadow: 0 4px 12px rgba(218, 165, 32, 0.3);
   text-transform: uppercase;
   letter-spacing: 1px;
 }
@@ -764,8 +769,7 @@ body {
 .mobile-timeline-period.occupied {
   background: rgba(231, 76, 60, 0.1);
   border-color: rgba(231, 76, 60, 0.5);
-  cursor: not-allowed;
-  opacity: 0.7;
+  cursor: default;
 }
 
 .mobile-timeline-period.occupied:hover {
@@ -798,19 +802,132 @@ body {
   font-size: 0.85rem;
 }
 
+/* Mobile timeline occupied actions */
+.mobile-period-occupied {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.remove-period-btn {
+  background: #e74c3c;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  min-width: 44px;
+  min-height: 36px;
+}
+
+.remove-period-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(231, 76, 60, 0.35);
+}
+
 /* Mobile Complete Section */
-.mobile-complete-section {
+/* Non-blocking mobile complete CTA */
+.mobile-complete-cta {
   position: fixed;
-  top: 0;
   left: 0;
   right: 0;
-  bottom: 0;
-  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  bottom: calc(env(safe-area-inset-bottom) + 12px);
+  display: flex;
+  justify-content: center;
+  z-index: 1200;
+  pointer-events: none; /* allow underlying interactions */
+}
+
+.mobile-complete-cta .mobile-complete-btn {
+  pointer-events: all;
+}
+
+/* Empty stack completion panel */
+.empty-stack-panel {
+  margin: auto;
+  text-align: center;
+  background: rgba(218, 165, 32, 0.1);
+  border: 2px solid rgba(218, 165, 32, 0.3);
+  border-radius: 16px;
+  padding: 24px;
+}
+
+.empty-stack-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 12px;
+}
+
+.timeline-btn {
+  background: transparent;
+  color: #daa520;
+  border: 2px solid #daa520;
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+/* Confirmation modal */
+.confirm-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: 2000;
+  padding: 16px;
+}
+
+.confirm-dialog {
+  width: 100%;
+  max-width: 420px;
+  background: linear-gradient(145deg, #2a2a2a, #363636);
+  border: 2px solid rgba(218,165,32,0.3);
+  border-radius: 16px;
   padding: 20px;
+  box-shadow: 0 12px 28px rgba(0,0,0,0.45);
+  text-align: center;
+}
+
+.confirm-dialog h3 {
+  margin: 0 0 8px;
+  color: #daa520;
+}
+
+.confirm-dialog p {
+  margin: 0 0 16px;
+  color: #ddd;
+}
+
+.confirm-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.btn-primary {
+  background: linear-gradient(45deg, #daa520, #b8860b);
+  color: #fff;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.btn-secondary {
+  background: transparent;
+  color: #daa520;
+  border: 2px solid #daa520;
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
 }
 
 .mobile-completion-message {
@@ -838,9 +955,9 @@ body {
   background: linear-gradient(45deg, #daa520, #b8860b);
   color: white;
   border: none;
-  padding: 15px 30px;
-  border-radius: 25px;
-  font-size: 1.2rem;
+  padding: 12px 20px;
+  border-radius: 22px;
+  font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;

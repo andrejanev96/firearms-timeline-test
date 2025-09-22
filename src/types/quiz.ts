@@ -55,6 +55,7 @@ export interface QuizState {
 
 export interface QuizActions {
   setMobile: (isMobile: boolean) => void;
+  setShowMobileOrdering: (value: boolean) => void;
   startQuiz: () => void;
   selectFirearm: (firearm: Firearm | null) => void;
   selectPosition: (position: number) => void;

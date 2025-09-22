@@ -29,6 +29,10 @@ const useQuizStore = create<QuizStore>((set, get) => ({
     set({ isMobile });
   },
 
+  setShowMobileOrdering: (value: boolean) => {
+    set({ showMobileOrdering: value });
+  },
+
   startQuiz: () => {
     set({ currentSection: 'quiz' });
   },
@@ -72,18 +76,7 @@ const useQuizStore = create<QuizStore>((set, get) => ({
 
     const firearm = state.selectedFirearm;
 
-    // Check if position is occupied (reject placement for occupied positions)
-    if (state.orderedFirearms[position] !== null) {
-      // Position is occupied - reject placement and provide feedback
-      if (state.isMobile) {
-        // On mobile, stay in selection mode and show error feedback
-        // TODO: Add error feedback mechanism
-        return;
-      } else {
-        // On desktop, allow swapping (existing behavior)
-        // Continue with swap logic below
-      }
-    }
+    // If position is occupied, allow swapping on both desktop and mobile
 
     state._pushHistory();
     set((state) => {
@@ -97,8 +90,8 @@ const useQuizStore = create<QuizStore>((set, get) => ({
         }
       }
 
-      // If position is occupied and we're on desktop, move that firearm back to bank
-      if (newOrderedFirearms[position] && !state.isMobile) {
+      // If position is occupied, move that firearm back to bank
+      if (newOrderedFirearms[position]) {
         newBank.push(newOrderedFirearms[position]!);
       }
 

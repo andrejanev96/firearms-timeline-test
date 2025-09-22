@@ -143,7 +143,8 @@
 /* removed .timeline-line decorations (unused) */
 
 .timeline-slot {
-  flex: 1;
+  /* Use fixed slot width per breakpoint to avoid stretch */
+  flex: 0 0 var(--timeline-slot-min-width);
   min-width: var(--timeline-slot-min-width);
   display: flex;
   flex-direction: column;

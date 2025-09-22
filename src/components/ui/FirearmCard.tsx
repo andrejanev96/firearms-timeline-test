@@ -85,11 +85,7 @@ const FirearmCard: React.FC<FirearmCardProps> = ({
       </div>
       <div className="firearm-name">{firearm.name}</div>
       <div className="firearm-description">{firearm.description}</div>
-      {isMobile && isTopCard && (
-        <div className="mobile-card-actions">
-          <div className="swipe-hint">👈 Swipe to browse • Tap to select 👆</div>
-        </div>
-      )}
+      {/* Mobile swipe hint moved outside the card in MobileCardStack */}
     </motion.div>
   );
 };
