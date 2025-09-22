@@ -508,6 +508,8 @@
   }
 }
 
+/* Ultra-mobile adjustments (<= 430px width) */
+@media (max-width: 430px) {
   .timeline-track {
     min-width: 460px; /* Reduced from 540px - 12 slots × 35px + 11 gaps × 2px + padding */
     gap: 2px; /* Reduced gap further */
