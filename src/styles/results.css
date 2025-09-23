@@ -633,9 +633,10 @@
 /* Timeline Results View */
 .results-timeline {
   margin: 3rem 0;
-  padding: 30px 20px;
+  padding: 30px 20px 40px 20px;
   background: rgba(0, 0, 0, 0.1);
   border-radius: 15px;
+  min-height: 360px;
 }
 
 .results-timeline h3 {
@@ -678,9 +679,10 @@
   align-items: center;
   gap: 15px;
   min-width: 1200px;
-  padding: 20px 0;
-  height: auto;
+  padding: 30px 0;
+  height: 280px;
   overflow-x: auto;
+  overflow-y: visible;
 }
 
 /* removed .timeline-line (unused) */
@@ -702,6 +704,11 @@
   border-radius: 12px;
   transition: none;
   padding: 10px 6px;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* Alternate the card content relative to the center line, not the entire slot */
@@ -755,6 +762,11 @@
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
   background: linear-gradient(145deg, #333333, #404040);
   margin: 0 auto;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .firearm-image {
@@ -847,9 +859,10 @@
 /* Mobile responsive for timeline results */
 @media (max-width: 768px) {
   .results-timeline {
-    padding: 20px 10px;
+    padding: 20px 10px 30px 10px;
+    min-height: 280px;
   }
-  .timeline-track { min-width: 900px; gap: 8px; padding: 20px 15px; }
+  .timeline-track { min-width: 900px; gap: 8px; padding: 25px 15px; height: 240px; }
 
   .timeline-result-slot {
     flex: 0 0 160px;
@@ -873,7 +886,10 @@
 }
 
 @media (max-width: 480px) {
-  .timeline-track { min-width: 720px; }
+  .results-timeline {
+    min-height: 260px;
+  }
+  .timeline-track { min-width: 720px; height: 220px; }
 
   .timeline-result-slot {
     flex: 0 0 140px;
@@ -904,78 +920,142 @@
 /* Tablet responsive text sizing */
 @media (min-width: 769px) and (max-width: 1024px) {
   .gate-header h2 {
-    font-size: 2.2rem;
+    font-size: 2.8rem;
     line-height: 1.3;
   }
 
   .gate-header p {
-    font-size: 1.1rem;
+    font-size: 1.3rem;
     line-height: 1.5;
   }
 
   .results-header h2 {
-    font-size: 2rem;
+    font-size: 2.4rem;
     line-height: 1.3;
   }
 
   .results-header p {
-    font-size: 1rem;
+    font-size: 1.2rem;
   }
 
   .timeline-instructions {
-    font-size: 0.95rem;
+    font-size: 1.1rem;
     line-height: 1.4;
   }
 
   .results-timeline h3 {
-    font-size: 1.6rem;
+    font-size: 2rem;
   }
 
   .performance-info h3 {
-    font-size: 1.8rem;
-  }
-
-  .performance-info p {
-    font-size: 1rem;
-  }
-
-  .percentage {
     font-size: 2.2rem;
   }
 
+  .performance-info p {
+    font-size: 1.2rem;
+  }
+
+  .percentage {
+    font-size: 2.8rem;
+  }
+
   .score-details {
-    font-size: 0.8rem;
+    font-size: 1rem;
   }
 
   .retake-intro {
-    font-size: 0.95rem;
+    font-size: 1.1rem;
   }
 
   .retake-btn {
-    padding: 11px 18px;
-    font-size: 0.9rem;
+    padding: 15px 24px;
+    font-size: 1.1rem;
+  }
+
+  .score-display {
+    gap: 60px;
+    padding: 40px;
+  }
+
+  .score-circle {
+    width: 180px;
+    height: 180px;
   }
 }
 
-@media (min-width: 769px) and (max-width: 1024px) {
-  .timeline-track { min-width: 800px; }
+/* iPad Pro and tablet portrait mode */
+@media (min-width: 769px) and (max-width: 1024px) and (orientation: portrait) {
+  .results-timeline {
+    min-height: 380px;
+    padding: 40px 10px 50px 10px;
+  }
+  .timeline-track { min-width: 500px; height: 300px; gap: 6px; }
 
   .timeline-result-slot {
-    flex: 0 0 160px;
-    width: 160px;
-    height: 200px;
+    flex: 0 0 180px;
+    width: 180px;
+    height: 240px;
   }
 
   .result-firearm-card {
-    height: 160px;
-    width: 130px;
-    padding: 12px;
+    height: 200px;
+    width: 160px;
+    padding: 15px;
+  }
+
+  .firearm-image {
+    height: 85px;
+  }
+
+  .firearm-info h4 {
+    font-size: 0.95rem;
+  }
+
+  .timeline-result-slot .slot-number {
+    width: 30px;
+    height: 30px;
+    font-size: 0.95rem;
+  }
+}
+
+/* iPad Pro and tablet landscape mode */
+@media (min-width: 769px) and (max-width: 1024px) and (orientation: landscape) {
+  .results-timeline {
+    min-height: 380px;
+    padding: 40px 15px 50px 15px;
+  }
+  .timeline-track { min-width: 700px; height: 300px; gap: 10px; }
+}
+
+/* General tablet styles */
+@media (min-width: 769px) and (max-width: 1024px) {
+
+  .timeline-result-slot {
+    flex: 0 0 200px;
+    width: 200px;
+    height: 260px;
+  }
+
+  .result-firearm-card {
+    height: 220px;
+    width: 180px;
+    padding: 18px;
     max-width: 100%;
     box-sizing: border-box;
   }
 
   .firearm-image {
-    height: 70px;
+    height: 100px;
+  }
+
+  .firearm-info h4 {
+    font-size: 1rem;
+  }
+
+  .timeline-result-slot .slot-number {
+    width: 32px;
+    height: 32px;
+    font-size: 1rem;
   }
 }
 

@@ -342,7 +342,7 @@ const Results: React.FC = () => {
                           {isCorrect ? (
                             <div className="correct-info">
                               <span className="year-badge">{userFirearm.year}</span>
-                              <div className="status-indicator">✅ Correctly Placed!</div>
+                              <div className="status-indicator">✅</div>
                             </div>
                           ) : (
                             <div className="incorrect-info">
