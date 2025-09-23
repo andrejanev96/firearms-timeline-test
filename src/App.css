@@ -25,6 +25,14 @@ body {
   line-height: 1.6;
 }
 
+/* Tablet fix - allow scrolling */
+@media (min-width: 1025px) and (max-width: 1366px) {
+  .app {
+    min-height: auto;
+    height: auto;
+  }
+}
+
 .container {
   width: 100%;
   padding: 20px;
@@ -1610,74 +1618,113 @@ body {
 
 /* Tablet Optimizations (iPad Pro) */
 @media (min-width: 1025px) and (max-width: 1366px) {
+  body {
+    overflow-y: auto !important;
+  }
+
   .container {
-    padding: 12px;
+    padding: 8px;
+    min-height: auto;
   }
 
   .progress-container {
-    margin: 0 auto 15px;
-    padding: 12px;
-    gap: 8px;
+    margin: 0 auto 10px;
+    padding: 8px;
+    gap: 6px;
   }
 
   .progress-text {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
   }
 
   .mobile-card-container {
     padding: 8px;
-    min-height: 90vh;
+    min-height: auto;
+    height: auto;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    overflow-y: auto;
   }
 
   .mobile-progress {
-    margin-bottom: 10px;
+    margin-bottom: 8px;
+    flex-shrink: 0;
   }
 
   .card-stack {
-    min-height: 320px;
-    height: 320px;
+    min-height: 280px;
+    height: 280px;
     flex-shrink: 0;
   }
 
   .mobile-navigation {
-    margin-top: 10px;
-    gap: 10px;
+    margin-top: 8px;
+    gap: 8px;
+    flex-shrink: 0;
   }
 
   .swipe-hint-row {
-    margin: 8px 0;
-    font-size: 0.85rem;
+    margin: 6px 0;
+    font-size: 0.8rem;
+    flex-shrink: 0;
   }
 
   .empty-stack-panel {
-    padding: 16px;
+    padding: 12px;
   }
 
   .mobile-timeline-overlay {
-    padding: 10px;
+    padding: 8px;
     height: 100vh;
     overflow-y: auto;
   }
 
   .mobile-timeline-header {
-    padding: 8px;
-    margin-bottom: 10px;
+    padding: 6px;
+    margin-bottom: 8px;
     flex-shrink: 0;
   }
 
   .mobile-timeline-periods {
-    gap: 8px;
-    padding: 0 8px;
+    gap: 6px;
+    padding: 0 6px;
     flex: 1;
     overflow-y: auto;
   }
 
   .mobile-timeline-period {
-    padding: 8px;
-    min-height: 60px;
+    padding: 6px;
+    min-height: 50px;
+  }
+}
+
+/* Tablet Landscape - even more compact */
+@media (min-width: 1025px) and (max-width: 1366px) and (max-height: 900px) {
+  .container {
+    padding: 6px;
+  }
+
+  .progress-container {
+    margin: 0 auto 8px;
+    padding: 6px;
+  }
+
+  .mobile-card-container {
+    padding: 6px;
+  }
+
+  .card-stack {
+    min-height: 240px;
+    height: 240px;
+  }
+
+  .mobile-navigation {
+    margin-top: 6px;
+  }
+
+  .swipe-hint-row {
+    margin: 4px 0;
+    font-size: 0.75rem;
   }
 }
 
