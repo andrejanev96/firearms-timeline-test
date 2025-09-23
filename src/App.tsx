@@ -423,9 +423,6 @@ const App: React.FC = () => {
         {/* Complete Button */}
         {isComplete && !isMobile && (
           <div className="complete-section">
-            <button className="timeline-btn" onClick={() => timelineSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })}>
-              Timeline
-            </button>
             <button
               onClick={handleComplete}
               className="complete-btn"
