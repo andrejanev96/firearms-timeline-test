@@ -312,7 +312,7 @@ const Results: React.FC = () => {
           </p>
           
           <div className="timeline-results-container">
-            <button 
+            <button
               className={`scroll-btn scroll-left ${!canScrollLeft ? 'disabled' : ''}`}
               onClick={scrollLeft}
               disabled={!canScrollLeft}
@@ -325,7 +325,7 @@ const Results: React.FC = () => {
                 const position = index;
                 const userFirearm = orderedFirearms[position];
                 const isCorrect = userFirearm?.correctPosition === position;
-                
+
                 return (
                   <div
                     key={position}
@@ -346,7 +346,7 @@ const Results: React.FC = () => {
                             </div>
                           ) : (
                             <div className="incorrect-info">
-                              <div className="status-indicator">❌ Try Again to Learn More</div>
+                              <div className="status-indicator">❌</div>
                             </div>
                           )}
                         </div>
@@ -357,7 +357,7 @@ const Results: React.FC = () => {
                         <div className="firearm-info">
                           <h4>No firearm placed</h4>
                           <div className="incorrect-info">
-                            <div className="status-indicator">❌ Try Again to Learn More</div>
+                            <div className="status-indicator">❌</div>
                           </div>
                         </div>
                       </div>
@@ -366,7 +366,7 @@ const Results: React.FC = () => {
                 );
               })}
             </div>
-            <button 
+            <button
               className={`scroll-btn scroll-right ${!canScrollRight ? 'disabled' : ''}`}
               onClick={scrollRight}
               disabled={!canScrollRight}

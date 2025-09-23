@@ -661,6 +661,7 @@
   padding-right: 10px;
 }
 
+
 /* Overlay scroll arrows for small screens */
 .results-timeline .scroll-btn {
   position: absolute;
@@ -967,14 +968,17 @@
 
   .result-firearm-card {
     height: 160px;
-    width: 140px;
-    padding: 14px;
+    width: 130px;
+    padding: 12px;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
   .firearm-image {
     height: 70px;
   }
 }
+
 
 /* Animation */
 @keyframes fadeInUp {
