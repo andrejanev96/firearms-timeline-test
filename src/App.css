@@ -1608,6 +1608,79 @@ body {
   }
 }
 
+/* Tablet Optimizations (iPad Pro) */
+@media (min-width: 1025px) and (max-width: 1366px) {
+  .container {
+    padding: 12px;
+  }
+
+  .progress-container {
+    margin: 0 auto 15px;
+    padding: 12px;
+    gap: 8px;
+  }
+
+  .progress-text {
+    font-size: 0.85rem;
+  }
+
+  .mobile-card-container {
+    padding: 8px;
+    min-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .mobile-progress {
+    margin-bottom: 10px;
+  }
+
+  .card-stack {
+    min-height: 320px;
+    height: 320px;
+    flex-shrink: 0;
+  }
+
+  .mobile-navigation {
+    margin-top: 10px;
+    gap: 10px;
+  }
+
+  .swipe-hint-row {
+    margin: 8px 0;
+    font-size: 0.85rem;
+  }
+
+  .empty-stack-panel {
+    padding: 16px;
+  }
+
+  .mobile-timeline-overlay {
+    padding: 10px;
+    height: 100vh;
+    overflow-y: auto;
+  }
+
+  .mobile-timeline-header {
+    padding: 8px;
+    margin-bottom: 10px;
+    flex-shrink: 0;
+  }
+
+  .mobile-timeline-periods {
+    gap: 8px;
+    padding: 0 8px;
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  .mobile-timeline-period {
+    padding: 8px;
+    min-height: 60px;
+  }
+}
+
 /* Mobile and Tablet Responsiveness */
 @media (max-width: 1024px) {
   body {
