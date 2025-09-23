@@ -30,7 +30,7 @@ const FirearmCard: React.FC<FirearmCardProps> = ({
   animationDelay = 0
 }) => {
   
-  const handleDragStart = (e: React.DragEvent) => {
+  const handleNativeDragStart = (e: React.DragEvent) => {
     if (onDragStart && !isSelectionMode && !isMobile) {
       onDragStart(e, firearm);
     } else if (isSelectionMode || isMobile) {
@@ -56,9 +56,6 @@ const FirearmCard: React.FC<FirearmCardProps> = ({
   return (
     <motion.div
       className={`firearm-card ${isDragging ? 'dragging' : ''} ${inTimeline ? 'in-timeline' : ''} ${isSelected ? 'selected' : ''} ${isSelectionMode && !isSelected ? 'dimmed' : ''} ${isMobile ? 'mobile-card' : ''} ${isTopCard ? 'top-card' : ''}`}
-      draggable={!inTimeline && !isSelectionMode && !isMobile}
-      onDragStart={handleDragStart}
-      onDragEnd={onDragEnd}
       onClick={handleClick}
       tabIndex={!inTimeline ? 0 : -1}
       role={!inTimeline ? 'button' : undefined}
@@ -75,17 +72,24 @@ const FirearmCard: React.FC<FirearmCardProps> = ({
       whileHover={!isDragging && !inTimeline && !isSelected ? { scale: 1.02, y: -2 } : undefined}
       whileTap={!isDragging && !inTimeline ? { scale: 0.98 } : undefined}
     >
-      {isSelected && !isMobile && (
-        <div className="selection-indicator">
-          ✓ Selected - Click a position on the timeline
+      <div
+        draggable={!inTimeline && !isSelectionMode && !isMobile}
+        onDragStart={handleNativeDragStart}
+        onDragEnd={onDragEnd}
+        style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}
+      >
+        {isSelected && !isMobile && (
+          <div className="selection-indicator">
+            ✓ Selected - Click a position on the timeline
+          </div>
+        )}
+        <div className="firearm-image">
+          <img src={firearm.image} alt={firearm.name} style={{ width: '100%', height: 'auto' }} />
         </div>
-      )}
-      <div className="firearm-image">
-        <img src={firearm.image} alt={firearm.name} style={{ width: '100%', height: 'auto' }} />
+        <div className="firearm-name">{firearm.name}</div>
+        <div className="firearm-description">{firearm.description}</div>
+        {/* Mobile swipe hint moved outside the card in MobileCardStack */}
       </div>
-      <div className="firearm-name">{firearm.name}</div>
-      <div className="firearm-description">{firearm.description}</div>
-      {/* Mobile swipe hint moved outside the card in MobileCardStack */}
     </motion.div>
   );
 };

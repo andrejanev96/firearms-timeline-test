@@ -121,16 +121,16 @@ const MobileCardStack: React.FC<{
                 <div className="mobile-period-label">Position {index + 1}</div>
                 {isOccupied ? (
                   <div className="mobile-period-occupied">
-                    <div className="mobile-period-years">Occupied by {occupiedFirearm?.name}</div>
+                    <div className="mobile-period-years">{occupiedFirearm?.name}</div>
                     <button
-                      className="remove-period-btn"
+                      className="remove-period-btn mobile-remove-btn"
                       onClick={(e) => {
                         e.stopPropagation();
                         onRemovePosition(index);
                         hapticFeedback('light');
                       }}
                     >
-                      Remove
+                      ×
                     </button>
                   </div>
                 ) : (
@@ -301,11 +301,8 @@ const App: React.FC = () => {
   // Preload images (safe even if assets are pending)
   useEffect(() => {
     const imageUrls = firearms.map(firearm => firearm.image);
-    preloadImages(imageUrls).then((results) => {
-      if (import.meta.env.DEV) {
-        const successCount = results.filter(result => result.status === 'fulfilled').length;
-        console.log(`Preloaded ${successCount}/${imageUrls.length} images`);
-      }
+    preloadImages(imageUrls).then(() => {
+      // Images preloaded successfully
     });
   }, []);
 

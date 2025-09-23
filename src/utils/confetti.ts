@@ -48,6 +48,8 @@ export function fireConfettiOnce(durationMs = 1200, count = 100) {
   const drag = 0.995;
 
   function frame(now: number) {
+    if (!ctx) return; // Guard against null context
+
     const t = now - start;
     ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
     particles.forEach(p => {

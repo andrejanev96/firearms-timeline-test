@@ -32,10 +32,7 @@ const trackEvent = (event: string, data?: Record<string, unknown>) => {
     win.posthog.capture(event, data);
   }
   
-  // Console logging for development
-  if (import.meta.env.DEV) {
-    console.log('Analytics Event:', event, data);
-  }
+  // Analytics events are tracked silently
 };
 
 export const trackQuizEvents: TrackingEvents = {
