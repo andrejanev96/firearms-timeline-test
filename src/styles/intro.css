@@ -20,16 +20,50 @@
   padding: 40px;
 }
 
+.title-with-flag {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.american-flag {
+  filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.3));
+  animation: wave 3s ease-in-out infinite;
+}
+
+.american-flag:nth-child(3) {
+  animation-delay: 0.5s;
+}
+
+@keyframes wave {
+  0%, 100% { transform: rotateZ(0deg); }
+  25% { transform: rotateZ(2deg); }
+  75% { transform: rotateZ(-2deg); }
+}
+
 .intro-header h1 {
-  font-size: 3.5rem;
+  font-size: 3rem;
   font-weight: bold;
-  margin-bottom: 1rem;
-  color: #DAA520;
-  text-shadow: 0 0 20px rgba(218, 165, 32, 0.3);
+  margin: 0;
+  background: linear-gradient(45deg, #daa520, #b8860b);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .intro-subtitle {
   font-size: 1.3rem;
+  color: #cccccc;
+  margin-bottom: 1rem;
+  line-height: 1.6;
+  font-weight: 500;
+}
+
+.intro-description {
+  font-size: 1.1rem;
   color: #ffffff;
   margin-bottom: 3rem;
   line-height: 1.6;
@@ -139,12 +173,25 @@
     padding: 30px 20px;
   }
 
+  .title-with-flag {
+    gap: 12px;
+  }
+
+  .american-flag {
+    width: 28px;
+    height: 21px;
+  }
+
   .intro-header h1 {
     font-size: 2.5rem;
   }
 
   .intro-subtitle {
     font-size: 1.1rem;
+  }
+
+  .intro-description {
+    font-size: 1rem;
   }
 
   .instruction-steps {
@@ -159,7 +206,24 @@
 }
 
 @media (max-width: 480px) {
+  .title-with-flag {
+    gap: 10px;
+  }
+
+  .american-flag {
+    width: 24px;
+    height: 18px;
+  }
+
   .intro-header h1 {
     font-size: 2rem;
+  }
+
+  .intro-subtitle {
+    font-size: 1rem;
+  }
+
+  .intro-description {
+    font-size: 0.95rem;
   }
 }

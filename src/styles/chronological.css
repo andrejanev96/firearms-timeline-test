@@ -18,7 +18,9 @@
   background: transparent; /* let the global gradient show through */
   margin: 20px 0;
   overflow: hidden;
+  position: relative;
 }
+
 
 .chronological-timeline h3 {
   text-align: center;
@@ -113,6 +115,7 @@
   transform: none;
   box-shadow: 0 1px 4px rgba(218, 165, 32, 0.1);
 }
+
 
 /* Overlay arrows on tablets to keep them visible */
 @media (max-width: 1200px) {

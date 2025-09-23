@@ -45,14 +45,10 @@ const MobileCardStack: React.FC<{
 
   const onTouchMove = (e: React.TouchEvent) => {
     if (!touchStart) return;
-    
+
     const currentTouch = e.targetTouches[0].clientX;
-    const distance = touchStart - currentTouch;
-    
-    if (Math.abs(distance) > 10) {
-      e.preventDefault();
-    }
-    
+
+    // CSS touch-action handles scroll prevention instead of preventDefault()
     setTouchEnd(currentTouch);
   };
 
@@ -310,6 +306,7 @@ const App: React.FC = () => {
     });
   }, []);
 
+
   // Calculate progress
   const totalPlaced = orderedFirearms.filter(f => f !== null).length;
   const progress = (totalPlaced / firearms.length) * 100;
@@ -349,82 +346,18 @@ const App: React.FC = () => {
       transition={{ duration: 0.8 }}
     >
       <div className="container">
-        {/* Header */}
-        <header className="header">
-          <div className="title-with-flag">
-            <svg className="american-flag" width="32" height="24" viewBox="0 0 32 24" fill="none">
-              <rect width="32" height="24" fill="#B22234"/>
-              <rect width="32" height="1.85" y="1.85" fill="white"/>
-              <rect width="32" height="1.85" y="5.54" fill="white"/>
-              <rect width="32" height="1.85" y="9.23" fill="white"/>
-              <rect width="32" height="1.85" y="12.92" fill="white"/>
-              <rect width="32" height="1.85" y="16.61" fill="white"/>
-              <rect width="32" height="1.85" y="20.31" fill="white"/>
-              <rect width="12.8" height="12.92" fill="#3C3B6E"/>
-              <g fill="white">
-                <circle cx="2.13" cy="1.85" r="0.5"/>
-                <circle cx="6.4" cy="1.85" r="0.5"/>
-                <circle cx="10.67" cy="1.85" r="0.5"/>
-                <circle cx="4.27" cy="3.69" r="0.5"/>
-                <circle cx="8.53" cy="3.69" r="0.5"/>
-                <circle cx="2.13" cy="5.54" r="0.5"/>
-                <circle cx="6.4" cy="5.54" r="0.5"/>
-                <circle cx="10.67" cy="5.54" r="0.5"/>
-                <circle cx="4.27" cy="7.38" r="0.5"/>
-                <circle cx="8.53" cy="7.38" r="0.5"/>
-                <circle cx="2.13" cy="9.23" r="0.5"/>
-                <circle cx="6.4" cy="9.23" r="0.5"/>
-                <circle cx="10.67" cy="9.23" r="0.5"/>
-                <circle cx="4.27" cy="11.08" r="0.5"/>
-                <circle cx="8.53" cy="11.08" r="0.5"/>
-              </g>
-            </svg>
-            <h1>American Firearms Timeline Challenge</h1>
-            <svg className="american-flag" width="32" height="24" viewBox="0 0 32 24" fill="none">
-              <rect width="32" height="24" fill="#B22234"/>
-              <rect width="32" height="1.85" y="1.85" fill="white"/>
-              <rect width="32" height="1.85" y="5.54" fill="white"/>
-              <rect width="32" height="1.85" y="9.23" fill="white"/>
-              <rect width="32" height="1.85" y="12.92" fill="white"/>
-              <rect width="32" height="1.85" y="16.61" fill="white"/>
-              <rect width="32" height="1.85" y="20.31" fill="white"/>
-              <rect width="12.8" height="12.92" fill="#3C3B6E"/>
-              <g fill="white">
-                <circle cx="2.13" cy="1.85" r="0.5"/>
-                <circle cx="6.4" cy="1.85" r="0.5"/>
-                <circle cx="10.67" cy="1.85" r="0.5"/>
-                <circle cx="4.27" cy="3.69" r="0.5"/>
-                <circle cx="8.53" cy="3.69" r="0.5"/>
-                <circle cx="2.13" cy="5.54" r="0.5"/>
-                <circle cx="6.4" cy="5.54" r="0.5"/>
-                <circle cx="10.67" cy="5.54" r="0.5"/>
-                <circle cx="4.27" cy="7.38" r="0.5"/>
-                <circle cx="8.53" cy="7.38" r="0.5"/>
-                <circle cx="2.13" cy="9.23" r="0.5"/>
-                <circle cx="6.4" cy="9.23" r="0.5"/>
-                <circle cx="10.67" cy="9.23" r="0.5"/>
-                <circle cx="4.27" cy="11.08" r="0.5"/>
-                <circle cx="8.53" cy="11.08" r="0.5"/>
-              </g>
-            </svg>
+        {/* Progress Bar */}
+        <div className="progress-container">
+          <div className="progress-bar">
+            <div
+              className="progress-fill"
+              style={{ width: `${progress}%` }}
+            />
           </div>
-          <p className="subtitle">
-            Can you correctly order these 12 American-made firearms chronologically?
+          <p className="progress-text">
+            {bank.length} card{bank.length !== 1 ? 's' : ''} remaining
           </p>
-          
-          {/* Progress Bar */}
-          <div className="progress-container">
-            <div className="progress-bar">
-              <div 
-                className="progress-fill"
-                style={{ width: `${progress}%` }}
-              />
-            </div>
-            <p className="progress-text">
-              {bank.length} card{bank.length !== 1 ? 's' : ''} remaining
-            </p>
-          </div>
-        </header>
+        </div>
 
         {/* Mobile Card Stack Interface */}
         {isMobile ? (

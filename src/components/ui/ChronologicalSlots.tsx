@@ -91,7 +91,7 @@ const ChronologicalSlots: React.FC<ChronologicalSlotsProps> = ({
   const handleSlotTouchEnd = (position: number, e: React.TouchEvent) => {
     // Only handle if it's a selection mode touch on an empty slot
     if (isSelectionMode && orderedFirearms[position] === null) {
-      e.preventDefault();
+      // Remove preventDefault() to avoid passive event listener warning
       e.stopPropagation(); // Prevent timeline scroll
       onPositionSelect(position);
     }
