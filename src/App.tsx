@@ -287,7 +287,10 @@ const App: React.FC = () => {
   // Check if mobile/tablet on mount and resize
   useEffect(() => {
     const checkMobile = () => {
-      setMobile(window.innerWidth <= 1366);
+      // Use touch capability + reasonable screen size for tablet detection
+      const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+      const isTabletSize = window.innerWidth <= 1600;
+      setMobile(hasTouch && isTabletSize);
     };
     
     checkMobile();
