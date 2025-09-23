@@ -287,7 +287,7 @@ const App: React.FC = () => {
   // Check if mobile/tablet on mount and resize
   useEffect(() => {
     const checkMobile = () => {
-      setMobile(window.innerWidth <= 1024);
+      setMobile(window.innerWidth <= 1366);
     };
     
     checkMobile();
@@ -400,7 +400,16 @@ const App: React.FC = () => {
                 ))}
                 {bank.length === 0 && (
                   <div className="empty-bank">
-                    All firearms have been placed in chronological order!
+                    <div className="empty-bank-content">
+                      <h3>All firearms placed!</h3>
+                      <p>Review your timeline and complete when ready.</p>
+                      <button
+                        onClick={handleComplete}
+                        className="complete-btn"
+                      >
+                        Complete Test & See Results
+                      </button>
+                    </div>
                   </div>
                 )}
               </div>
@@ -420,17 +429,6 @@ const App: React.FC = () => {
           </div>
         )}
 
-        {/* Complete Button */}
-        {isComplete && !isMobile && (
-          <div className="complete-section">
-            <button
-              onClick={handleComplete}
-              className="complete-btn"
-            >
-              Complete Test & See Results
-            </button>
-          </div>
-        )}
 
         {/* Mobile Complete CTA (non-blocking) */}
         {isComplete && isMobile && bank.length > 0 && (

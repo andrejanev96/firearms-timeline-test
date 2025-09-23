@@ -210,6 +210,37 @@ body {
   border: 2px solid rgba(218, 165, 32, 0.3);
 }
 
+.empty-bank-content h3 {
+  color: #daa520;
+  margin-bottom: 10px;
+  font-size: 1.5rem;
+}
+
+.empty-bank-content p {
+  margin-bottom: 20px;
+  color: #ffffff;
+  opacity: 0.9;
+}
+
+.empty-bank-content .complete-btn {
+  background: #daa520;
+  color: #000;
+  border: none;
+  padding: 15px 30px;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(218, 165, 32, 0.3);
+}
+
+.empty-bank-content .complete-btn:hover {
+  background: #b8860b;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(218, 165, 32, 0.4);
+}
+
 /* Desktop Firearm Cards */
 .firearm-card {
   background: linear-gradient(145deg, #333333, #404040);
