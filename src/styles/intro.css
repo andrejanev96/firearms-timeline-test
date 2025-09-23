@@ -80,6 +80,48 @@
   margin-bottom: 2rem;
 }
 
+@media (max-width: 768px) {
+  .intro-instructions h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .step {
+    padding: 1.2rem;
+  }
+
+  .step-number {
+    width: 2rem;
+    height: 2rem;
+    font-size: 1rem;
+  }
+
+  .step p {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .intro-instructions h3 {
+    font-size: 1.3rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .step {
+    padding: 1rem;
+  }
+
+  .step-number {
+    width: 1.8rem;
+    height: 1.8rem;
+    font-size: 0.9rem;
+  }
+
+  .step p {
+    font-size: 0.8rem;
+  }
+}
+
 .instruction-steps {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -183,15 +225,15 @@
   }
 
   .intro-header h1 {
-    font-size: 2.5rem;
+    font-size: 2rem;
   }
 
   .intro-subtitle {
-    font-size: 1.1rem;
+    font-size: 0.95rem;
   }
 
   .intro-description {
-    font-size: 1rem;
+    font-size: 0.9rem;
   }
 
   .instruction-steps {
@@ -200,8 +242,8 @@
   }
 
   .start-quiz-btn {
-    padding: 0.8rem 2rem;
-    font-size: 1.1rem;
+    padding: 0.7rem 1.8rem;
+    font-size: 1rem;
   }
 }
 
@@ -216,14 +258,14 @@
   }
 
   .intro-header h1 {
-    font-size: 2rem;
+    font-size: 1.7rem;
   }
 
   .intro-subtitle {
-    font-size: 1rem;
+    font-size: 0.9rem;
   }
 
   .intro-description {
-    font-size: 0.95rem;
+    font-size: 0.85rem;
   }
 }

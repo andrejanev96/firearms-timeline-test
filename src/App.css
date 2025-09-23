@@ -1005,9 +1005,9 @@ body {
   background: linear-gradient(45deg, #daa520, #b8860b);
   color: white;
   border: none;
-  padding: 12px 20px;
-  border-radius: 22px;
-  font-size: 1rem;
+  padding: 10px 18px;
+  border-radius: 20px;
+  font-size: 0.9rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -1616,14 +1616,26 @@ body {
   }
 
   .container {
-    padding: 10px;
+    padding: 8px;
     overflow-x: hidden;
   }
 
   .header {
-    margin: 0 auto 20px;
-    padding: 20px 15px;
-    border-radius: 15px;
+    margin: 0 auto 15px;
+    padding: 15px 12px;
+    border-radius: 12px;
+  }
+
+  .progress-text {
+    font-size: 0.8rem;
+  }
+
+  .firearms-bank-header h2 {
+    font-size: 1.3rem;
+  }
+
+  .selection-help p {
+    font-size: 0.85rem;
   }
 
   .header h1 {
@@ -1755,23 +1767,54 @@ body {
 
 @media (max-width: 480px) {
   .progress-container {
-    margin: 0 auto 15px;
-    padding: 12px;
+    margin: 0 auto 12px;
+    padding: 10px;
   }
 
   .progress-bar {
-    width: 240px;
+    width: 220px;
+  }
+
+  .progress-text {
+    font-size: 0.7rem;
   }
 
   .mobile-card-container {
-    padding: 10px;
-    min-height: 80vh;
+    padding: 8px;
+    min-height: 75vh;
   }
 
   .card-stack {
-    min-height: 320px;
-    height: 320px;
+    min-height: 300px;
+    height: 300px;
     flex-shrink: 0;
+  }
+
+  .firearms-bank-header h2 {
+    font-size: 1.1rem;
+  }
+
+  .selection-help p {
+    font-size: 0.75rem;
+  }
+
+  .empty-bank-content h3 {
+    font-size: 1.2rem;
+  }
+
+  .empty-bank-content p {
+    font-size: 0.8rem;
+  }
+
+  .empty-bank-content .complete-btn {
+    font-size: 0.9rem;
+    padding: 12px 24px;
+  }
+
+  .mobile-complete-btn {
+    padding: 8px 16px;
+    font-size: 0.8rem;
+    border-radius: 18px;
   }
 
   .stacked-card {
