@@ -121,7 +121,7 @@ const MobileCardStack: React.FC<{
                 <div className="mobile-period-label">Position {index + 1}</div>
                 {isOccupied ? (
                   <div className="mobile-period-occupied">
-                    <div className="mobile-period-years">{occupiedFirearm?.name}</div>
+                    <div className="mobile-period-content">{occupiedFirearm?.name}</div>
                     <button
                       className="remove-period-btn mobile-remove-btn"
                       onClick={(e) => {
@@ -134,7 +134,7 @@ const MobileCardStack: React.FC<{
                     </button>
                   </div>
                 ) : (
-                  <div className="mobile-period-years">Available</div>
+                  <div className="mobile-period-content">Available</div>
                 )}
               </div>
             );
@@ -287,10 +287,9 @@ const App: React.FC = () => {
   // Check if mobile/tablet on mount and resize
   useEffect(() => {
     const checkMobile = () => {
-      // Use touch capability + reasonable screen size for tablet detection
-      const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-      const isTabletSize = window.innerWidth <= 1600;
-      setMobile(hasTouch && isTabletSize);
+      // Use screen width for mobile layout detection - allows desktop testing
+      const isMobileLayout = window.innerWidth <= 1199;
+      setMobile(isMobileLayout);
     };
     
     checkMobile();
@@ -360,7 +359,7 @@ const App: React.FC = () => {
         </div>
 
         {/* Mobile Card Stack Interface */}
-        {isMobile ? (
+        {(isMobile || window.innerWidth <= 1199) ? (
           <MobileCardStack
             firearmsList={bank}
             onFirearmSelect={selectFirearm}
@@ -431,7 +430,7 @@ const App: React.FC = () => {
 
 
         {/* Mobile Complete CTA (non-blocking) */}
-        {isComplete && isMobile && bank.length > 0 && (
+        {isComplete && (isMobile || window.innerWidth <= 1199) && bank.length > 0 && (
           <div className="mobile-complete-cta">
             <button
               onClick={handleComplete}
