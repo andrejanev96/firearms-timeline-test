@@ -20,6 +20,10 @@
   --timeline-slot-min-width: 180px;
   --timeline-slot-number-size: 30px;
 
+  /* Tablet optimizations */
+  --tablet-card-stack-width: 360px;
+  --tablet-card-stack-height: 420px;
+
   /* Design tokens */
   --color-bg: #1a1a1a;
   --color-panel: rgba(255,255,255,0.04);
