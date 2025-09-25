@@ -7,6 +7,7 @@ import IntroScreen from '@/components/sections/IntroScreen';
 import Results from '@/components/sections/Results';
 import FirearmCard from '@/components/ui/FirearmCard';
 import ChronologicalSlots from '@/components/ui/ChronologicalSlots';
+import ImageViewerModal from '@/components/ui/ImageViewerModal';
 import { firearms } from '@/data/firearms';
 import type { Firearm } from '@/types/quiz';
 import './App.css';
@@ -195,7 +196,6 @@ const MobileCardStack: React.FC<{
                 firearm={firearm}
                 isMobile={true}
                 isTopCard={offset === 0}
-                animationDelay={0}
                 onClick={() => {
                   if (offset === 0) {
                     onFirearmSelect(firearm);
@@ -276,6 +276,14 @@ const App: React.FC = () => {
   
   const [showQuizAnimation, setShowQuizAnimation] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+  // Image viewer state
+  const [viewerOpen, setViewerOpen] = useState(false);
+  const [viewerItems, setViewerItems] = useState<Firearm[]>([]);
+  const [viewerIndex, setViewerIndex] = useState(0);
+  const viewerReturnFocusRef = useRef<HTMLElement | null>(null);
+  // First-load tooltip for discoverability
+  const [showViewerTip, setShowViewerTip] = useState(false);
+  const viewerTipTimerRef = useRef<number | null>(null);
 
   // Trigger animation when entering quiz section
   useEffect(() => {
@@ -304,6 +312,38 @@ const App: React.FC = () => {
       // Images preloaded successfully
     });
   }, []);
+
+  // Discoverability tooltip on first page load
+  useEffect(() => {
+    const shown = localStorage.getItem('viewerTipSeen');
+    if (!shown) {
+      setShowViewerTip(true);
+      viewerTipTimerRef.current = window.setTimeout(() => {
+        setShowViewerTip(false);
+        localStorage.setItem('viewerTipSeen', '1');
+      }, 3500);
+    }
+    return () => {
+      if (viewerTipTimerRef.current) window.clearTimeout(viewerTipTimerRef.current);
+    };
+  }, []);
+
+  const markViewerTipSeen = () => {
+    if (viewerTipTimerRef.current) window.clearTimeout(viewerTipTimerRef.current);
+    setShowViewerTip(false);
+    localStorage.setItem('viewerTipSeen', '1');
+  };
+
+  // Viewer wiring
+  const openViewer = (items: Firearm[], index: number, returnFocusEl?: HTMLElement | null) => {
+    setViewerItems(items);
+    setViewerIndex(index);
+    viewerReturnFocusRef.current = returnFocusEl ?? null;
+    setViewerOpen(true);
+    markViewerTipSeen();
+  };
+  const closeViewer = () => setViewerOpen(false);
+  const handleNavigate = (nextIndex: number) => setViewerIndex(nextIndex);
 
 
   // Calculate progress
@@ -338,6 +378,7 @@ const App: React.FC = () => {
   }
 
   return (
+    <>
     <motion.div 
       className="app"
       initial={{ opacity: 0, y: 30 }}
@@ -349,12 +390,14 @@ const App: React.FC = () => {
         <div className="progress-container">
           <div className="progress-bar">
             <div
-              className="progress-fill"
+              className={`progress-fill ${bank.length === 0 ? 'complete' : ''}`}
               style={{ width: `${progress}%` }}
             />
           </div>
-          <p className="progress-text">
-            {bank.length} card{bank.length !== 1 ? 's' : ''} remaining
+          <p className={`progress-text ${bank.length === 0 ? 'complete' : ''}`}>
+            {bank.length === 0
+              ? 'Bullseye! All firearms placed'
+              : `${bank.length} card${bank.length !== 1 ? 's' : ''} remaining`}
           </p>
         </div>
 
@@ -375,28 +418,35 @@ const App: React.FC = () => {
           <div className="quiz-sections">
             {/* Desktop: Firearms Bank */}
             <section className="firearms-bank">
-              <div className="firearms-bank-header">
-                <h2 className={selectionMode ? 'hidden' : 'visible'}>
-                  Click or drag the firearms to order them chronologically
-                </h2>
-                <div className={`selection-help ${selectionMode ? 'visible' : 'hidden'}`}>
-                  <p>Selected: <strong>{selectedFirearm?.name || ''}</strong> - Click on a position on the timeline to place it, or click the firearm again to cancel.</p>
+              {bank.length > 0 && (
+                <div className="firearms-bank-header">
+                  <h2 className={selectionMode ? 'hidden' : 'visible'}>
+                    Click or drag the firearms to order them chronologically
+                  </h2>
+                  <div className={`selection-help ${selectionMode ? 'visible' : 'hidden'}`}>
+                    <p>Selected: <strong>{selectedFirearm?.name || ''}</strong> - Click on a position on the timeline to place it, or click the firearm again to cancel.</p>
+                  </div>
                 </div>
-              </div>
-              <div className={`firearms-grid ${selectionMode ? 'selection-mode' : ''}`}>
-                {bank.map((firearm, index) => (
-                  <FirearmCard
-                    key={firearm.id}
-                    firearm={firearm}
-                    isDragging={draggedFirearm?.id === firearm.id}
-                    isSelected={selectedFirearm?.id === firearm.id}
-                    isSelectionMode={selectionMode}
-                    animationDelay={showQuizAnimation ? index * 0.05 + 0.2 : 0}
-                    onDragStart={handleDragStart}
-                    onDragEnd={handleDragEnd}
-                    onClick={selectFirearm}
-                  />
-                ))}
+              )}
+              {bank.length > 0 && (
+                <div className={`firearms-grid ${selectionMode ? 'selection-mode' : ''}`}>
+                  {bank.map((firearm, index) => (
+                    <FirearmCard
+                      key={firearm.id}
+                      firearm={firearm}
+                      isDragging={draggedFirearm?.id === firearm.id}
+                      isSelected={selectedFirearm?.id === firearm.id}
+                      isSelectionMode={selectionMode}
+                      onDragStart={handleDragStart}
+                      onDragEnd={handleDragEnd}
+                      onClick={selectFirearm}
+                      openViewer={openViewer}
+                      viewerItems={bank}
+                      viewerIndex={index}
+                    />
+                  ))}
+                </div>
+              )}
                 {bank.length === 0 && (
                   <div className="empty-bank">
                     <div className="empty-bank-content">
@@ -411,11 +461,27 @@ const App: React.FC = () => {
                     </div>
                   </div>
                 )}
-              </div>
+              {/* Discoverability tooltip below the bank on first load */}
+              {showViewerTip && (
+                <div className="viewer-tip" role="status" aria-live="polite">
+                  Tip: Click any firearm image to view it larger.
+                </div>
+              )}
             </section>
 
             {/* Desktop: Chronological Ordering */}
             <section ref={timelineSectionRef as React.RefObject<HTMLDivElement>} className={`chronological-section ${selectionMode ? 'selection-active' : ''}`}>
+              {/* Completion Encouragement */}
+              {bank.length > 0 && bank.length <= 3 && (
+                <div className="completion-encouragement">
+                  {bank.length === 1 ? (
+                    <p>🎯 Almost there — just 1 more card!</p>
+                  ) : (
+                    <p>🎯 Almost there — just {bank.length} more cards!</p>
+                  )}
+                </div>
+              )}
+
               <ChronologicalSlots
                 orderedFirearms={orderedFirearms}
                 onDrop={dropFirearm}
@@ -423,6 +489,7 @@ const App: React.FC = () => {
                 onPositionSelect={selectPosition}
                 isSelectionMode={selectionMode}
                 isHighlighted={selectionMode}
+                openViewer={openViewer}
               />
             </section>
           </div>
@@ -453,7 +520,19 @@ const App: React.FC = () => {
           </div>
         </div>
       )}
+
     </motion.div>
+    {/* Image Viewer Modal */}
+    <ImageViewerModal
+      open={viewerOpen}
+      items={viewerItems}
+      index={viewerIndex}
+      onClose={closeViewer}
+      onNavigate={handleNavigate}
+      loop={true}
+      returnFocusEl={viewerReturnFocusRef.current}
+    />
+    </>
   );
 };
 

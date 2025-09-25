@@ -1,5 +1,4 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 import type { Firearm } from '@/types/quiz';
 
 interface FirearmCardProps {
@@ -8,12 +7,15 @@ interface FirearmCardProps {
   inTimeline?: boolean;
   onDragStart?: (e: React.DragEvent, firearm: Firearm) => void;
   onDragEnd?: () => void;
-  onClick?: (firearm: Firearm, e: React.MouseEvent) => void;
+  onClick?: (firearm: Firearm, e?: React.SyntheticEvent) => void;
   isSelected?: boolean;
   isSelectionMode?: boolean;
   isMobile?: boolean;
   isTopCard?: boolean;
-  animationDelay?: number;
+  // Viewer support
+  openViewer?: (items: Firearm[], index: number, returnFocusEl?: HTMLElement | null) => void;
+  viewerItems?: Firearm[];
+  viewerIndex?: number;
 }
 
 const FirearmCard: React.FC<FirearmCardProps> = ({ 
@@ -27,7 +29,9 @@ const FirearmCard: React.FC<FirearmCardProps> = ({
   isSelectionMode = false, 
   isMobile = false, 
   isTopCard = false,
-  animationDelay = 0
+  openViewer,
+  viewerItems,
+  viewerIndex
 }) => {
   
   const handleNativeDragStart = (e: React.DragEvent) => {
@@ -49,28 +53,30 @@ const FirearmCard: React.FC<FirearmCardProps> = ({
     if (!onClick) return;
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
-      onClick(firearm, e as unknown as React.MouseEvent);
+      onClick(firearm);
+    }
+  };
+
+  const viewBtnRef = React.useRef<HTMLButtonElement | null>(null);
+  const handleOpenViewer = (e: React.SyntheticEvent) => {
+    e.stopPropagation();
+    if (!openViewer || !viewerItems || typeof viewerIndex !== 'number') return;
+    openViewer(viewerItems, viewerIndex, viewBtnRef.current);
+  };
+  const handleViewerKey = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      handleOpenViewer(e);
     }
   };
 
   return (
-    <motion.div
+    <div
       className={`firearm-card ${isDragging ? 'dragging' : ''} ${inTimeline ? 'in-timeline' : ''} ${isSelected ? 'selected' : ''} ${isSelectionMode && !isSelected ? 'dimmed' : ''} ${isMobile ? 'mobile-card' : ''} ${isTopCard ? 'top-card' : ''}`}
       onClick={handleClick}
       tabIndex={!inTimeline ? 0 : -1}
       role={!inTimeline ? 'button' : undefined}
       onKeyDown={handleKeyDown}
-      initial={animationDelay > 0 ? { opacity: 0, scale: 0.9, y: 20 } : false}
-      animate={{ opacity: 1, scale: 1, y: 0 }}
-      transition={{ 
-        duration: 0.4, 
-        delay: animationDelay,
-        type: "spring",
-        stiffness: 400,
-        damping: 25
-      }}
-      whileHover={!isDragging && !inTimeline && !isSelected ? { scale: 1.02, y: -2 } : undefined}
-      whileTap={!isDragging && !inTimeline ? { scale: 0.98 } : undefined}
     >
       <div
         draggable={!inTimeline && !isSelectionMode && !isMobile}
@@ -83,14 +89,31 @@ const FirearmCard: React.FC<FirearmCardProps> = ({
             ✓ Selected - Click a position on the timeline
           </div>
         )}
-        <div className="firearm-image">
-          <img src={firearm.image} alt={firearm.name} style={{ width: '100%', height: 'auto' }} />
+        <div 
+          className="firearm-image"
+          onClick={openViewer ? handleOpenViewer : undefined}
+          onKeyDown={openViewer ? handleViewerKey : undefined}
+          role={openViewer ? 'button' : undefined}
+          tabIndex={openViewer ? 0 : -1}
+          aria-label={openViewer ? `View larger image of ${firearm.name}` : undefined}
+        >
+          <img src={firearm.image} alt={firearm.name} style={{ width: '100%', height: 'auto' }} loading="lazy" />
+          {openViewer && viewerItems && typeof viewerIndex === 'number' && (
+            <button
+              className="magnifier-btn"
+              aria-label={`View larger image of ${firearm.name}`}
+              title="View larger"
+              onClick={handleOpenViewer}
+              ref={viewBtnRef}
+            >
+              🔍
+            </button>
+          )}
         </div>
         <div className="firearm-name">{firearm.name}</div>
-        <div className="firearm-description">{firearm.description}</div>
         {/* Mobile swipe hint moved outside the card in MobileCardStack */}
       </div>
-    </motion.div>
+    </div>
   );
 };
 

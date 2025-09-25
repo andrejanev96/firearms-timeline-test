@@ -9,6 +9,7 @@ interface ChronologicalSlotsProps {
   onPositionSelect: (position: number) => void;
   isSelectionMode: boolean;
   isHighlighted: boolean;
+  openViewer?: (items: Firearm[], index: number, returnFocusEl?: HTMLElement | null) => void;
 }
 
 const ChronologicalSlots: React.FC<ChronologicalSlotsProps> = ({
@@ -17,7 +18,8 @@ const ChronologicalSlots: React.FC<ChronologicalSlotsProps> = ({
   onRemoveFirearm,
   onPositionSelect,
   isSelectionMode,
-  isHighlighted
+  isHighlighted,
+  openViewer
 }) => {
   const [dragOverPosition, setDragOverPosition] = React.useState<number | null>(null);
   const [isDragging, setIsDragging] = React.useState(false);
@@ -186,7 +188,18 @@ const ChronologicalSlots: React.FC<ChronologicalSlotsProps> = ({
         aria-live="polite"
       >
         Use drag and drop or keyboard navigation to place firearms in chronological order.
-        Each position can hold only one firearm. Use the X button to remove items.
+        Each position can hold only one firearm. Use the back arrow button to remove items.
+      </div>
+      <div className="timeline-visual">
+        <div className="timeline-line"></div>
+        <div className="decade-markers">
+          <span className="decade-marker">1750s</span>
+          <span className="decade-marker">1800s</span>
+          <span className="decade-marker">1850s</span>
+          <span className="decade-marker">1900s</span>
+          <span className="decade-marker">1950s</span>
+          <span className="decade-marker">2000s</span>
+        </div>
       </div>
       <div className="timeline-container">
         <button 
@@ -232,24 +245,28 @@ const ChronologicalSlots: React.FC<ChronologicalSlotsProps> = ({
             onKeyDown={(e) => handlePositionKeyDown(position, e)}
           >
             <div className="slot-number">{position + 1}</div>
-            {firearm ? (
+            {firearm && (
               <div className="firearm-wrapper">
                 <FirearmCard
                   firearm={firearm}
                   inTimeline={true}
+                  openViewer={openViewer}
+                  viewerItems={orderedFirearms.filter(Boolean) as Firearm[]}
+                  viewerIndex={(orderedFirearms.filter(Boolean) as Firearm[]).findIndex((f) => f.id === firearm.id)}
                 />
                 {!isSelectionMode && (
-                  <button 
+                  <button
                     className="remove-firearm-btn"
                     aria-label={`Remove ${firearm.name} from position ${position + 1}`}
                     onClick={(e) => handleFirearmClick(position, e)}
-                    title="Remove this firearm"
+                    title="Send back to bank"
                   >
-                    ×
+                    ↩
                   </button>
                 )}
               </div>
-            ) : (
+            )}
+            {!firearm && (
               <div className="empty-slot" onClick={(e) => handlePositionClick(position, e)}>
                 <div className="slot-placeholder">
                   {isSelectionMode ? 'Click to place here' : 'Drop here'}

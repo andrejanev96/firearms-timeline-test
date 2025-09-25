@@ -10,6 +10,11 @@ export interface Firearm {
   correctPosition: number;
   year: number;
   image: string;
+  imageLarge?: string;
+  // Optional fields used in some UIs (e.g., Results viewer)
+  correct?: boolean;
+  fact?: string;
+  facts?: string[];
 }
 
 export interface QuizResults {

@@ -92,32 +92,69 @@ const IntroScreen: React.FC = () => {
             </svg>
           </div>
           <p className="intro-subtitle">
-            Can you correctly order these 12 American-made firearms chronologically?
+            Think you know firearms history? Prove it by putting these 12 iconic weapons in chronological order!
           </p>
           <p className="intro-description">
-            Test your knowledge of American-made firearms history by placing iconic weapons in chronological order
+            Challenge yourself with America's most legendary firearms - from colonial muskets to modern sporting rifles. Don't worry, you can retry as many times as needed to master the timeline!
           </p>
         </motion.div>
 
-        <motion.div 
+        <motion.div
+          className="timeline-preview"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.35 }}
+        >
+          <p className="preview-label">Your Timeline Challenge:</p>
+          <div className="preview-timeline">
+            <div className="preview-slot">1750s</div>
+            <div className="preview-arrow">→</div>
+            <div className="preview-slot">?</div>
+            <div className="preview-arrow">→</div>
+            <div className="preview-slot">?</div>
+            <div className="preview-arrow">→</div>
+            <div className="preview-slot">?</div>
+            <div className="preview-dots">...</div>
+            <div className="preview-slot">2010s</div>
+          </div>
+        </motion.div>
+
+        <motion.div
           className="intro-instructions"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
         >
-          <h3>How it works:</h3>
+          <h3>🎯 Ready for the Challenge?</h3>
           <div className="instruction-steps">
             <div className="step">
               <span className="step-number">1</span>
-              <p>Drag firearms from the bank to the timeline positions</p>
+              <div className="step-content">
+                <svg className="step-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <path d="M13 6l6 6-6 6m-8-6h14" stroke="#DAA520" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                <p>Drag firearms from the bank to the timeline positions</p>
+              </div>
             </div>
             <div className="step">
               <span className="step-number">2</span>
-              <p>Order them from earliest invention date (1750s) to latest (2010s)</p>
+              <div className="step-content">
+                <svg className="step-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <circle cx="12" cy="12" r="10" stroke="#DAA520" strokeWidth="2"/>
+                  <polyline points="12,6 12,12 16,14" stroke="#DAA520" strokeWidth="2" strokeLinecap="round"/>
+                </svg>
+                <p>Order them from earliest invention date (1750s) to latest (2010s)</p>
+              </div>
             </div>
             <div className="step">
               <span className="step-number">3</span>
-              <p>Submit your timeline when all 12 positions are filled</p>
+              <div className="step-content">
+                <svg className="step-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <path d="M9 12l2 2 4-4" stroke="#DAA520" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <circle cx="12" cy="12" r="10" stroke="#DAA520" strokeWidth="2"/>
+                </svg>
+                <p>Submit your timeline when all 12 positions are filled</p>
+              </div>
             </div>
           </div>
         </motion.div>

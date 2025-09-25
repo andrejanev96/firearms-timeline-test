@@ -4,9 +4,19 @@ import { firearms } from '@/data/firearms';
 import { subscribeToMailChimp } from '@/utils/mailchimp';
 import { trackQuizEvents } from '@/utils/analytics';
 
+// Fisher-Yates shuffle function for proper randomization
+const shuffleArray = <T>(array: T[]): T[] => {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+};
+
 const useQuizStore = create<QuizStore>((set, get) => ({
-  // Initial state
-  bank: firearms,
+  // Initial state - randomized from start
+  bank: shuffleArray(firearms),
   orderedFirearms: Array(12).fill(null),
   showResults: false,
   showSuccess: false,
@@ -241,7 +251,7 @@ const useQuizStore = create<QuizStore>((set, get) => ({
 
   resetQuiz: () => {
     set({
-      bank: firearms,
+      bank: shuffleArray(firearms),
       orderedFirearms: Array(12).fill(null),
       showResults: false,
       showSuccess: false,
@@ -289,7 +299,8 @@ const useQuizStore = create<QuizStore>((set, get) => ({
   },
 
   shuffleAndRetry: () => {
-    const shuffled = [...firearms].sort(() => Math.random() - 0.5);
+    // Use the shared shuffle function for consistency
+    const shuffled = shuffleArray(firearms);
     set({
       bank: shuffled,
       orderedFirearms: Array(12).fill(null),

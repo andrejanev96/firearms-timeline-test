@@ -65,9 +65,76 @@
 .intro-description {
   font-size: 1.1rem;
   color: #ffffff;
-  margin-bottom: 3rem;
+  margin-bottom: 2rem;
   line-height: 1.6;
   opacity: 0.9;
+}
+
+.timeline-preview {
+  margin-bottom: 3rem;
+  text-align: center;
+}
+
+.preview-label {
+  color: #DAA520;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  opacity: 0.9;
+}
+
+.preview-timeline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  border: 1px solid rgba(218, 165, 32, 0.3);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.preview-slot {
+  background: rgba(218, 165, 32, 0.2);
+  color: #DAA520;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border: 1px solid rgba(218, 165, 32, 0.4);
+  animation: glow 2s ease-in-out infinite alternate;
+}
+
+.preview-slot:first-child,
+.preview-slot:last-child {
+  background: rgba(76, 175, 80, 0.2);
+  color: #4CAF50;
+  border-color: rgba(76, 175, 80, 0.4);
+}
+
+.preview-arrow {
+  color: #DAA520;
+  font-size: 1.2rem;
+  opacity: 0.7;
+}
+
+.preview-dots {
+  color: #DAA520;
+  font-size: 1.5rem;
+  opacity: 0.7;
+  letter-spacing: 2px;
+}
+
+@keyframes glow {
+  from {
+    box-shadow: 0 0 5px rgba(218, 165, 32, 0.2);
+  }
+  to {
+    box-shadow: 0 0 15px rgba(218, 165, 32, 0.4);
+  }
 }
 
 .intro-instructions {
@@ -135,10 +202,38 @@
   gap: 1rem;
   text-align: left;
   padding: 1.5rem;
-  background: rgba(218, 165, 32, 0.05);
+  background: rgba(218, 165, 32, 0.15);
   border-radius: 12px;
-  border: 1px solid rgba(218, 165, 32, 0.2);
+  border: 2px solid rgba(218, 165, 32, 0.4);
   backdrop-filter: blur(10px);
+  box-shadow: 0 4px 15px rgba(218, 165, 32, 0.1);
+  transition: all 0.3s ease;
+}
+
+.step:hover {
+  background: rgba(218, 165, 32, 0.2);
+  border-color: rgba(218, 165, 32, 0.6);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(218, 165, 32, 0.15);
+}
+
+.step-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.step-icon {
+  flex-shrink: 0;
+  margin-top: 0.2rem;
+  opacity: 0.9;
+  transition: all 0.3s ease;
+}
+
+.step:hover .step-icon {
+  opacity: 1;
+  transform: scale(1.1);
 }
 
 .step-number {
@@ -181,12 +276,44 @@
   letter-spacing: 1px;
   box-shadow: 0 8px 25px rgba(218, 165, 32, 0.3);
   margin-bottom: 1rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.start-quiz-btn > * {
+  position: relative;
+  z-index: 1;
+}
+
+.start-quiz-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50px;
+  transform: scale(0);
+  transition: all 0.6s ease;
+  z-index: 0;
 }
 
 .start-quiz-btn:hover {
   transform: translateY(-3px);
   box-shadow: 0 12px 35px rgba(218, 165, 32, 0.4);
   background: #E6B800;
+  animation: pulse 2s infinite;
+}
+
+.start-quiz-btn:hover::before {
+  transform: scale(1);
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 12px 35px rgba(218, 165, 32, 0.4); }
+  50% { box-shadow: 0 12px 35px rgba(218, 165, 32, 0.6), 0 0 0 10px rgba(218, 165, 32, 0.1); }
+  100% { box-shadow: 0 12px 35px rgba(218, 165, 32, 0.4); }
 }
 
 .start-quiz-btn:active {
@@ -239,6 +366,16 @@
   .instruction-steps {
     grid-template-columns: 1fr;
     gap: 1rem;
+  }
+
+  .preview-timeline {
+    gap: 0.3rem;
+    padding: 0.8rem;
+  }
+
+  .preview-slot {
+    font-size: 0.8rem;
+    padding: 0.4rem 0.6rem;
   }
 
   .start-quiz-btn {

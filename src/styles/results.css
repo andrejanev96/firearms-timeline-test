@@ -31,26 +31,84 @@
   line-height: 1.6;
 }
 
+.gate-subheading {
+  color: #eee;
+}
+
+.unlock-section {
+  background: rgba(218, 165, 32, 0.1);
+  border: 1px solid rgba(218, 165, 32, 0.3);
+  border-radius: 12px;
+  padding: 20px;
+  margin: 25px 0;
+}
+
+.unlock-intro {
+  color: #DAA520;
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin: 0 0 15px 0;
+  text-align: center;
+}
+
+.unlock-benefits {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  text-align: left;
+}
+
+.unlock-benefits li {
+  color: #ffffff;
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 10px;
+  padding: 8px 12px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  border-left: 3px solid rgba(218, 165, 32, 0.6);
+}
+
+
 .preview-section {
   margin: 30px 0;
 }
 
-.preview-btn {
-  background: rgba(218, 165, 32, 0.2);
-  border: 2px solid rgba(218, 165, 32, 0.5);
-  color: #DAA520;
-  padding: 12px 24px;
+/* Fun Fact block */
+.fun-fact {
+  margin: 10px auto 0;
+  padding: 12px 14px;
   border-radius: 10px;
-  cursor: pointer;
-  font-size: 1rem;
-  font-weight: 600;
-  transition: all 0.3s ease;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(0,0,0,0.35);
+  color: #e8e8e8;
+  text-align: center;
+  max-width: 680px;
+}
+.funfact-label {
+  font-weight: 700;
+  color: #DAA520;
+  margin-right: 6px;
 }
 
-.preview-btn:hover {
-  background: rgba(218, 165, 32, 0.3);
-  border-color: #DAA520;
-  transform: translateY(-2px);
+.preview-btn.secondary-action {
+  background: transparent;
+  border: 1px solid rgba(218, 165, 32, 0.4);
+  color: #DAA520;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.preview-btn.secondary-action:hover {
+  background: rgba(218, 165, 32, 0.1);
+  border-color: rgba(218, 165, 32, 0.6);
+  text-decoration: none;
 }
 
 /* Sneak Peek Styles */
@@ -60,6 +118,49 @@
   padding: 25px;
   margin: 20px 0 30px;
   border: 1px solid rgba(218, 165, 32, 0.2);
+}
+
+.playful-msg {
+  text-align: center;
+  color: #cfcfcf;
+  margin: 0 0 12px;
+}
+
+.mini-progress {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.mini-circle {
+  width: 64px;
+  height: 64px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: conic-gradient(#DAA520 0deg, rgba(255,255,255,0.12) 0);
+}
+
+.mini-inner {
+  width: 52px;
+  height: 52px;
+  border-radius: 999px;
+  background: rgba(0,0,0,0.5);
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255,255,255,0.15);
+}
+
+.mini-percent {
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.mini-caption {
+  font-size: 0.95rem;
+  color: #ddd;
 }
 
 .results-breakdown h4 {
@@ -90,10 +191,14 @@
 }
 
 /* Email Form Styles */
-.email-form {
+.email-form.primary-action {
   max-width: 500px;
-  margin: 0 auto;
+  margin: 30px auto;
   text-align: left;
+  background: rgba(218, 165, 32, 0.05);
+  border: 2px solid rgba(218, 165, 32, 0.3);
+  border-radius: 15px;
+  padding: 30px;
 }
 
 .form-group {
@@ -172,19 +277,22 @@
   background: linear-gradient(45deg, #DAA520, #B8860B);
   border: none;
   color: #fff;
-  padding: 18px;
+  padding: 20px;
   border-radius: 12px;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.3s ease;
   margin: 20px 0;
+  box-shadow: 0 4px 12px rgba(218, 165, 32, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .submit-btn:hover:not(:disabled) {
   background: linear-gradient(45deg, #B8860B, #DAA520);
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(218, 165, 32, 0.3);
+  box-shadow: 0 8px 20px rgba(218, 165, 32, 0.5);
 }
 
 .submit-btn:disabled {
@@ -338,10 +446,7 @@
   color: #fff;
 }
 
-.firearm-description {
-  color: #aaa;
-  font-style: italic;
-}
+/* firearm-description removed - not needed */
 
 .period-info {
   color: #ccc;
@@ -444,21 +549,24 @@
 }
 
 .retake-btn {
-  background: rgba(218, 165, 32, 0.2);
-  border: 2px solid rgba(218, 165, 32, 0.5);
-  color: #DAA520;
-  padding: 12px 20px;
-  border-radius: 10px;
+  background: linear-gradient(135deg, #4CAF50, #45a049);
+  border: none;
+  color: white;
+  padding: 16px 32px;
+  border-radius: 12px;
   cursor: pointer;
-  font-size: 0.95rem;
-  font-weight: 600;
+  font-size: 1.1rem;
+  font-weight: 700;
   transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .retake-btn:hover {
-  background: rgba(218, 165, 32, 0.3);
-  border-color: #DAA520;
-  transform: translateY(-2px);
+  background: linear-gradient(135deg, #45a049, #4CAF50);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
 }
 
 /* Mobile Responsiveness */
@@ -550,8 +658,7 @@
     font-size: 0.9rem;
   }
 
-  .period-info,
-  .firearm-description {
+  .period-info {
     font-size: 0.8rem;
   }
 }
@@ -620,8 +727,7 @@
     font-size: 0.8rem;
   }
 
-  .period-info,
-  .firearm-description {
+  .period-info {
     font-size: 0.75rem;
   }
 
@@ -637,6 +743,7 @@
   background: rgba(0, 0, 0, 0.1);
   border-radius: 15px;
   min-height: 360px;
+  overflow: visible; /* allow tooltips to overflow */
 }
 
 .results-timeline h3 {
@@ -660,6 +767,12 @@
   align-items: center;
   gap: 15px;
   padding-right: 10px;
+  overflow: visible; /* allow tooltips to overflow */
+}
+
+/* Tooltip styles for correct results (desktop only) */
+@media (min-width: 1025px) {
+  /* hover tooltips removed */
 }
 
 
@@ -679,10 +792,12 @@
   align-items: center;
   gap: 15px;
   min-width: 1200px;
-  padding: 30px 0;
+  padding: 30px 60px 30px 0; /* extra right padding so last card clears the arrow */
   height: 280px;
   overflow-x: auto;
   overflow-y: visible;
+  box-sizing: border-box;
+  /* scroll-snap-type removed to avoid fighting programmatic scroll */
 }
 
 /* removed .timeline-line (unused) */
@@ -703,12 +818,15 @@
   background: transparent;
   border-radius: 12px;
   transition: none;
-  padding: 10px 6px;
-  pointer-events: none;
+  padding: 8px 4px;
+  pointer-events: auto;
   user-select: none;
   -webkit-user-select: none;
   -webkit-touch-callout: none;
   -webkit-tap-highlight-color: transparent;
+  box-sizing: border-box;
+  overflow: visible;
+  /* scroll-snap-align removed to avoid fighting programmatic scroll */
 }
 
 /* Alternate the card content relative to the center line, not the entire slot */
@@ -749,41 +867,79 @@
 }
 
 .timeline-result-slot.incorrect .slot-number {
-  background: #F44336;
+  background: #FF9800;
 }
 
 .result-firearm-card {
   display: flex;
   flex-direction: column;
-  height: 180px;
-  width: 160px;
-  padding: 15px;
+  height: 160px;
+  width: 140px;
+  padding: 12px;
   border-radius: 12px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
   background: linear-gradient(145deg, #333333, #404040);
   margin: 0 auto;
-  pointer-events: none;
+  pointer-events: auto;
   user-select: none;
   -webkit-user-select: none;
   -webkit-touch-callout: none;
   -webkit-tap-highlight-color: transparent;
+  box-sizing: border-box;
+  max-width: 100%;
 }
 
-.firearm-image {
+.results-timeline .firearm-image {
   width: 100%;
   height: 80px;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 10px;
-  padding: 0;
+  padding: 8px;
+  background: white;
+  border-radius: 8px;
+  box-sizing: border-box;
+  position: relative;
 }
 
-.firearm-image img {
+.results-timeline .firearm-image img {
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
   border-radius: 8px;
+}
+
+.result-info-btn {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.5);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  cursor: pointer;
+}
+.result-info-btn:hover,
+.result-info-btn:focus-visible {
+  outline: none;
+  background: rgba(218,165,32,0.7);
+  border-color: rgba(218,165,32,0.9);
+}
+.result-info-btn.pulse-once {
+  animation: softPulse 1.2s ease-out 1;
+  box-shadow: 0 0 0 0 rgba(218,165,32,0.7);
+}
+@keyframes softPulse {
+  0% { box-shadow: 0 0 0 0 rgba(218,165,32,0.6); transform: scale(1); }
+  60% { box-shadow: 0 0 0 10px rgba(218,165,32,0); transform: scale(1.05); }
+  100% { box-shadow: 0 0 0 0 rgba(218,165,32,0); transform: scale(1); }
 }
 
 .firearm-info {
@@ -792,7 +948,7 @@
 
 .firearm-info h4 {
   font-size: 0.9rem;
-  color: #333;
+  color: #ffffff;
   margin-bottom: 0.5rem;
   font-weight: 600;
   line-height: 1.2;
@@ -806,12 +962,13 @@
 }
 
 .year-badge {
-  background: linear-gradient(135deg, #4CAF50, #45a049);
-  color: white;
-  padding: 0.3rem 0.8rem;
-  border-radius: 20px;
-  font-weight: bold;
-  font-size: 0.9rem;
+  background: #10B981; /* emerald-500 */
+  color: #0a0a0a;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.75rem; /* xs */
+  text-transform: uppercase;
   display: inline-block;
   margin: 0 auto;
 }
@@ -840,8 +997,8 @@
 }
 
 .timeline-result-slot.incorrect {
-  border: 2px solid #F44336;
-  background: rgba(244, 67, 54, 0.08);
+  border: 2px solid #FF9800;
+  background: rgba(255, 152, 0, 0.08);
 }
 
 .empty-result-slot {
@@ -862,7 +1019,14 @@
     padding: 20px 10px 30px 10px;
     min-height: 280px;
   }
-  .timeline-track { min-width: 900px; gap: 8px; padding: 25px 15px; height: 240px; }
+  .timeline-track {
+    min-width: 900px;
+    gap: 8px;
+    padding: 25px 15px;
+    height: 240px;
+    flex: 1;
+    width: 100%;
+  }
 
   .timeline-result-slot {
     flex: 0 0 160px;
@@ -871,17 +1035,20 @@
   }
 
   .result-firearm-card {
-    height: 160px;
-    width: 140px;
-    padding: 12px;
+    height: 140px;
+    width: 120px;
+    padding: 10px;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
   .firearm-info h4 {
     font-size: 0.85rem;
   }
 
-  .firearm-image {
-    height: 70px;
+  .results-timeline .firearm-image {
+    height: 60px;
+    padding: 6px;
   }
 }
 
@@ -889,7 +1056,12 @@
   .results-timeline {
     min-height: 260px;
   }
-  .timeline-track { min-width: 720px; height: 220px; }
+  .timeline-track {
+    min-width: 720px;
+    height: 220px;
+    flex: 1;
+    width: 100%;
+  }
 
   .timeline-result-slot {
     flex: 0 0 140px;
@@ -898,13 +1070,16 @@
   }
 
   .result-firearm-card {
-    height: 140px;
-    width: 120px;
-    padding: 10px;
+    height: 120px;
+    width: 100px;
+    padding: 8px;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
-  .firearm-image {
-    height: 60px;
+  .results-timeline .firearm-image {
+    height: 50px;
+    padding: 5px;
   }
 
   .firearm-info h4 {

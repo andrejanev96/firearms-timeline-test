@@ -5,6 +5,8 @@ import type { EmailFormData } from '@/types/quiz';
 import { useQuizStore } from '@/stores/quizStore';
 import { trackQuizEvents } from '@/utils/analytics';
 import { getShareUrls, openShareWindow } from '@/utils/share';
+import ImageViewerModal from '@/components/ui/ImageViewerModal';
+import type { Firearm } from '@/types/quiz';
 
 const Results: React.FC = () => {
   const { 
@@ -20,6 +22,27 @@ const Results: React.FC = () => {
   const timelineRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
+
+  // Local image viewer for Results
+  const [viewerOpen, setViewerOpen] = useState(false);
+  const [viewerItems, setViewerItems] = useState<Firearm[]>([]);
+  const [viewerIndex, setViewerIndex] = useState(0);
+  const viewerReturnFocusRef = useRef<HTMLElement | null>(null);
+  const openViewer = (items: Firearm[], index: number, returnFocusEl?: HTMLElement | null) => {
+    setViewerItems(items);
+    setViewerIndex(index);
+    viewerReturnFocusRef.current = returnFocusEl ?? null;
+    setViewerOpen(true);
+  };
+  const closeViewer = () => setViewerOpen(false);
+  const handleNavigate = (nextIndex: number) => setViewerIndex(nextIndex);
+
+  // Soft pulse to draw attention to info buttons briefly on first mount
+  const [showInfoPulse, setShowInfoPulse] = useState(true);
+  useEffect(() => {
+    const t = setTimeout(() => setShowInfoPulse(false), 1200);
+    return () => clearTimeout(t);
+  }, []);
 
   const { 
     register, 
@@ -38,17 +61,57 @@ const Results: React.FC = () => {
     }
   }, [setFocus, resultsUnlocked]);
 
-  // Scroll helpers for results timeline
-  const scrollLeft = () => {
-    if (timelineRef.current) {
-      timelineRef.current.scrollBy({ left: -200, behavior: 'smooth' });
-    }
+  // Scroll helpers for results timeline — align to cards and ensure the last is fully visible
+  const getElAndEnd = () => {
+    const el = timelineRef.current;
+    if (!el) return null;
+    const end = Math.max(0, el.scrollWidth - el.clientWidth);
+    return { el, end };
   };
 
   const scrollRight = () => {
-    if (timelineRef.current) {
-      timelineRef.current.scrollBy({ left: 200, behavior: 'smooth' });
+    const m = getElAndEnd();
+    if (!m) return;
+    const { el, end } = m;
+    const slots = Array.from(el.querySelectorAll<HTMLElement>('.timeline-result-slot'));
+    if (slots.length === 0) return;
+    // Account for right arrow overlay width if present
+    const rightBtn = el.parentElement?.querySelector('.scroll-right') as HTMLElement | null;
+    const rightOverlay = rightBtn ? rightBtn.offsetWidth + 12 : 0; // include margin
+    const current = el.scrollLeft;
+    const visibleRight = current + el.clientWidth - rightOverlay;
+    const epsilon = 2;
+    // Find first slot whose right edge is beyond the current visible area
+    const nextIndex = slots.findIndex((s) => (s.offsetLeft + s.offsetWidth) > (visibleRight + epsilon));
+    if (nextIndex === -1) {
+      el.scrollTo({ left: end, behavior: 'smooth' });
+      return;
     }
+    // If this is the last or near-last cards, snap to the true end
+    if (nextIndex >= slots.length - 1) {
+      el.scrollTo({ left: end, behavior: 'smooth' });
+      return;
+    }
+    // Otherwise align the next card to the left start for reliable snapping
+    let next = Math.max(0, Math.min(end, slots[nextIndex].offsetLeft));
+    el.scrollTo({ left: next, behavior: 'smooth' });
+  };
+
+  const scrollLeft = () => {
+    const m = getElAndEnd();
+    if (!m) return;
+    const { el } = m;
+    const slots = Array.from(el.querySelectorAll<HTMLElement>('.timeline-result-slot'));
+    if (slots.length === 0) return;
+    const current = el.scrollLeft;
+    const epsilon = 2;
+    // Find the last slot whose left edge is strictly before current viewport
+    // Find the first slot that is currently fully or partially visible on the left edge
+    // then target the previous one to move left by one card; if none, go to 0.
+    const index = slots.findIndex((s) => (s.offsetLeft + s.offsetWidth) > (current + epsilon));
+    const prevIndex = index > 0 ? index - 1 : -1;
+    const next = prevIndex >= 0 ? Math.max(0, slots[prevIndex].offsetLeft) : 0;
+    el.scrollTo({ left: next, behavior: 'smooth' });
   };
 
   const checkScrollPosition = () => {
@@ -103,11 +166,12 @@ const Results: React.FC = () => {
 
   // Get performance message based on score
   const getPerformanceMessage = (percentage: number) => {
-    if (percentage >= 90) return { message: "Excellent knowledge of US firearms history!", color: "#4CAF50" };
-    if (percentage >= 75) return { message: "Great understanding of the timeline!", color: "#8BC34A" };
-    if (percentage >= 60) return { message: "Good grasp of firearms chronology!", color: "#FFC107" };
-    if (percentage >= 45) return { message: "Keep studying US firearms history!", color: "#FF9800" };
-    return { message: "Time to brush up on firearms history!", color: "#FF5722" };
+    if (percentage >= 90) return { message: "Outstanding firearms historian! You nailed the timeline!", color: "#4CAF50" };
+    if (percentage >= 75) return { message: "Excellent work! You've got a solid grasp of the chronology!", color: "#8BC34A" };
+    if (percentage >= 60) return { message: "Good job! You're getting the hang of firearms history!", color: "#FFC107" };
+    if (percentage >= 45) return { message: "Not bad! Ready to take another shot at it?", color: "#FF9800" };
+    if (percentage >= 25) return { message: "Tough round! You'll crush it on the next try!", color: "#FF9800" };
+    return { message: "Challenging timeline! Ready for another shot?", color: "#FF9800" };
   };
 
   const performance = getPerformanceMessage(results.percentage);
@@ -143,13 +207,13 @@ const Results: React.FC = () => {
           >
             <div className="gate-header">
               <h2>American Firearms Timeline Challenge Complete!</h2>
-              <p>You've placed all 12 US firearms on the historical timeline. Enter your email to unlock your detailed results and see how accurately you traced American firearms history.</p>
+              <p className="gate-subheading">See where you got it right and wrong — plus key facts about each firearm.</p>
             </div>
 
-            {/* Quick Preview Button */}
+            {/* Quick Preview Button - Secondary Action */}
             <div className="preview-section">
-              <button 
-                className="preview-btn"
+              <button
+                className="preview-btn secondary-action"
                 onClick={() => {
                   setShowSneakPeek(!showSneakPeek);
                   if (!showSneakPeek) {
@@ -172,6 +236,23 @@ const Results: React.FC = () => {
               >
                 <div className="results-breakdown">
                   <h4>Quick Summary</h4>
+                  <p className="playful-msg">
+                    {results.correctCount <= 2 ? `Ouch — only ${results.correctCount}/${results.totalCount} correct. Don’t worry, most people improve on their second try!` :
+                     results.correctCount < results.totalCount / 2 ? `Nice effort — ${results.correctCount}/${results.totalCount} correct. You’re on the right track!` :
+                     results.correctCount < results.totalCount ? `Solid work — ${results.correctCount}/${results.totalCount} correct. A few tweaks and you’ll be there!` :
+                     `Perfect score — ${results.correctCount}/${results.totalCount}!`}
+                  </p>
+                  <div className="mini-progress">
+                    <div 
+                      className="mini-circle"
+                      style={{ background: `conic-gradient(#DAA520 ${(results.percentage * 3.6).toFixed(1)}deg, rgba(255,255,255,0.12) 0)` }}
+                    >
+                      <div className="mini-inner">
+                        <span className="mini-percent">{results.percentage}%</span>
+                      </div>
+                    </div>
+                    <div className="mini-caption">{results.correctCount} / {results.totalCount} correct</div>
+                  </div>
                   <div className="breakdown-item">
                     <span>Score:</span>
                     <span>{results.correctCount} / {results.totalCount}</span>
@@ -202,8 +283,8 @@ const Results: React.FC = () => {
               </motion.div>
             )}
 
-            {/* Email Form */}
-            <form onSubmit={handleSubmit(onSubmit)} className="email-form">
+            {/* Email Form - Primary Action */}
+            <form onSubmit={handleSubmit(onSubmit)} className="email-form primary-action">
               <div className="form-group">
                 <label htmlFor="email">Email Address</label>
                 <input
@@ -245,14 +326,7 @@ const Results: React.FC = () => {
                     {...register('subscribeToBulletin')}
                   />
                   <span className="checkmark"></span>
-                  <span className="checkbox-text">
-                    Yes, I'd like to receive the Ammo.com BULLETin newsletter with:
-                    <ul>
-                      <li>Weekly ammunition deals and discounts</li>
-                      <li>Historical firearms content and educational articles</li>
-                      <li>New product launches and ammunition reviews</li>
-                    </ul>
-                  </span>
+                  <span className="checkbox-text">Get my results + free weekly ammo deals</span>
                 </label>
               </div>
 
@@ -261,14 +335,25 @@ const Results: React.FC = () => {
                 className="submit-btn"
                 disabled={!isValid || isSubmitting}
               >
-                {isSubmitting ? 'Unlocking Results...' : 'Unlock My Results 🔓'}
+                {isSubmitting ? 'Unlocking Results...' : 'Show Me My Results 🔓'}
               </button>
 
-              <p className="privacy-note">
-                Your email will be used only for sending your results and the optional newsletter. 
-                We respect your privacy and won't share your information.
-              </p>
             </form>
+
+            {/* Benefits Section - Supporting Content */}
+            <div className="unlock-section">
+              <p className="unlock-intro">Here's what you get when you enter your email:</p>
+              <ul className="unlock-benefits">
+                <li>✅ Your detailed score & timeline</li>
+                <li>✅ Which answers you nailed (and which to retry)</li>
+                <li>✅ Key historical facts about each firearm</li>
+              </ul>
+            </div>
+
+            <p className="privacy-note">
+              Your email will be used only for sending your results and the optional newsletter.
+              We respect your privacy and won't share your information.
+            </p>
           </motion.div>
         </div>
       </div>
@@ -307,8 +392,7 @@ const Results: React.FC = () => {
         <div className="results-timeline">
           <h3>Your Timeline Results</h3>
           <p className="timeline-instructions">
-            Green positions show correct placements with historical details. 
-            Red positions were incorrect - try the quiz again to learn more!
+            <span style={{color: '#4CAF50', fontWeight: 'bold'}}>Green = Perfect placement</span>, <span style={{color: '#FF9800', fontWeight: 'bold'}}>Orange = Try again</span> - ready for another round?
           </p>
           
           <div className="timeline-results-container">
@@ -329,24 +413,61 @@ const Results: React.FC = () => {
                 return (
                   <div
                     key={position}
-                    className={`timeline-result-slot ${isCorrect ? 'correct' : 'incorrect'} ${userFirearm ? 'filled' : 'empty'}`}
+                    className={`timeline-result-slot ${isCorrect ? 'correct' : 'incorrect'} ${userFirearm ? 'filled' : 'empty'} ${isCorrect ? 'has-tooltip' : ''}`}
                   >
                     <div className="slot-number">{position + 1}</div>
                     {userFirearm ? (
-                      <div className="result-firearm-card">
+                      <div className={`result-firearm-card`}>
                         <div className="firearm-image">
-                          <img src={userFirearm.image} alt={userFirearm.name} />
+                          <img
+                            src={userFirearm.image}
+                            alt={userFirearm.name}
+                            onClick={(e) => {
+                              // Build typed viewer items from all filled slots
+                              const placed = orderedFirearms.filter(Boolean) as Firearm[];
+                              const items: Firearm[] = placed.map((f) => {
+                                const userPos = orderedFirearms.findIndex((of) => of?.id === f.id);
+                                return {
+                                  ...f,
+                                  correct: f.correctPosition === userPos,
+                                  fact: f.description,
+                                };
+                              });
+                              const idx = placed.findIndex((f) => f.id === userFirearm.id);
+                              openViewer(items, Math.max(0, idx), e.currentTarget as HTMLElement);
+                            }}
+                            style={{ cursor: 'pointer' }}
+                          />
+                          {isCorrect && (
+                            <button
+                              type="button"
+                              className={`result-info-btn ${showInfoPulse ? 'pulse-once' : ''}`}
+                              aria-label="View details"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                const placed = orderedFirearms.filter(Boolean) as Firearm[];
+                                const items: Firearm[] = placed.map((f) => {
+                                  const userPos = orderedFirearms.findIndex((of) => of?.id === f.id);
+                                  return {
+                                    ...f,
+                                    correct: f.correctPosition === userPos,
+                                    fact: f.description,
+                                  };
+                                });
+                                const idx = placed.findIndex((f) => f.id === userFirearm.id);
+                                openViewer(items, Math.max(0, idx), e.currentTarget as HTMLElement);
+                              }}
+                              title="View year & fact"
+                            >
+                              i
+                            </button>
+                          )}
                         </div>
                         <div className="firearm-info">
                           <h4>{userFirearm.name}</h4>
-                          {isCorrect ? (
+                          {isCorrect && (
                             <div className="correct-info">
                               <span className="year-badge">{userFirearm.year}</span>
-                              <div className="status-indicator">✅</div>
-                            </div>
-                          ) : (
-                            <div className="incorrect-info">
-                              <div className="status-indicator">❌</div>
                             </div>
                           )}
                         </div>
@@ -356,12 +477,10 @@ const Results: React.FC = () => {
                         <div className="firearm-image" />
                         <div className="firearm-info">
                           <h4>No firearm placed</h4>
-                          <div className="incorrect-info">
-                            <div className="status-indicator">❌</div>
-                          </div>
                         </div>
                       </div>
                     )}
+                    {/* Hover tooltips removed per requirements */}
                   </div>
                 );
               })}
@@ -426,23 +545,37 @@ const Results: React.FC = () => {
               </svg>
             </button>
           </div>
-          <p className="retake-intro">Ready to improve your score and learn more?</p>
+          <p className="retake-intro">Ready to master the timeline? Every attempt makes you sharper!</p>
           <div className="retake-actions">
             <button
               onClick={() => useQuizStore.getState().resetQuiz()}
               className="retake-btn"
             >
-              🔄 Try Again
+              🎯 Take Another Shot
             </button>
             <button
               onClick={() => useQuizStore.getState().shuffleAndRetry()}
               className="retake-btn"
+              title="New random order - different firearms each time!"
             >
-              🔀 Shuffle and Retry
+              🔀 Fresh Challenge
+              <span style={{fontSize: '0.8em', opacity: 0.9, display: 'block', fontWeight: 'normal', textTransform: 'none', letterSpacing: 'normal', marginTop: '2px'}}>
+                New order every time
+              </span>
             </button>
           </div>
         </div>
       </div>
+      {/* Results Image Viewer */}
+      <ImageViewerModal
+        open={viewerOpen}
+        items={viewerItems}
+        index={viewerIndex}
+        onClose={closeViewer}
+        onNavigate={handleNavigate}
+        loop={true}
+        returnFocusEl={viewerReturnFocusRef.current}
+      />
     </motion.div>
   );
 };
