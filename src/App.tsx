@@ -107,16 +107,10 @@ const MobileCardStack: React.FC<{
             const isOccupied = orderedFirearms[index] !== null;
             const occupiedFirearm = orderedFirearms[index];
 
-            // Add decade markers for visual timeline
-            const decadeMarkers = ['1750s', '1850s', '1950s'];
-            const decadeIndex = Math.floor(index / 4);
-            const dataDecade = decadeIndex < decadeMarkers.length ? decadeMarkers[decadeIndex] : '';
-
             return (
               <div
                 key={index}
                 className={`mobile-timeline-period ${isOccupied ? 'occupied' : 'available'}`}
-                data-decade={index % 4 === 0 ? dataDecade : ''}
                 onClick={() => {
                   // Allow selecting either empty or occupied (swap) when a firearm is selected
                   if (selectedFirearm) {
