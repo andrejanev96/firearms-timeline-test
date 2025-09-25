@@ -5,6 +5,8 @@
   box-sizing: border-box;
 }
 
+/* Removed device-specific selection tweaks in landscape/minor portrait; portrait is primary and landscape is blocked */
+
 /* Body and Root fill viewport */
 body {
   min-height: 100vh;
@@ -305,10 +307,21 @@ body {
   width: var(--timeline-card-width);
   min-height: var(--timeline-card-min-height);
   margin: 0;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.1s ease;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease, border-color 0.1s ease;
   box-shadow: var(--shadow-sm);
   border-radius: var(--radius);
   overflow: hidden;
+}
+
+/* Animation classes for timeline placement */
+.firearm-card.in-timeline.newly-placed {
+  animation: slideInPlace 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards,
+             gentlePulse 1.2s ease-out 0.6s;
+}
+
+.firearm-card.in-timeline:hover {
+  transform: scale(1.02) translateY(-1px);
+  box-shadow: 0 4px 12px rgba(218, 165, 32, 0.3);
 }
 
 /* Hover magnifier and subtle zoom */
@@ -517,9 +530,16 @@ body {
   padding: 10px 14px;
   box-shadow: 0 6px 18px rgba(0,0,0,0.35);
   font-size: 0.95rem;
-  }
+}
 
 /* removed .timeline-card-wrapper and related animations (unused) */
+
+/* Hide mobile progress globally (phones + tablets) */
+.mobile-progress { display: none !important; visibility: hidden !important; height: 0 !important; margin: 0 !important; padding: 0 !important; }
+.mobile-progress .progress-dots, .mobile-progress .progress-text { display: none !important; }
+
+/* Hide mobile progress globally (phones + tablets) */
+.mobile-progress { display: none !important; }
 
 /* Selection Mode Styles */
 .firearm-card.selected {
@@ -721,11 +741,11 @@ body {
 .stacked-card {
   position: absolute;
   left: 50%;
-  top: 50%;
+  top: 50%; /* Return to center - let parent flexbox handle the overall positioning */
   width: auto;
   height: auto;
   max-width: 90%;
-  max-height: 80%;
+  max-height: 65%; /* Constrain height to ensure space for navigation */
   border-radius: 20px;
   transition: transform 0.15s ease, filter 0.15s ease, opacity 0.15s ease;
 }
@@ -768,6 +788,89 @@ body {
   overflow: hidden;
 }
 
+/* Image + arrows wrapper to anchor arrows to the image container */
+.image-nav-wrap {
+  position: relative;
+  width: min(92vw, 900px);
+  max-height: clamp(200px, 60vh, 380px);
+  margin: 0 auto;
+  padding-inline: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Neutralize the default card chrome inside the image wrapper so it doesn't protrude */
+.image-nav-wrap .firearm-card.mobile-card {
+  background: transparent !important;
+  box-shadow: none !important;
+  border: 0 !important;
+  padding: 0 !important;
+  width: 100% !important;
+  height: auto !important;
+  border-radius: 0 !important;
+  overflow: visible !important;
+}
+.image-nav-wrap .firearm-card.mobile-card::before { display: none !important; }
+
+.image-nav-wrap .nav-btn.prev-btn,
+.image-nav-wrap .nav-btn.next-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 40;
+  width: 64px;
+  height: 64px;
+  background: #DAA520;
+  color: #000;
+  border: none;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.35);
+  opacity: 1;
+}
+.image-nav-wrap .nav-btn.prev-btn { left: 8px; }
+.image-nav-wrap .nav-btn.next-btn { right: 8px; }
+
+/* Confine image container and provide arrow spacing */
+.image-nav-wrap .firearm-image {
+  width: 100% !important;
+  height: clamp(200px, 60vh, 380px) !important;
+  margin: 0 auto !important;
+  border-radius: 16px;
+  background: #ffffff;
+  border: 3px solid rgba(218, 165, 32, 0.3);
+  padding: 10px 10px; /* vertical/horizontal */
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.image-nav-wrap .firearm-image img {
+  height: 100% !important;
+  width: auto !important;
+  max-width: calc(100% - 88px) !important; /* leave space for arrows */
+  object-fit: contain !important;
+  display: block;
+}
+
+/* Title under the container with consistent spacing */
+.image-nav-wrap + .firearm-name,
+.image-nav-wrap .firearm-name { /* fallback if title renders inside card following image */
+  margin-top: 12px !important;
+  text-align: center !important;
+}
+
+/* Bottom CTA centered and comfortable width */
+@media (max-width: 1199px) {
+  .mobile-navigation { justify-content: center; }
+  .mobile-navigation .select-btn {
+    position: sticky;
+    bottom: calc(env(safe-area-inset-bottom) + 14px);
+    width: clamp(80%, 90vw, 700px);
+    margin: 8px auto 0;
+  }
+}
+
 .firearm-card.mobile-card::before {
   content: "";
   position: absolute;
@@ -795,9 +898,11 @@ body {
   margin: 0 auto 12px;
   font-size: 48px;
   border-radius: 15px;
-  background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+  background: white; /* White background for better visibility */
   border: 3px solid rgba(218, 165, 32, 0.3);
   flex-shrink: 0;
+  padding: 8px; /* Add padding to separate image from white background */
+  box-sizing: border-box;
 }
 
 .mobile-card .firearm-name {
@@ -995,18 +1100,20 @@ body {
   width: 60px;
   height: 60px;
   border-radius: 10px;
-  background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+  background: white;
   border: 2px solid rgba(218, 165, 32, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  padding: 4px;
 }
 
 .selected-firearm-image img {
   width: 100%;
   height: auto;
-  border-radius: 8px;
+  border-radius: 6px;
+  object-fit: contain;
 }
 
 .selected-firearm-text {
@@ -1571,6 +1678,69 @@ body {
   }
 }
 
+/* Slide-in animation for when cards are placed in timeline positions */
+@keyframes slideInPlace {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) translateY(-20px);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.05) translateY(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Gentle pulse for newly placed items */
+@keyframes gentlePulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(76, 175, 80, 0.1);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.0);
+  }
+}
+
+/* Card entrance/exit animations for mobile stack (opacity-only to avoid transform conflicts) */
+@keyframes cardEnter {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes cardExit {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+/* Explicit opacity-only helpers used in tablet overrides */
+@keyframes fadeInOpacity {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeOutOpacity {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+/* Overlay exit animation */
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+
 /* Enhanced responsive grid for different screen sizes */
 @media (min-width: 1200px) {
   .firearms-grid {
@@ -1627,7 +1797,67 @@ body {
     width: var(--tablet-card-stack-width);
     height: var(--tablet-card-stack-height);
     max-width: 85vw;
-    max-height: 60vh;
+    max-height: 70vh;
+    animation: fadeInOpacity 0.25s ease-out;
+  }
+
+  /* Use opacity-only exit animation to preserve centering */
+  .stacked-card.exiting {
+    animation: fadeOutOpacity 0.2s ease-out;
+  }
+
+  /* Use standard card styling; only enlarge image inside the card for tablets */
+
+  /* Enlarge image inside the card; responsive sizing for tablets */
+  .mobile-card .firearm-image {
+    width: auto !important;
+    max-width: clamp(320px, 82vw, 820px) !important;
+    height: clamp(220px, 50vh, 560px) !important;
+    margin: 0 auto 14px;
+    border-radius: 16px;
+    background: #ffffff;
+    border: 4px solid rgba(218, 165, 32, 0.35);
+    padding: 12px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Title above image on tablets */
+  .mobile-card .firearm-name {
+    order: -1;
+    text-align: center;
+    margin: 0 0 8px 0;
+    max-width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .mobile-card:hover .firearm-image {
+    transform: translateY(-2px);
+  }
+
+  .mobile-card:active .firearm-image {
+    transform: translateY(0);
+    transition: all 0.1s ease;
+  }
+
+  .mobile-card .firearm-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 12px;
+  }
+
+  /* Keep original title look; slightly larger for tablets and responsive */
+  .mobile-card .firearm-name {
+    font-size: clamp(1rem, 2.4vw, 1.5rem);
+    margin: 10px 0 12px;
+    text-align: center;
+    max-width: 90%;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   .select-btn {
@@ -1637,13 +1867,77 @@ body {
     font-size: 1.1rem;
     padding: 14px 24px;
     border-radius: 28px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .select-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(76, 175, 80, 0.3);
+  }
+
+  .select-btn:active {
+    transform: translateY(0);
+    transition: all 0.1s ease;
+  }
+
+  .select-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.6s ease;
+  }
+
+  .select-btn:hover::before {
+    left: 100%;
   }
 
   .nav-btn {
-    font-size: 1.2rem;
-    padding: 10px;
-    width: 50px;
-    height: 50px;
+    font-size: 1.8rem; /* Much larger for tablet touch */
+    padding: 15px;
+    width: 70px; /* Increased from 50px */
+    height: 70px; /* Increased from 50px */
+    background: rgba(218, 165, 32, 0.3); /* Slightly more visible */
+    border: 3px solid #daa520; /* Thicker border */
+    box-shadow: 0 4px 12px rgba(218, 165, 32, 0.2); /* Add subtle shadow */
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .nav-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: all 0.3s ease;
+  }
+
+  .nav-btn:not(:disabled):hover {
+    background: #daa520;
+    color: white;
+    transform: scale(1.05); /* Reduced from 1.1 for tablet */
+    box-shadow: 0 6px 20px rgba(218, 165, 32, 0.4);
+  }
+
+  .nav-btn:not(:disabled):active {
+    transform: scale(1.02);
+    transition: all 0.1s ease;
+  }
+
+  .nav-btn:not(:disabled):active::before {
+    width: 100px;
+    height: 100px;
   }
 
   .mobile-timeline-overlay {
@@ -1655,6 +1949,12 @@ body {
     flex-direction: column;
     justify-content: flex-start;
     box-sizing: border-box;
+    animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(8px);
+  }
+
+  .mobile-timeline-overlay.exiting {
+    animation: fadeOut 0.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
   }
 
   .mobile-timeline-header {
@@ -1668,25 +1968,80 @@ body {
   }
 
   .mobile-timeline-periods {
-    gap: 18px;
-    padding: 0 20px;
     flex: 1;
+    display: flex;
+    flex-direction: row; /* default for wider tablets within this range; overridden for iPad sizes below */
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 20px;
+    justify-content: center;
+    align-items: flex-start;
     overflow-y: auto;
     width: 100%;
-    max-width: 800px;
+    max-width: 900px;
     margin: 0 auto;
     padding-bottom: 40px;
+    position: relative;
+  }
+
+  /* Add decade timeline visual */
+  .mobile-timeline-periods::before {
+    content: '';
+    position: absolute;
+    top: 60px;
+    left: 20px;
+    right: 20px;
+    height: 2px;
+    background: linear-gradient(to right,
+      rgba(218, 165, 32, 0.3) 0%,
+      rgba(218, 165, 32, 0.6) 50%,
+      rgba(218, 165, 32, 0.3) 100%
+    );
+    border-radius: 1px;
+    z-index: 0;
   }
 
   .mobile-timeline-period {
-    padding: 20px 18px;
-    min-height: 80px;
-    width: 100%;
-    max-width: none;
+    padding: 12px 8px;
+    min-height: 65px;
+    width: calc(25% - 9px); /* default for this range; overridden for iPad sizes below */
+    max-width: 160px;
     text-align: center;
     margin-bottom: 12px;
-    border-radius: 16px;
-    transition: all 0.2s ease;
+    border-radius: 12px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    z-index: 1;
+    transform: scale(1);
+  }
+
+  .mobile-timeline-period:hover {
+    transform: scale(1.02) translateY(-1px);
+    box-shadow: 0 4px 12px rgba(218, 165, 32, 0.2);
+  }
+
+  .mobile-timeline-period:active {
+    transform: scale(0.98);
+    transition: all 0.1s ease;
+  }
+
+  .mobile-timeline-period:nth-child(4n+1) {
+    /* Every 4th starting from 1st - add decade markers */
+    margin-top: 20px;
+  }
+
+  .mobile-timeline-period:nth-child(1)::after,
+  .mobile-timeline-period:nth-child(5)::after,
+  .mobile-timeline-period:nth-child(9)::after {
+    content: attr(data-decade);
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.75rem;
+    color: rgba(218, 165, 32, 0.8);
+    font-weight: 500;
+    white-space: nowrap;
   }
 
   .mobile-period-label {
@@ -1704,8 +2059,70 @@ body {
   }
 }
 
-/* Landscape orientation message for mobile */
-@media (max-width: 768px) and (orientation: landscape) {
+/* iPad Pro (portrait and landscape up to 1024 width): vertical list of 12 rows */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .mobile-timeline-periods {
+    flex-direction: column !important;
+    flex-wrap: nowrap !important;
+    align-items: stretch !important;
+    justify-content: flex-start !important;
+    gap: 12px !important;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 10px 20px 40px 20px;
+    overflow-y: auto;
+  }
+
+  .mobile-timeline-periods::before { display: none !important; }
+
+  .mobile-timeline-period {
+    width: 100% !important;
+    max-width: none !important;
+    text-align: left;
+    padding: 14px 16px;
+  }
+
+  /* Remove decade badges used for grid layout */
+  .mobile-timeline-period:nth-child(4n+1) { margin-top: 0 !important; }
+  .mobile-timeline-period::after { display: none !important; }
+
+  .mobile-period-label { text-align: left; margin-bottom: 6px; }
+  .mobile-period-content { text-align: center; }
+}
+
+/* iPad Air landscape (1180x820) — vertical 12-row overlay */
+@media (min-width: 1025px) and (max-width: 1180px) and (orientation: landscape) {
+  .mobile-timeline-periods {
+    flex-direction: column !important;
+    flex-wrap: nowrap !important;
+    align-items: stretch !important;
+    justify-content: flex-start !important;
+    gap: 12px !important;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 10px 20px 40px 20px;
+    overflow-y: auto;
+  }
+
+  .mobile-timeline-periods::before { display: none !important; }
+
+  .mobile-timeline-period {
+    width: 100% !important;
+    max-width: none !important;
+    text-align: left;
+    padding: 14px 16px;
+  }
+
+  .mobile-timeline-period:nth-child(4n+1) { margin-top: 0 !important; }
+  .mobile-timeline-period::after { display: none !important; }
+
+  .mobile-period-label { text-align: left; margin-bottom: 6px; }
+  .mobile-period-content { text-align: center; }
+}
+
+/* Landscape orientation overlay for all touch devices (phones + tablets) */
+@media (orientation: landscape) and (hover: none) and (pointer: coarse) {
+  html, body { overflow: hidden; }
   body::before {
     content: "";
     position: fixed;
@@ -1713,7 +2130,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.95);
+    background: #000; /* fully black out background */
     z-index: 9999;
     display: flex;
     align-items: center;
@@ -2024,13 +2441,27 @@ body {
   }
 
   .mobile-card .firearm-image {
-    width: 100px;
-    height: 100px;
-    font-size: 48px;
+    width: auto;
+    max-width: clamp(240px, 92vw, 560px);
+    height: clamp(160px, 40vh, 360px);
+    margin: 0 auto 12px;
+    border-radius: 16px;
+    background: #ffffff;
+    border: 3px solid rgba(218, 165, 32, 0.3);
+    padding: 10px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
+  .mobile-card .firearm-image img { width: 100%; height: 100%; object-fit: contain; border-radius: 12px; }
+
   .mobile-card .firearm-name {
-    font-size: 1.2rem;
+    font-size: clamp(1rem, 4.5vw, 1.25rem);
+    text-align: center;
+    margin: 8px auto 12px;
+    max-width: 92%;
   }
 
   /* mobile-card firearm-description removed - not needed */
@@ -2068,6 +2499,7 @@ body {
   }
 }
 
+
 /* Touch improvements for mobile */
 @media (hover: none) and (pointer: coarse) {
   .firearm-card:hover {
@@ -2086,5 +2518,138 @@ body {
 
   .select-btn:hover {
     transform: none;
+  }
+}
+
+/* Portrait touch devices (phones + tablets):
+   Constrain card stack and make image flex to available space so it never overlaps hint/CTA */
+@media (max-width: 1199px) and (orientation: portrait) and (hover: none) and (pointer: coarse) {
+  .mobile-card-container { position: relative; min-height: 100svh; display: flex; flex-direction: column; }
+  .card-stack {
+    height: clamp(300px, 52vh, 560px);
+    overflow: hidden; /* prevent visual spill into hint/CTA */
+    margin-top: auto;  /* center stack vertically within viewport area */
+    margin-bottom: auto;
+  }
+
+  .stacked-card {
+    position: static !important;
+    left: auto !important;
+    top: auto !important;
+    transform: none !important;
+    width: auto !important;
+    height: auto !important;
+    max-height: 100% !important;
+  }
+
+  .firearm-card.mobile-card {
+    height: 100% !important;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+  }
+
+  .mobile-card .firearm-name {
+    order: -1;
+    margin: 0 0 8px 0;
+    text-align: center;
+    max-width: 92%;
+  }
+
+  .mobile-card .firearm-image {
+    flex: 1 1 auto; /* take remaining space safely */
+    width: 100%;
+    max-width: min(88vw, 700px);
+    height: auto;
+    max-height: 100%;
+    background: #fff;
+    border-radius: 14px;
+    border: 3px solid rgba(218, 165, 32, 0.3);
+    padding: 10px;
+    box-sizing: border-box;
+    display: flex;             /* center image inside container */
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;            /* horizontally center container if narrower */
+  }
+
+  .mobile-card .firearm-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+
+  /* Use arrows anchored to the image wrapper; do not fix to viewport here */
+  .nav-btn.prev-btn,
+  .nav-btn.next-btn { position: static; }
+
+  /* Keep only the Select button at the bottom, centered */
+  .mobile-navigation { justify-content: center; }
+  .mobile-navigation .nav-btn.prev-btn,
+  .mobile-navigation .nav-btn.next-btn { pointer-events: auto; }
+  .mobile-navigation .select-btn {
+    position: sticky;
+    bottom: calc(env(safe-area-inset-bottom) + 14px);
+    margin: 8px auto 0;
+    width: clamp(80%, 90vw, 700px);
+  }
+}
+
+
+
+/* General responsive image container + title spacing for phones/tablets */
+@media (max-width: 1199px) {
+  .mobile-card .firearm-image {
+    width: min(92vw, 900px) !important;
+    height: clamp(180px, 55vh, 400px) !important;
+    max-height: clamp(180px, 55vh, 400px) !important;
+    margin: 0 auto !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .mobile-card .firearm-image img {
+    height: 100% !important;
+    width: auto !important;
+    object-fit: contain !important;
+    display: block !important;
+  }
+
+  .mobile-card .firearm-name {
+    order: 0 !important; /* ensure below image */
+    margin: 12px auto 8px !important;
+    text-align: center !important;
+    max-width: 92% !important;
+  }
+}
+
+/* Tablet overrides to prevent clipping and hide redundant progress */
+@media (min-width: 769px) and (max-width: 1199px) {
+  .mobile-card-container {
+    padding: 15px 15px 120px; /* keep room for nav */
+    min-height: 100vh; /* full viewport */
+    justify-content: flex-start;
+    overflow: visible;
+    margin: 0;
+  }
+
+  .mobile-progress { display: none; }
+
+  .card-stack {
+    flex: 1;
+    min-height: 0;
+    height: auto;
+    margin: 10px 0;
+    overflow: visible;
+  }
+
+  .stacked-card {
+    width: auto;
+    height: auto;
+    max-width: 90%;
+    max-height: 60vh;
   }
 }

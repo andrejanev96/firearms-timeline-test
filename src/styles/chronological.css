@@ -453,6 +453,31 @@
   }
 }
 
+/* iPad Pro portrait (1024x1366) — mimic 1366x1024 desktop-like timeline */
+@media (min-width: 769px) and (max-width: 1024px) and (orientation: portrait) {
+  /* Use desktop-ish track sizing and spacing */
+  .timeline-track {
+    min-width: calc(100vw - 200px) !important;
+    height: 280px;
+    gap: 15px;
+    padding: 30px 60px 30px 0;
+  }
+
+  /* Restore variable-driven slot sizing instead of tiny 55px overrides */
+  .timeline-slot {
+    min-width: var(--timeline-slot-min-width) !important;
+  }
+
+  .firearm-wrapper {
+    width: var(--timeline-card-width) !important;
+  }
+
+  .empty-slot {
+    width: var(--timeline-empty-slot-width) !important;
+    height: var(--timeline-empty-slot-height) !important;
+  }
+}
+
 /* Mobile tablet (768px) - optimized for 12 fixed positions */
 @media (max-width: 768px) {
   .chronological-timeline {

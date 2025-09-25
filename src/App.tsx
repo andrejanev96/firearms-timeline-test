@@ -107,10 +107,16 @@ const MobileCardStack: React.FC<{
             const isOccupied = orderedFirearms[index] !== null;
             const occupiedFirearm = orderedFirearms[index];
 
+            // Add decade markers for visual timeline
+            const decadeMarkers = ['1750s', '1850s', '1950s'];
+            const decadeIndex = Math.floor(index / 4);
+            const dataDecade = decadeIndex < decadeMarkers.length ? decadeMarkers[decadeIndex] : '';
+
             return (
               <div
                 key={index}
                 className={`mobile-timeline-period ${isOccupied ? 'occupied' : 'available'}`}
+                data-decade={index % 4 === 0 ? dataDecade : ''}
                 onClick={() => {
                   // Allow selecting either empty or occupied (swap) when a firearm is selected
                   if (selectedFirearm) {
@@ -163,17 +169,7 @@ const MobileCardStack: React.FC<{
 
   return (
     <div className="mobile-card-container">
-      <div className="mobile-progress">
-        <div className="progress-dots">
-          {firearmsList.map((_, index) => (
-            <div
-              key={index}
-              className={`progress-dot ${index === currentCardIndex ? 'active' : ''} ${index < currentCardIndex ? 'completed' : ''}`}
-            />
-          ))}
-        </div>
-        <p className="progress-text">Card {Math.min(currentCardIndex + 1, firearmsList.length)} of {firearmsList.length}</p>
-      </div>
+      {/* Progress hidden on mobile/tablet to free space */}
 
       <div 
         className="card-stack"
@@ -183,26 +179,53 @@ const MobileCardStack: React.FC<{
       >
         {firearmsList.map((firearm, index) => {
           const offset = index - currentCardIndex;
-          const isVisible = Math.abs(offset) <= 2;
-          
-          if (!isVisible) return null;
+          // Only render the current card to avoid background/blurred stacks
+          if (offset !== 0) return null;
 
           return (
             <div
               key={firearm.id}
               className={`stacked-card ${offset === 0 ? 'current' : offset > 0 ? 'next' : 'prev'}`}
             >
-              <FirearmCard
-                firearm={firearm}
-                isMobile={true}
-                isTopCard={offset === 0}
-                onClick={() => {
-                  if (offset === 0) {
-                    onFirearmSelect(firearm);
-                    hapticFeedback('medium');
-                  }
-                }}
-              />
+              {offset === 0 ? (
+                <div className="image-nav-wrap">
+                  <button 
+                    className="nav-btn prev-btn"
+                    aria-label="Previous card"
+                    onClick={() => {
+                      if (currentCardIndex > 0) {
+                        setCurrentCardIndex(currentCardIndex - 1);
+                        hapticFeedback('light');
+                      }
+                    }}
+                    disabled={currentCardIndex === 0}
+                  >
+                    ←
+                  </button>
+                  <FirearmCard
+                    firearm={firearm}
+                    isMobile={true}
+                    isTopCard
+                    onClick={() => {
+                      onFirearmSelect(firearm);
+                      hapticFeedback('medium');
+                    }}
+                  />
+                  <button 
+                    className="nav-btn next-btn"
+                    aria-label="Next card"
+                    onClick={() => {
+                      if (currentCardIndex < firearmsList.length - 1) {
+                        setCurrentCardIndex(currentCardIndex + 1);
+                        hapticFeedback('light');
+                      }
+                    }}
+                    disabled={currentCardIndex === firearmsList.length - 1}
+                  >
+                    →
+                  </button>
+                </div>
+              ) : null}
             </div>
           );
         })}
@@ -213,18 +236,6 @@ const MobileCardStack: React.FC<{
 
       <div className="mobile-navigation">
         <button 
-          className="nav-btn prev-btn"
-          onClick={() => {
-            if (currentCardIndex > 0) {
-              setCurrentCardIndex(currentCardIndex - 1);
-              hapticFeedback('light');
-            }
-          }}
-          disabled={currentCardIndex === 0}
-        >
-          ←
-        </button>
-        <button 
           className="select-btn"
             onClick={() => {
             onFirearmSelect(currentFirearm);
@@ -232,18 +243,6 @@ const MobileCardStack: React.FC<{
           }}
         >
           Select This Firearm
-        </button>
-        <button 
-          className="nav-btn next-btn"
-          onClick={() => {
-            if (currentCardIndex < firearmsList.length - 1) {
-              setCurrentCardIndex(currentCardIndex + 1);
-              hapticFeedback('light');
-            }
-          }}
-          disabled={currentCardIndex === firearmsList.length - 1}
-        >
-          →
         </button>
       </div>
     </div>
