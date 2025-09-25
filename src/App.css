@@ -314,10 +314,7 @@ body {
 }
 
 /* Animation classes for timeline placement */
-.firearm-card.in-timeline.newly-placed {
-  animation: slideInPlace 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards,
-             gentlePulse 1.2s ease-out 0.6s;
-}
+/* newly-placed animation removed (unused) */
 
 .firearm-card.in-timeline:hover {
   transform: scale(1.02) translateY(-1px);
@@ -534,12 +531,7 @@ body {
 
 /* removed .timeline-card-wrapper and related animations (unused) */
 
-/* Hide mobile progress globally (phones + tablets) */
-.mobile-progress { display: none !important; visibility: hidden !important; height: 0 !important; margin: 0 !important; padding: 0 !important; }
-.mobile-progress .progress-dots, .mobile-progress .progress-text { display: none !important; }
-
-/* Hide mobile progress globally (phones + tablets) */
-.mobile-progress { display: none !important; }
+/* (mobile-progress removed in JSX) */
 
 /* Selection Mode Styles */
 .firearm-card.selected {
@@ -2595,6 +2587,10 @@ body {
     margin: 8px auto 0;
     width: clamp(80%, 90vw, 700px);
   }
+  /* Mobile timeline overlay: vertical list instead of grid on all portrait touch */
+  .mobile-timeline-periods { flex-direction: column !important; flex-wrap: nowrap !important; align-items: stretch !important; padding: 10px 20px 40px !important; gap: 12px !important; }
+  .mobile-timeline-periods::before { display: none !important; }
+  .mobile-timeline-period { width: 100% !important; max-width: none !important; text-align: left; padding: 14px 16px; }
 }
 
 

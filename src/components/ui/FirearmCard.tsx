@@ -97,7 +97,12 @@ const FirearmCard: React.FC<FirearmCardProps> = ({
           tabIndex={openViewer ? 0 : -1}
           aria-label={openViewer ? `View larger image of ${firearm.name}` : undefined}
         >
-          <img src={firearm.image} alt={firearm.name} style={{ width: '100%', height: 'auto' }} loading="lazy" />
+          <img
+            src={firearm.image}
+            alt={firearm.name}
+            style={{ width: '100%', height: 'auto' }}
+            loading={isMobile && isTopCard ? 'eager' : undefined}
+          />
           {openViewer && viewerItems && typeof viewerIndex === 'number' && (
             <button
               className="magnifier-btn"
