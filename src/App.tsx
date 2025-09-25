@@ -295,11 +295,18 @@ const App: React.FC = () => {
   // Check if mobile/tablet on mount and resize
   useEffect(() => {
     const checkMobile = () => {
-      // Use screen width for mobile layout detection - allows desktop testing
-      const isMobileLayout = window.innerWidth <= 1199;
+      // Force mobile layout for:
+      // 1. Screen width <= 1399px (covers most tablets/smaller desktops)
+      // 2. Touch-capable devices (tablets, phones)
+      // 3. Devices with coarse pointer (touch-based)
+      const isMobileLayout =
+        window.innerWidth <= 1399 ||
+        ('ontouchstart' in window) ||
+        (navigator.maxTouchPoints > 0) ||
+        (window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
       setMobile(isMobileLayout);
     };
-    
+
     checkMobile();
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
@@ -402,7 +409,7 @@ const App: React.FC = () => {
         </div>
 
         {/* Mobile Card Stack Interface */}
-        {(isMobile || window.innerWidth <= 1199) ? (
+        {(isMobile || window.innerWidth <= 1399 || ('ontouchstart' in window) || (navigator.maxTouchPoints > 0)) ? (
           <MobileCardStack
             firearmsList={bank}
             onFirearmSelect={selectFirearm}
@@ -497,7 +504,7 @@ const App: React.FC = () => {
 
 
         {/* Mobile Complete CTA (non-blocking) */}
-        {isComplete && (isMobile || window.innerWidth <= 1199) && bank.length > 0 && (
+        {isComplete && (isMobile || window.innerWidth <= 1399 || ('ontouchstart' in window) || (navigator.maxTouchPoints > 0)) && bank.length > 0 && (
           <div className="mobile-complete-cta">
             <button
               onClick={handleComplete}
