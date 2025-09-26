@@ -45,39 +45,30 @@
   --gap: 12px;
 }
 
-/* Consolidated responsive breakpoint sets for timeline sizing */
-@media (max-width: 1439px) {
+/* Responsive timeline variables - consolidated 3 breakpoint system */
+/* Desktop: 1200px+ (default values above) */
+
+/* Tablet: 768px - 1199px */
+@media (min-width: 768px) and (max-width: 1199px) {
   :root {
-    --timeline-card-width: 160px;
-    --timeline-card-min-height: 150px;
-    --timeline-empty-slot-width: 150px;
-    --timeline-empty-slot-height: 150px;
-    --timeline-slot-min-width: 140px;
-    --timeline-slot-number-size: 28px;
+    --timeline-card-width: clamp(140px, 15vw, 170px);
+    --timeline-card-min-height: clamp(130px, 18vh, 160px);
+    --timeline-empty-slot-width: clamp(130px, 14vw, 160px);
+    --timeline-empty-slot-height: clamp(120px, 17vh, 150px);
+    --timeline-slot-min-width: clamp(120px, 13vw, 150px);
+    --timeline-slot-number-size: clamp(24px, 3.5vw, 30px);
   }
 }
 
-@media (max-width: 1023px) {
+/* Mobile: up to 767px */
+@media (max-width: 767px) {
   :root {
-    --timeline-card-width: 140px;
-    --timeline-card-min-height: 140px;
-    --timeline-empty-slot-width: 130px;
-    --timeline-empty-slot-height: 130px;
-    --timeline-slot-min-width: 120px;
-    --timeline-slot-number-size: 26px;
-  }
-}
-
-/* Phone sizes use component-level overrides in chronological.css,
-   but keep variables reasonable as a fallback */
-@media (max-width: 768px) {
-  :root {
-    --timeline-card-width: 100px;
-    --timeline-card-min-height: 120px;
-    --timeline-empty-slot-width: 95px;
-    --timeline-empty-slot-height: 110px;
-    --timeline-slot-min-width: 90px;
-    --timeline-slot-number-size: 24px;
+    --timeline-card-width: clamp(80px, 22vw, 110px);
+    --timeline-card-min-height: clamp(100px, 25vh, 130px);
+    --timeline-empty-slot-width: clamp(75px, 20vw, 105px);
+    --timeline-empty-slot-height: clamp(90px, 22vh, 120px);
+    --timeline-slot-min-width: clamp(70px, 18vw, 100px);
+    --timeline-slot-number-size: clamp(20px, 5vw, 26px);
   }
 }
 

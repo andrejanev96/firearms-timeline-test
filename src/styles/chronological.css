@@ -46,8 +46,8 @@
   position: relative;
   display: flex;
   align-items: flex-start;
-  gap: 10px;
-  min-width: 1200px;
+  gap: clamp(8px, 1.5vw, 15px);
+  min-width: clamp(900px, 80vw, 1200px);
   /* consistent symmetric padding to prevent visual breaks */
   padding: 12px;
   overflow-x: auto;
@@ -117,16 +117,16 @@
 }
 
 
-/* Overlay arrows on tablets to keep them visible */
-@media (max-width: 1200px) {
+/* Overlay arrows on smaller screens */
+@media (max-width: 1199px) and (min-width: 481px) {
   .chronological-timeline .scroll-btn {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
     z-index: 5;
   }
-  .chronological-timeline .scroll-left { left: 6px; }
-  .chronological-timeline .scroll-right { right: 6px; }
+  .chronological-timeline .scroll-left { left: clamp(4px, 1.5vw, 8px); }
+  .chronological-timeline .scroll-right { right: clamp(4px, 1.5vw, 8px); }
 }
 
 .scroll-left {
@@ -423,241 +423,141 @@
   color: #4CAF50;
 }
 
-/* Large screen optimization - ensure arrows are always visible */
-@media (max-width: 1400px) and (min-width: 1201px) {
+/* Desktop - large screens */
+@media (min-width: 1200px) {
   .timeline-track {
-    min-width: calc(100vw - 200px); /* More space for arrows + margins */
-    max-width: 1000px; /* Reduced max width */
+    min-width: clamp(1200px, 90vw, 1400px);
   }
 }
 
-/* Tablet responsiveness */
-@media (max-width: 1200px) {
-  .timeline-track { min-width: 900px; }
-}
-
-@media (max-width: 1024px) {
-  .timeline-track { min-width: 700px; } /* Reduced from 780px for better proportion */
+/* Tablet - optimized for portrait tablets */
+@media (min-width: 768px) and (max-width: 1199px) {
+  .timeline-track {
+    min-width: clamp(700px, 85vw, 900px);
+    gap: clamp(10px, 2vw, 15px);
+    padding: clamp(15px, 3vw, 30px);
+  }
 
   .timeline-slot {
-    min-width: 55px; /* Slightly smaller */
+    min-width: clamp(50px, 8vw, 70px);
   }
 
   .firearm-wrapper {
-    width: 55px; /* Match slot size */
+    width: clamp(50px, 8vw, 70px);
   }
 
   .empty-slot {
-    width: 53px; /* Match wrapper */
-    height: 115px; /* Proportionally smaller */
+    width: clamp(48px, 7.5vw, 68px);
+    height: clamp(100px, 15vh, 130px);
   }
 }
 
-/* iPad Pro portrait (1024x1366) — mimic 1366x1024 desktop-like timeline */
-@media (min-width: 769px) and (max-width: 1024px) and (orientation: portrait) {
-  /* Use desktop-ish track sizing and spacing */
-  .timeline-track {
-    min-width: calc(100vw - 200px) !important;
-    height: 280px;
-    gap: 15px;
-    padding: 30px 60px 30px 0;
-  }
-
-  /* Restore variable-driven slot sizing instead of tiny 55px overrides */
-  .timeline-slot {
-    min-width: var(--timeline-slot-min-width) !important;
-  }
-
-  .firearm-wrapper {
-    width: var(--timeline-card-width) !important;
-  }
-
-  .empty-slot {
-    width: var(--timeline-empty-slot-width) !important;
-    height: var(--timeline-empty-slot-height) !important;
-  }
-}
-
-/* Mobile tablet (768px) - optimized for 12 fixed positions */
-@media (max-width: 768px) {
+/* Mobile - phones and small tablets */
+@media (max-width: 767px) {
   .chronological-timeline {
-    padding: 15px 5px;
+    padding: clamp(10px, 3vw, 20px) clamp(5px, 2vw, 10px);
   }
 
   .timeline-container {
-    gap: 8px;
+    gap: clamp(6px, 2vw, 10px);
   }
 
   .scroll-btn {
-    width: 32px;
-    height: 32px;
-    font-size: 0.9rem;
+    width: clamp(28px, 8vw, 36px);
+    height: clamp(28px, 8vw, 36px);
+    font-size: clamp(0.8rem, 2.5vw, 1rem);
   }
 
   .timeline-track {
-    min-width: 580px; /* Reduced from 660px for better proportion */
-    gap: 3px; /* Reduced gap */
-    padding: 35px 8px 16px; /* Reduced top padding */
+    min-width: clamp(460px, 120vw, 600px);
+    gap: clamp(2px, 0.8vw, 5px);
+    padding: clamp(20px, 5vw, 35px) clamp(6px, 2vw, 10px) clamp(10px, 3vw, 16px);
   }
 
   .timeline-slot {
-    min-width: 45px; /* Slightly smaller */
+    min-width: clamp(32px, 9vw, 50px);
   }
 
   .firearm-wrapper {
-    width: 45px; /* Match slot size */
-    overflow: hidden; /* Ensure content doesn't spill */
+    width: clamp(32px, 9vw, 50px);
+    overflow: hidden;
   }
 
   .firearm-wrapper .firearm-card.in-timeline {
-    padding: 0.2rem;
-    font-size: 0.7rem;
-    width: 100% !important; /* Force card to fit wrapper */
-    max-width: 100% !important; /* Override CSS variable */
-    min-width: auto !important; /* Override any min-width */
+    padding: clamp(0.1rem, 0.3vw, 0.3rem);
+    font-size: clamp(0.6rem, 1.5vw, 0.8rem);
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: auto !important;
     height: auto;
   }
 
   .empty-slot {
-    width: 43px; /* Match reduced firearm wrapper */
-    height: 95px; /* Proportionally smaller */
-    /* Better touch target for mobile */
+    width: clamp(30px, 8.5vw, 48px);
+    height: clamp(70px, 18vw, 100px);
     min-height: 44px;
   }
 
   .slot-placeholder {
-    font-size: 0.7rem;
-    padding: 5px;
-    /* Improve touch readability */
+    font-size: clamp(0.6rem, 1.8vw, 0.8rem);
+    padding: clamp(3px, 1vw, 6px);
     line-height: 1.2;
   }
 
   .chronological-timeline h3 {
-    font-size: 1.1rem;
-    margin-bottom: 8px;
+    font-size: clamp(1rem, 3vw, 1.3rem);
+    margin-bottom: clamp(6px, 2vw, 12px);
   }
 }
 
-/* Mobile phone (480px and below) - ultra-compact for 12 positions */
+/* Small mobile - position buttons above timeline */
 @media (max-width: 480px) {
   .chronological-timeline {
     position: relative;
   }
 
-  /* Create space above timeline for buttons */
   .chronological-timeline h3 {
-    margin-bottom: 50px; /* Extra space for buttons */
+    margin-bottom: clamp(40px, 12vw, 60px);
   }
 
   .timeline-container {
     position: relative;
     display: flex;
     flex-direction: row;
-    gap: 6px;
+    gap: clamp(4px, 1.5vw, 8px);
   }
 
-  /* Position buttons absolutely above the timeline container */
   .timeline-container .scroll-btn {
     position: absolute;
-    top: -40px; /* Above the container */
-    width: 28px;
-    height: 28px;
-    font-size: 0.8rem;
+    top: clamp(-35px, -10vw, -50px);
+    width: clamp(26px, 8vw, 32px);
+    height: clamp(26px, 8vw, 32px);
+    font-size: clamp(0.7rem, 2vw, 0.9rem);
     z-index: 10;
   }
 
   .timeline-container .scroll-left {
-    left: 0; /* Far left */
+    left: 0;
   }
 
   .timeline-container .scroll-right {
-    right: 0; /* Far right */
+    right: 0;
   }
 
   .timeline-track {
     flex: 1;
   }
-}
-
-/* Specific optimization for iPhone 14 Pro Max and similar (430x932) */
-@media (max-width: 430px) and (min-height: 900px) {
-  .chronological-timeline h3 {
-    margin-bottom: 60px; /* More space for larger buttons */
-  }
-
-  .timeline-container .scroll-btn {
-    position: absolute;
-    top: -50px; /* Higher above the container */
-    width: 32px; /* Larger for easier touch */
-    height: 32px;
-    font-size: 0.9rem;
-    z-index: 15;
-  }
-
-  .timeline-container .scroll-left {
-    left: 0; /* Far left corner */
-  }
-
-  .timeline-container .scroll-right {
-    right: 0; /* Far right corner */
-  }
-}
-
-/* Ultra-mobile adjustments (<= 430px width) */
-@media (max-width: 430px) {
-  .timeline-track {
-    min-width: 460px; /* Reduced from 540px - 12 slots × 35px + 11 gaps × 2px + padding */
-    gap: 2px; /* Reduced gap further */
-    padding: 30px 6px 12px; /* Reduced top padding */
-    margin-top: 0; /* Remove extra margin since we have padding-top on parent */
-  }
-
-  .timeline-slot {
-    min-width: 35px; /* Smaller for ultra-mobile */
-  }
-
-  .firearm-wrapper {
-    width: 35px; /* Match slot size */
-  }
-
-  .firearm-wrapper .firearm-card.in-timeline {
-    padding: 0.1rem;
-    font-size: 0.6rem;
-    width: 100% !important; /* Force card to fit wrapper */
-    max-width: 100% !important; /* Override CSS variable */
-    min-width: auto !important; /* Override any min-width */
-    height: auto;
-  }
-
-  .empty-slot {
-    width: 33px; /* Match reduced firearm wrapper */
-    height: 80px; /* Proportionally smaller */
-    /* Ensure minimum touch target even on small screens */
-    min-height: 44px;
-    min-width: 44px; /* Keep minimum touch target */
-  }
-
-  .slot-placeholder {
-    font-size: 0.6rem;
-    padding: 3px;
-    line-height: 1.1;
-  }
-
-  /* Improve touch interactions on mobile */
-  .timeline-slot.selectable .empty-slot:active {
-    background: rgba(218, 165, 32, 0.4);
-    transform: scale(0.95);
-  }
 
   .slot-number {
-    width: 20px;
-    height: 20px;
-    font-size: 0.7rem;
+    width: clamp(18px, 5vw, 24px);
+    height: clamp(18px, 5vw, 24px);
+    font-size: clamp(0.65rem, 1.8vw, 0.8rem);
     margin-bottom: 0;
   }
 
-  .chronological-timeline h3 {
-    font-size: 1rem;
-    margin-bottom: 6px;
+  /* Improve touch interactions */
+  .timeline-slot.selectable .empty-slot:active {
+    background: rgba(218, 165, 32, 0.4);
+    transform: scale(0.95);
   }
 }

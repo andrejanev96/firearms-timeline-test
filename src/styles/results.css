@@ -569,8 +569,8 @@
   box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
 }
 
-/* Mobile Responsiveness */
-@media (max-width: 768px) {
+/* Mobile - phones and small screens */
+@media (max-width: 767px) {
   .email-gate {
     padding: 25px 20px;
   }
@@ -1013,8 +1013,7 @@
   font-size: 0.9rem;
 }
 
-/* Mobile responsive for timeline results */
-@media (max-width: 768px) {
+  /* Timeline results for mobile */
   .results-timeline {
     padding: 20px 10px 30px 10px;
     min-height: 280px;

@@ -12,6 +12,7 @@ interface FirearmCardProps {
   isSelectionMode?: boolean;
   isMobile?: boolean;
   isTopCard?: boolean;
+  hideName?: boolean;
   // Viewer support
   openViewer?: (items: Firearm[], index: number, returnFocusEl?: HTMLElement | null) => void;
   viewerItems?: Firearm[];
@@ -31,7 +32,8 @@ const FirearmCard: React.FC<FirearmCardProps> = ({
   isTopCard = false,
   openViewer,
   viewerItems,
-  viewerIndex
+  viewerIndex,
+  hideName = false
 }) => {
   
   const handleNativeDragStart = (e: React.DragEvent) => {
@@ -115,7 +117,9 @@ const FirearmCard: React.FC<FirearmCardProps> = ({
             </button>
           )}
         </div>
-        <div className="firearm-name">{firearm.name}</div>
+        {!hideName && (
+          <div className="firearm-name">{firearm.name}</div>
+        )}
         {/* Mobile swipe hint moved outside the card in MobileCardStack */}
       </div>
     </div>

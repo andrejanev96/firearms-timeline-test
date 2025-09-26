@@ -165,68 +165,58 @@ const MobileCardStack: React.FC<{
     <div className="mobile-card-container">
       {/* Progress hidden on mobile/tablet to free space */}
 
-      <div 
-        className="card-stack"
-        onTouchStart={onTouchStart}
-        onTouchMove={onTouchMove}
-        onTouchEnd={onTouchEnd}
-      >
-        {firearmsList.map((firearm, index) => {
-          const offset = index - currentCardIndex;
-          // Only render the current card to avoid background/blurred stacks
-          if (offset !== 0) return null;
+      <div className="mobile-main">
+        <div className="image-nav-wrap" onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}>
+          <button 
+            className="nav-btn prev-btn"
+            aria-label="Previous card"
+            onClick={(e) => {
+              e.stopPropagation();
+              if (currentCardIndex > 0) {
+                setCurrentCardIndex(currentCardIndex - 1);
+                hapticFeedback('light');
+              }
+            }}
+            disabled={currentCardIndex === 0}
+            tabIndex={currentCardIndex === 0 ? -1 : 0}
+          >
+            ←
+          </button>
+          <div className="media-shell">
+            <FirearmCard
+              firearm={currentFirearm}
+              isMobile={true}
+              isTopCard
+              hideName={true}
+              onClick={() => {
+                onFirearmSelect(currentFirearm);
+                hapticFeedback('medium');
+              }}
+            />
+          </div>
+          <button 
+            className="nav-btn next-btn"
+            aria-label="Next card"
+            onClick={(e) => {
+              e.stopPropagation();
+              if (currentCardIndex < firearmsList.length - 1) {
+                setCurrentCardIndex(currentCardIndex + 1);
+                hapticFeedback('light');
+              }
+            }}
+            disabled={currentCardIndex === firearmsList.length - 1}
+            tabIndex={currentCardIndex === firearmsList.length - 1 ? -1 : 0}
+          >
+            →
+          </button>
+        </div>
 
-          return (
-            <div
-              key={firearm.id}
-              className={`stacked-card ${offset === 0 ? 'current' : offset > 0 ? 'next' : 'prev'}`}
-            >
-              {offset === 0 ? (
-                <div className="image-nav-wrap">
-                  <button 
-                    className="nav-btn prev-btn"
-                    aria-label="Previous card"
-                    onClick={() => {
-                      if (currentCardIndex > 0) {
-                        setCurrentCardIndex(currentCardIndex - 1);
-                        hapticFeedback('light');
-                      }
-                    }}
-                    disabled={currentCardIndex === 0}
-                  >
-                    ←
-                  </button>
-                  <FirearmCard
-                    firearm={firearm}
-                    isMobile={true}
-                    isTopCard
-                    onClick={() => {
-                      onFirearmSelect(firearm);
-                      hapticFeedback('medium');
-                    }}
-                  />
-                  <button 
-                    className="nav-btn next-btn"
-                    aria-label="Next card"
-                    onClick={() => {
-                      if (currentCardIndex < firearmsList.length - 1) {
-                        setCurrentCardIndex(currentCardIndex + 1);
-                        hapticFeedback('light');
-                      }
-                    }}
-                    disabled={currentCardIndex === firearmsList.length - 1}
-                  >
-                    →
-                  </button>
-                </div>
-              ) : null}
-            </div>
-          );
-        })}
+        {/* Title below the image container to avoid affecting container height */}
+        <div className="mobile-image-title">{currentFirearm.name}</div>
+
+        {/* Hint above the primary action */}
+        <div className="swipe-hint-row">👈 Swipe to browse • Tap to select 👆</div>
       </div>
-
-      {/* Hint above the primary action */}
-      <div className="swipe-hint-row">👈 Swipe to browse • Tap to select 👆</div>
 
       <div className="mobile-navigation">
         <button 
