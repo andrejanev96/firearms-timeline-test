@@ -2170,6 +2170,97 @@ body {
     padding: 6px 10px;
     font-size: 0.8rem;
   }
+
+  /* Mobile timeline header layout */
+  .mobile-timeline-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #1a1a1a;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    width: 100vw;
+    box-sizing: border-box;
+  }
+
+  .mobile-timeline-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 15px;
+    margin-bottom: 20px;
+    gap: 20px;
+    width: 100%;
+    box-sizing: border-box;
+    min-height: 80px;
+  }
+
+  .mobile-timeline-header .back-btn {
+    background: rgba(218, 165, 32, 0.15);
+    color: #DAA520;
+    border: 2px solid rgba(218, 165, 32, 0.4);
+    border-radius: 12px;
+    padding: 12px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+    align-self: flex-start;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+    box-shadow: 0 2px 8px rgba(218, 165, 32, 0.2);
+  }
+
+  .mobile-timeline-header .back-btn:hover {
+    background: rgba(218, 165, 32, 0.25);
+    border-color: #DAA520;
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(218, 165, 32, 0.3);
+  }
+
+  .mobile-timeline-header .selected-firearm-info {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    margin: 0;
+    padding: 10px 0;
+    min-width: 200px;
+  }
+
+  .mobile-timeline-header .selected-firearm-text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    margin: 0;
+    text-align: center;
+    padding: 10px 0;
+    min-width: 200px;
+  }
+
+  .mobile-timeline-header .selected-firearm-text h3 {
+    margin: 0 0 4px 0;
+    font-size: 1.1rem;
+    color: #DAA520;
+  }
+
+  .mobile-timeline-header .selected-firearm-text p {
+    margin: 20px 0 0 0;
+    font-size: 0.9rem;
+    color: #cccccc;
+    line-height: 1.3;
+  }
 }
 
 

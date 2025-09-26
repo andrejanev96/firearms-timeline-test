@@ -19,6 +19,7 @@ const Results: React.FC = () => {
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSneakPeek, setShowSneakPeek] = useState(false);
+  const [showFullPrivacy, setShowFullPrivacy] = useState(false);
   const timelineRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
@@ -286,7 +287,7 @@ const Results: React.FC = () => {
             {/* Email Form - Primary Action */}
             <form onSubmit={handleSubmit(onSubmit)} className="email-form primary-action">
               <div className="form-group">
-                <label htmlFor="email">Email Address</label>
+                <label htmlFor="email">Get My Results</label>
                 <input
                   id="email"
                   type="email"
@@ -350,10 +351,27 @@ const Results: React.FC = () => {
               </ul>
             </div>
 
-            <p className="privacy-note">
-              Your email will be used only for sending your results and the optional newsletter.
-              We respect your privacy and won't share your information.
-            </p>
+            <div className="privacy-note">
+              <p>
+                {showFullPrivacy ? (
+                  <>
+                    Your email will be used only for sending your results and the optional newsletter.
+                    We respect your privacy and won't share your information.
+                  </>
+                ) : (
+                  <>
+                    Your email is used only for results and optional newsletter.
+                  </>
+                )}
+              </p>
+              <button
+                type="button"
+                className="privacy-toggle"
+                onClick={() => setShowFullPrivacy(!showFullPrivacy)}
+              >
+                {showFullPrivacy ? '▲ Less' : '▼ More'}
+              </button>
+            </div>
           </motion.div>
         </div>
       </div>

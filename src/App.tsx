@@ -76,14 +76,15 @@ const MobileCardStack: React.FC<{
     return (
       <div className="mobile-timeline-overlay">
         <div className="mobile-timeline-header">
-          <button 
+          <button
             className="back-btn"
             onClick={() => {
               onFirearmSelect(null);
               hapticFeedback('light');
             }}
+            aria-label="Back"
           >
-            ← Back
+            ←
           </button>
           {selectedFirearm ? (
             <div className="selected-firearm-info">
@@ -98,7 +99,7 @@ const MobileCardStack: React.FC<{
           ) : (
             <div className="selected-firearm-text" style={{ textAlign: 'center' }}>
               <h3 style={{ margin: 0 }}>Timeline Review</h3>
-              <p style={{ margin: 0 }}>Tap a position to view or swap after selecting a firearm.</p>
+              <p>Tap a position to view or swap after selecting a firearm.</p>
             </div>
           )}
         </div>
@@ -161,6 +162,22 @@ const MobileCardStack: React.FC<{
     );
   }
 
+  // Safety check: if no current firearm, don't render the card interface
+  if (!currentFirearm) {
+    return (
+      <div className="mobile-card-container">
+        <div className="empty-stack-panel">
+          <h3>No more cards</h3>
+          <p>All firearms have been placed or there are no cards available.</p>
+          <div className="empty-stack-actions">
+            <button className="timeline-btn" onClick={onOpenTimeline}>Timeline</button>
+            <button className="mobile-complete-btn" onClick={onComplete}>Complete Challenge</button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="mobile-card-container">
       {/* Progress hidden on mobile/tablet to free space */}
@@ -212,7 +229,7 @@ const MobileCardStack: React.FC<{
         </div>
 
         {/* Title below the image container to avoid affecting container height */}
-        <div className="mobile-image-title">{currentFirearm.name}</div>
+        <div className="mobile-image-title">{currentFirearm?.name}</div>
 
         {/* Hint above the primary action */}
         <div className="swipe-hint-row">👈 Swipe to browse • Tap to select 👆</div>
