@@ -1091,6 +1091,15 @@
   .timeline-track { min-width: 900px; }
 }
 
+/* Ensure last card fully clears right overlay arrow on phones */
+@media (max-width: 767px) {
+  .timeline-results-container { padding-right: 0; }
+  .timeline-track {
+    /* top right bottom left */
+    padding: 20px clamp(96px, 18vw, 128px) 20px clamp(20px, 6vw, 40px);
+  }
+}
+
 /* Tablet responsive text sizing - merged with main tablet media query in App.css */
 
 /* iPad Pro and tablet portrait mode */
