@@ -46,15 +46,27 @@
   position: relative;
   display: flex;
   align-items: flex-start;
-  gap: clamp(8px, 1.5vw, 15px);
-  min-width: clamp(900px, 80vw, 1200px);
+  min-width: 0; /* allow track to shrink so arrows remain visible inline */
   /* consistent symmetric padding to prevent visual breaks */
   padding: 12px;
+  height: 18rem; /* fixed track height for consistent card layout */
   overflow-x: auto;
   scroll-behavior: smooth;
   cursor: grab;
   user-select: none;
   background: transparent;
+}
+
+/* Desktop: keep arrows inline flanking, guarantee space with 3-col outer grid */
+@media (min-width: 1200px) {
+  .timeline-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: auto 1fr auto;  /* left arrow | track | right arrow */
+    align-items: center;
+    column-gap: clamp(10px, 1.2vw, 16px);
+  }
+  .timeline-track { min-width: 0; }
 }
 
 .timeline-track.dragging {
@@ -129,6 +141,11 @@
   .chronological-timeline .scroll-right { right: clamp(4px, 1.5vw, 8px); }
 }
 
+/* Desktop retains original timeline card sizing; names should wrap via base rules */
+
+/* Desktop (no horizontal scroll): auto-fit all 12 slots as a grid */
+/* Desktop remains flex-based; spacing handled by .timeline-slot margins */
+
 .scroll-left {
   position: relative;
   left: 0;
@@ -155,7 +172,7 @@
   position: relative;
   z-index: 2;
   background: transparent;
-  margin: 0 8px; /* Add horizontal spacing between slots */
+  margin: 0 clamp(6px, 0.8vw, 12px); /* Reduced responsive spacing between positions */
 }
 
 .slot-number {
@@ -426,7 +443,7 @@
 /* Desktop - large screens */
 @media (min-width: 1200px) {
   .timeline-track {
-    min-width: clamp(1200px, 90vw, 1400px);
+    min-width: clamp(1200px, calc(100vw - 200px), 1400px);
   }
 }
 
@@ -475,11 +492,11 @@
   }
 
   .timeline-slot {
-    min-width: clamp(32px, 9vw, 50px);
+    min-width: clamp(40px, 12vw, 60px);
   }
 
   .firearm-wrapper {
-    width: clamp(32px, 9vw, 50px);
+    width: clamp(40px, 12vw, 60px);
     overflow: hidden;
   }
 
@@ -493,9 +510,9 @@
   }
 
   .empty-slot {
-    width: clamp(30px, 8.5vw, 48px);
-    height: clamp(70px, 18vw, 100px);
-    min-height: 44px;
+    width: clamp(38px, 11.5vw, 58px);
+    height: clamp(80px, 20vw, 110px);
+    min-height: 50px;
   }
 
   .slot-placeholder {

@@ -781,7 +781,7 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  z-index: 5;
+  z-index: 50; /* ensure above track/cards */
 }
 .results-timeline .scroll-left { left: 8px; }
 .results-timeline .scroll-right { right: 8px; }
@@ -792,7 +792,7 @@
   align-items: center;
   gap: 15px;
   min-width: 1200px;
-  padding: 30px 60px 30px 0; /* extra right padding so last card clears the arrow */
+  padding: 30px 80px 30px 0; /* extra right padding so last card clears the (overlay) right arrow */
   height: 280px;
   overflow-x: auto;
   overflow-y: visible;
