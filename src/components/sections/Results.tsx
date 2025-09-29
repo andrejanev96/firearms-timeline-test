@@ -8,11 +8,11 @@ import { getShareUrls, openShareWindow } from '@/utils/share';
 import ImageViewerModal from '@/components/ui/ImageViewerModal';
 import type { Firearm } from '@/types/quiz';
 
-const Results: React.FC = () => {
-  const { 
-    results, 
-    resultsUnlocked, 
-    userEmail, 
+const Results: React.FC = React.memo(() => {
+  const {
+    results,
+    resultsUnlocked,
+    userEmail,
     unlockResults,
     orderedFirearms,
   } = useQuizStore();
@@ -44,6 +44,19 @@ const Results: React.FC = () => {
     const t = setTimeout(() => setShowInfoPulse(false), 1200);
     return () => clearTimeout(t);
   }, []);
+
+  // Memoize transformed firearms for viewer to avoid recalculating on every button click
+  const viewerFirearms = React.useMemo(() => {
+    const placed = orderedFirearms.filter(Boolean) as Firearm[];
+    return placed.map((f) => {
+      const userPos = orderedFirearms.findIndex((of) => of?.id === f.id);
+      return {
+        ...f,
+        correct: f.correctPosition === userPos,
+        fact: f.description,
+      };
+    });
+  }, [orderedFirearms]);
 
   const { 
     register, 
@@ -448,17 +461,8 @@ const Results: React.FC = () => {
                               aria-label="View details"
                               onClick={(e) => {
                                 e.stopPropagation();
-                                const placed = orderedFirearms.filter(Boolean) as Firearm[];
-                                const items: Firearm[] = placed.map((f) => {
-                                  const userPos = orderedFirearms.findIndex((of) => of?.id === f.id);
-                                  return {
-                                    ...f,
-                                    correct: f.correctPosition === userPos,
-                                    fact: f.description,
-                                  };
-                                });
-                                const idx = placed.findIndex((f) => f.id === userFirearm.id);
-                                openViewer(items, Math.max(0, idx), e.currentTarget as HTMLElement);
+                                const idx = viewerFirearms.findIndex((f) => f.id === userFirearm.id);
+                                openViewer(viewerFirearms, Math.max(0, idx), e.currentTarget as HTMLElement);
                               }}
                               title="View year & fact"
                             >
@@ -581,6 +585,8 @@ const Results: React.FC = () => {
       />
     </motion.div>
   );
-};
+});
+
+Results.displayName = 'Results';
 
 export default Results;

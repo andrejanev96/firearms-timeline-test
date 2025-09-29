@@ -19,16 +19,16 @@ interface FirearmCardProps {
   viewerIndex?: number;
 }
 
-const FirearmCard: React.FC<FirearmCardProps> = ({ 
-  firearm, 
-  isDragging = false, 
-  inTimeline = false, 
-  onDragStart, 
-  onDragEnd, 
-  onClick, 
-  isSelected = false, 
-  isSelectionMode = false, 
-  isMobile = false, 
+const FirearmCard: React.FC<FirearmCardProps> = React.memo(({
+  firearm,
+  isDragging = false,
+  inTimeline = false,
+  onDragStart,
+  onDragEnd,
+  onClick,
+  isSelected = false,
+  isSelectionMode = false,
+  isMobile = false,
   isTopCard = false,
   openViewer,
   viewerItems,
@@ -112,6 +112,8 @@ const FirearmCard: React.FC<FirearmCardProps> = ({
       </div>
     </div>
   );
-};
+});
+
+FirearmCard.displayName = 'FirearmCard';
 
 export default FirearmCard;

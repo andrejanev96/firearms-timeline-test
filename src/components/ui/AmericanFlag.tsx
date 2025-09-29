@@ -6,7 +6,7 @@ interface AmericanFlagProps {
   height?: number;
 }
 
-const AmericanFlag: React.FC<AmericanFlagProps> = ({
+const AmericanFlag: React.FC<AmericanFlagProps> = React.memo(({
   className = 'american-flag',
   width = 32,
   height = 24
@@ -47,6 +47,8 @@ const AmericanFlag: React.FC<AmericanFlagProps> = ({
       </g>
     </svg>
   );
-};
+});
+
+AmericanFlag.displayName = 'AmericanFlag';
 
 export default AmericanFlag;

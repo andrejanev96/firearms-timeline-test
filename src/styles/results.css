@@ -519,8 +519,8 @@
 }
 
 .share-btn {
-  background: transparent;
-  border: 2px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.12);
+  border: 2px solid rgba(255, 255, 255, 0.3);
   color: #fff;
   padding: 10px;
   border-radius: 8px;
@@ -529,12 +529,29 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .share-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.5);
   transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Specific button backgrounds for visibility */
+.share-btn-x {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.share-btn-facebook {
+  background: rgba(24, 119, 242, 0.15);
+  border-color: rgba(24, 119, 242, 0.3);
+}
+
+.share-btn-reddit {
+  background: rgba(255, 69, 0, 0.15);
+  border-color: rgba(255, 69, 0, 0.3);
 }
 
 /* Alternative: Brand color backgrounds (uncomment to use) */

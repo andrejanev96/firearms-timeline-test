@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useQuizStore } from '@/stores/quizStore';
 import AmericanFlag from '@/components/ui/AmericanFlag';
 
-const IntroScreen: React.FC = () => {
+const IntroScreen: React.FC = React.memo(() => {
   const { startQuiz } = useQuizStore();
   const [isTransitioning, setIsTransitioning] = useState(false);
 
@@ -128,6 +128,8 @@ const IntroScreen: React.FC = () => {
     </motion.div>
     </AnimatePresence>
   );
-};
+});
+
+IntroScreen.displayName = 'IntroScreen';
 
 export default IntroScreen;

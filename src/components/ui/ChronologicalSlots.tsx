@@ -12,7 +12,7 @@ interface ChronologicalSlotsProps {
   openViewer?: (items: Firearm[], index: number, returnFocusEl?: HTMLElement | null) => void;
 }
 
-const ChronologicalSlots: React.FC<ChronologicalSlotsProps> = ({
+const ChronologicalSlots: React.FC<ChronologicalSlotsProps> = React.memo(({
   orderedFirearms,
   onDrop,
   onRemoveFirearm,
@@ -27,6 +27,12 @@ const ChronologicalSlots: React.FC<ChronologicalSlotsProps> = ({
   const timelineRef = React.useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = React.useState(false);
   const [canScrollRight, setCanScrollRight] = React.useState(true);
+
+  // Memoize filtered firearms to avoid repeated filtering on every render
+  const placedFirearms = React.useMemo(
+    () => orderedFirearms.filter(Boolean) as Firearm[],
+    [orderedFirearms]
+  );
 
   const handleDragOver = (e: React.DragEvent, position: number) => {
     e.preventDefault();
@@ -240,8 +246,8 @@ const ChronologicalSlots: React.FC<ChronologicalSlotsProps> = ({
                   firearm={firearm}
                   inTimeline={true}
                   openViewer={openViewer}
-                  viewerItems={orderedFirearms.filter(Boolean) as Firearm[]}
-                  viewerIndex={(orderedFirearms.filter(Boolean) as Firearm[]).findIndex((f) => f.id === firearm.id)}
+                  viewerItems={placedFirearms}
+                  viewerIndex={placedFirearms.findIndex((f) => f.id === firearm.id)}
                 />
                 {!isSelectionMode && (
                   <button
@@ -276,6 +282,8 @@ const ChronologicalSlots: React.FC<ChronologicalSlotsProps> = ({
       </div>
     </div>
   );
-};
+});
+
+ChronologicalSlots.displayName = 'ChronologicalSlots';
 
 export default ChronologicalSlots;

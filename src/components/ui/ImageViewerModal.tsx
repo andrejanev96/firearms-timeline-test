@@ -94,9 +94,9 @@ export default function ImageViewerModal({ open, items, index, onClose, onNaviga
     };
   }, [open, navigate, onClose, returnFocusEl]);
 
-  // Backdrop click closes
+  // Backdrop click closes - handle both overlay and content area clicks
   const onBackdrop = (e: React.MouseEvent) => {
-    if (e.target === overlayRef.current) {
+    if (e.target === overlayRef.current || e.target === contentRef.current) {
       onClose();
     }
   };
@@ -146,7 +146,7 @@ export default function ImageViewerModal({ open, items, index, onClose, onNaviga
       <div
         className="image-viewer-overlay"
         ref={overlayRef}
-        onMouseDown={onBackdrop}
+        onClick={onBackdrop}
         role="dialog"
         aria-modal="true"
         aria-label={current?.name ? `Image viewer: ${current.name}` : 'Image viewer'}
@@ -154,6 +154,7 @@ export default function ImageViewerModal({ open, items, index, onClose, onNaviga
         <div
           className="image-viewer-content"
           ref={contentRef}
+          onClick={onBackdrop}
           onTouchStart={onTouchStart}
           onTouchMove={onTouchMove}
           onTouchEnd={onTouchEnd}

@@ -284,6 +284,9 @@ const App: React.FC = () => {
   // First-load tooltip for discoverability
   const [showViewerTip, setShowViewerTip] = useState(false);
   const viewerTipTimerRef = useRef<number | null>(null);
+  // Image preloading state
+  const [imagesLoaded, setImagesLoaded] = useState(false);
+  const [imageLoadError, setImageLoadError] = useState(false);
 
   // Trigger animation when entering quiz section
   useEffect(() => {
@@ -312,12 +315,19 @@ const App: React.FC = () => {
     return () => window.removeEventListener('resize', checkMobile);
   }, [setMobile]);
 
-  // Preload images (safe even if assets are pending)
+  // Preload images with loading state and error handling
   useEffect(() => {
     const imageUrls = firearms.map(firearm => firearm.image);
-    preloadImages(imageUrls).then(() => {
-      // Images preloaded successfully
-    });
+    preloadImages(imageUrls)
+      .then(() => {
+        setImagesLoaded(true);
+        setImageLoadError(false);
+      })
+      .catch((error) => {
+        console.error('Failed to preload images:', error);
+        setImagesLoaded(true); // Still allow app to continue
+        setImageLoadError(true);
+      });
   }, []);
 
   // Discoverability tooltip on first page load
@@ -406,6 +416,17 @@ const App: React.FC = () => {
               ? 'Bullseye! All firearms placed'
               : `${bank.length} card${bank.length !== 1 ? 's' : ''} remaining`}
           </p>
+          {/* Image loading feedback */}
+          {!imagesLoaded && (
+            <p style={{ fontSize: '12px', color: '#888', marginTop: '5px' }}>
+              Loading images...
+            </p>
+          )}
+          {imageLoadError && (
+            <p style={{ fontSize: '12px', color: '#FF9800', marginTop: '5px' }}>
+              ⚠️ Some images may load slowly
+            </p>
+          )}
         </div>
 
         {/* Mobile Card Stack Interface */}
