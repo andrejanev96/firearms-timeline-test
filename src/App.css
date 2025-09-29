@@ -1881,13 +1881,6 @@ body {
   }
 }
 
-@media (min-width: 768px) and (max-width: 1199px) {
-  .firearms-grid {
-    grid-template-columns: repeat(4, 1fr);
-    max-width: clamp(800px, 85vw, 1000px);
-  }
-}
-
 /* Large Desktop - Desktop layout with drag and drop */
 @media (min-width: 1200px) {
   /* Desktop layout is the default - no overrides needed here */

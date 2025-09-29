@@ -8,27 +8,26 @@
 
 /* Email Gate Styles */
 .email-gate {
-  background: linear-gradient(
-    45deg,
-    rgba(218, 165, 32, 0.1),
-    rgba(139, 69, 19, 0.1)
-  );
-  border-radius: 20px;
-  border: 2px solid rgba(218, 165, 32, 0.3);
-  padding: 40px;
+  background: rgba(32, 32, 32, 0.72);
+  border-radius: 16px;
+  border: 1px solid rgba(218, 165, 32, 0.25);
+  padding: clamp(24px, 4vw, 32px);
   text-align: center;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.35);
 }
 
 .gate-header h2 {
   color: #DAA520;
-  margin-bottom: 15px;
-  font-size: 2.5rem;
+  margin-bottom: clamp(12px, 2vw, 18px);
+  font-size: clamp(1.8rem, 3.8vw, 2.3rem);
+  line-height: 1.3;
 }
 
 .gate-header p {
-  font-size: 1.2rem;
-  margin-bottom: 30px;
-  line-height: 1.6;
+  font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+  margin-bottom: clamp(18px, 3vw, 24px);
+  line-height: 1.55;
+  color: #d7d7d7;
 }
 
 .gate-subheading {
@@ -36,18 +35,18 @@
 }
 
 .unlock-section {
-  background: rgba(218, 165, 32, 0.1);
-  border: 1px solid rgba(218, 165, 32, 0.3);
+  background: rgba(218, 165, 32, 0.08);
+  border: 1px solid rgba(218, 165, 32, 0.25);
   border-radius: 12px;
-  padding: 20px;
-  margin: 25px 0;
+  padding: clamp(18px, 3vw, 24px);
+  margin: clamp(20px, 4vw, 28px) 0;
 }
 
 .unlock-intro {
   color: #DAA520;
   font-weight: 600;
-  font-size: 1.1rem;
-  margin: 0 0 15px 0;
+  font-size: clamp(0.95rem, 2.4vw, 1.05rem);
+  margin: 0 0 clamp(12px, 2.5vw, 18px) 0;
   text-align: center;
 }
 
@@ -60,18 +59,18 @@
 
 .unlock-benefits li {
   color: #ffffff;
-  font-size: 1rem;
-  line-height: 1.6;
-  margin-bottom: 10px;
-  padding: 8px 12px;
-  background: rgba(0, 0, 0, 0.2);
+  font-size: clamp(0.85rem, 2.3vw, 0.95rem);
+  line-height: 1.55;
+  margin-bottom: 8px;
+  padding: 6px 10px;
+  background: rgba(0, 0, 0, 0.22);
   border-radius: 8px;
-  border-left: 3px solid rgba(218, 165, 32, 0.6);
+  border-left: 3px solid rgba(218, 165, 32, 0.55);
 }
 
 
 .preview-section {
-  margin: 30px 0;
+  margin: clamp(18px, 3.5vw, 26px) 0;
 }
 
 /* Fun Fact block */
@@ -93,16 +92,16 @@
 
 .preview-btn.secondary-action {
   background: transparent;
-  border: 1px solid rgba(218, 165, 32, 0.4);
+  border: 1px solid rgba(218, 165, 32, 0.35);
   color: #DAA520;
-  padding: 10px 20px;
-  border-radius: 8px;
+  padding: clamp(8px, 2vw, 12px) clamp(14px, 3vw, 20px);
+  border-radius: 999px;
   cursor: pointer;
-  font-size: 0.95rem;
+  font-size: clamp(0.85rem, 2.3vw, 0.95rem);
   font-weight: 500;
-  transition: all 0.3s ease;
+  transition: all 0.25s ease;
   text-decoration: underline;
-  text-underline-offset: 2px;
+  text-underline-offset: 3px;
 }
 
 .preview-btn.secondary-action:hover {
@@ -192,13 +191,14 @@
 
 /* Email Form Styles */
 .email-form.primary-action {
-  max-width: 500px;
-  margin: 30px auto;
+  max-width: 520px;
+  margin: clamp(24px, 4vw, 36px) auto;
   text-align: left;
-  background: rgba(218, 165, 32, 0.05);
-  border: 2px solid rgba(218, 165, 32, 0.3);
-  border-radius: 15px;
-  padding: 30px;
+  background: rgba(32, 32, 32, 0.55);
+  border: 1px solid rgba(218, 165, 32, 0.25);
+  border-radius: 16px;
+  padding: clamp(20px, 4vw, 28px);
+  box-shadow: 0 18px 35px rgba(0, 0, 0, 0.28);
 }
 
 .form-group {
@@ -207,20 +207,21 @@
 
 .form-group label {
   display: block;
-  margin-bottom: 8px;
+  margin-bottom: clamp(6px, 1.5vw, 10px);
   color: #DAA520;
   font-weight: 600;
+  font-size: clamp(0.95rem, 2.4vw, 1.1rem);
 }
 
 .form-group input[type="email"] {
   width: 100%;
-  padding: 15px;
-  border: 2px solid rgba(218, 165, 32, 0.3);
+  padding: clamp(12px, 2.5vw, 16px);
+  border: 1px solid rgba(218, 165, 32, 0.25);
   border-radius: 10px;
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.25);
   color: #fff;
-  font-size: 1rem;
-  transition: border-color 0.3s ease;
+  font-size: clamp(0.95rem, 2.2vw, 1.05rem);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .form-group input[type="email"]:focus {
@@ -241,20 +242,23 @@
 
 /* Checkbox Styles */
 .checkbox-group {
-  margin: 25px 0;
+  margin: clamp(18px, 3vw, 28px) 0;
 }
 
 .checkbox-label {
   display: flex;
   align-items: flex-start;
   cursor: pointer;
-  line-height: 1.5;
+  line-height: 1.45;
+  gap: 12px;
+  font-size: clamp(0.85rem, 2.1vw, 0.95rem);
 }
 
 .checkbox-label input[type="checkbox"] {
-  margin-right: 12px;
+  margin-right: 8px;
   margin-top: 4px;
-  transform: scale(1.2);
+  width: 18px;
+  height: 18px;
 }
 
 .checkbox-text {
@@ -268,31 +272,30 @@
 
 .checkbox-text li {
   margin: 5px 0;
-  font-size: 0.95rem;
+  font-size: clamp(0.8rem, 2.2vw, 0.9rem);
 }
 
 /* Submit Button */
 .submit-btn {
   width: 100%;
-  background: linear-gradient(45deg, #DAA520, #B8860B);
+  background: linear-gradient(40deg, #daa520, #b8860b);
   border: none;
   color: #fff;
-  padding: 20px;
-  border-radius: 12px;
-  font-size: 1.2rem;
-  font-weight: 700;
+  padding: clamp(14px, 3vw, 18px);
+  border-radius: 999px;
+  font-size: clamp(1rem, 2.4vw, 1.1rem);
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
-  margin: 20px 0;
-  box-shadow: 0 4px 12px rgba(218, 165, 32, 0.4);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+  margin: clamp(18px, 3vw, 24px) 0;
+  box-shadow: 0 10px 24px rgba(218, 165, 32, 0.35);
+  letter-spacing: 0.3px;
 }
 
 .submit-btn:hover:not(:disabled) {
-  background: linear-gradient(45deg, #B8860B, #DAA520);
+  background: linear-gradient(40deg, #c7941a, #daa520);
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(218, 165, 32, 0.5);
+  box-shadow: 0 16px 28px rgba(218, 165, 32, 0.45);
 }
 
 .submit-btn:disabled {
@@ -301,10 +304,39 @@
 }
 
 .privacy-note {
-  font-size: 0.85rem;
-  color: #888;
+  font-size: clamp(0.8rem, 2.2vw, 0.9rem);
+  color: #9a9a9a;
   text-align: center;
-  line-height: 1.4;
+  line-height: 1.45;
+  margin-top: clamp(18px, 3vw, 24px);
+}
+
+.privacy-toggle {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  color: #f5f5f5;
+  padding: clamp(6px, 1.6vw, 10px) clamp(16px, 3vw, 22px);
+  border-radius: 999px;
+  font-size: clamp(0.8rem, 2vw, 0.9rem);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: clamp(6px, 1.5vw, 10px);
+}
+
+.privacy-toggle:hover {
+  border-color: rgba(218, 165, 32, 0.55);
+  background: rgba(218, 165, 32, 0.18);
+  color: #1a1a1a;
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px rgba(218, 165, 32, 0.25);
+}
+
+.privacy-toggle:focus-visible {
+  outline: 2px solid rgba(218, 165, 32, 0.7);
+  outline-offset: 3px;
 }
 
 /* Full Results Styles */
@@ -1417,23 +1449,6 @@
   .privacy-note p {
     margin: 0;
     transition: all 0.3s ease;
-  }
-
-  .privacy-toggle {
-    background: none;
-    border: 1px solid rgba(218, 165, 32, 0.3);
-    color: #DAA520;
-    padding: 4px 10px;
-    border-radius: 12px;
-    font-size: clamp(0.7rem, 2.2vw, 0.75rem);
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin-top: 4px;
-  }
-
-  .privacy-toggle:hover {
-    border-color: #DAA520;
-    background: rgba(218, 165, 32, 0.1);
   }
 
   /* Sneak Peek Adjustments */
