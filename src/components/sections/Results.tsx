@@ -94,7 +94,7 @@ const Results: React.FC = () => {
       return;
     }
     // Otherwise align the next card to the left start for reliable snapping
-    let next = Math.max(0, Math.min(end, slots[nextIndex].offsetLeft));
+    const next = Math.max(0, Math.min(end, slots[nextIndex].offsetLeft));
     el.scrollTo({ left: next, behavior: 'smooth' });
   };
 

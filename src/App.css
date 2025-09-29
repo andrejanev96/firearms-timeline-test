@@ -265,13 +265,6 @@ body {
   flex: 1;
 }
 
-
-.firearms-grid::after,
-.firearms-grid::before {
-  content: '';
-  grid-column: span 6;
-}
-
 .firearms-grid.selection-mode {
   border-color: rgba(218, 165, 32, 0.45);
   background: rgba(255, 255, 255, 0.07);

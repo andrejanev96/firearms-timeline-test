@@ -33,6 +33,15 @@ export default function ImageViewerModal({ open, items, index, onClose, onNaviga
   }, [index]);
 
   // Focus management: trap focus and restore
+  const navigate = React.useCallback((delta: number) => {
+    if (len <= 0) return;
+    setLocalIndex((prev) => {
+      const next = clampIndex(prev + delta, len, loop);
+      onNavigate(next);
+      return next;
+    });
+  }, [len, loop, onNavigate]);
+
   React.useEffect(() => {
     if (!open) return;
     const prevActive = document.activeElement as HTMLElement | null;
@@ -83,14 +92,7 @@ export default function ImageViewerModal({ open, items, index, onClose, onNaviga
         prevActive?.focus?.();
       }
     };
-  }, [open]);
-
-  const navigate = (delta: number) => {
-    if (len <= 0) return;
-    const next = clampIndex(localIndex + delta, len, loop);
-    setLocalIndex(next);
-    onNavigate(next);
-  };
+  }, [open, navigate, onClose, returnFocusEl]);
 
   // Backdrop click closes
   const onBackdrop = (e: React.MouseEvent) => {
