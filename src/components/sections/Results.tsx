@@ -440,21 +440,6 @@ const Results: React.FC = () => {
                           <img
                             src={userFirearm.image}
                             alt={userFirearm.name}
-                            onClick={(e) => {
-                              // Build typed viewer items from all filled slots
-                              const placed = orderedFirearms.filter(Boolean) as Firearm[];
-                              const items: Firearm[] = placed.map((f) => {
-                                const userPos = orderedFirearms.findIndex((of) => of?.id === f.id);
-                                return {
-                                  ...f,
-                                  correct: f.correctPosition === userPos,
-                                  fact: f.description,
-                                };
-                              });
-                              const idx = placed.findIndex((f) => f.id === userFirearm.id);
-                              openViewer(items, Math.max(0, idx), e.currentTarget as HTMLElement);
-                            }}
-                            style={{ cursor: 'pointer' }}
                           />
                           {isCorrect && (
                             <button

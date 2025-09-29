@@ -14,11 +14,15 @@
 }
 
 .chronological-timeline {
-  padding: 10px 0;
+  padding: 6px 0;
   background: transparent; /* let the global gradient show through */
-  margin: 20px 0;
+  margin: clamp(8px, 1.6vh, 16px) 0;
   overflow: hidden;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
 }
 
 
@@ -37,9 +41,11 @@
   position: relative;
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 12px;
   padding: 0 12px;
   background: transparent;
+  flex: 1;
+  min-height: 0;
 }
 
 .timeline-track {
@@ -48,8 +54,9 @@
   align-items: flex-start;
   min-width: 0; /* allow track to shrink so arrows remain visible inline */
   /* consistent symmetric padding to prevent visual breaks */
-  padding: 12px;
-  height: 18rem; /* fixed track height for consistent card layout */
+  padding: 10px;
+  height: var(--timeline-track-height); /* ensure cards are fully visible */
+  min-height: var(--timeline-track-height);
   overflow-x: auto;
   scroll-behavior: smooth;
   cursor: grab;
@@ -83,16 +90,16 @@
   color: #000;
   border: none;
   border-radius: 50%;
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: bold;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(218, 165, 32, 0.3);
+  box-shadow: 0 2px 8px rgba(218, 165, 32, 0.25);
   z-index: 10;
   flex-shrink: 0;
 }
@@ -172,7 +179,7 @@
   position: relative;
   z-index: 2;
   background: transparent;
-  margin: 0 clamp(6px, 0.8vw, 12px); /* Reduced responsive spacing between positions */
+  margin: 0 clamp(4px, 0.6vw, 10px); /* Reduced responsive spacing between positions */
 }
 
 .slot-number {
@@ -185,7 +192,7 @@
   align-items: center;
   justify-content: center;
   font-weight: bold;
-  font-size: 1rem;
+  font-size: 0.95rem;
   margin-bottom: 0;
   border: 2px solid #fff;
   position: relative;
@@ -314,8 +321,8 @@
 /* Timeline Visual Elements */
 .timeline-visual {
   position: relative;
-  margin-bottom: 20px;
-  padding: 10px 60px; /* Account for scroll buttons */
+  margin-bottom: 12px;
+  padding: 6px 56px; /* Account for scroll buttons */
 }
 
 .timeline-line {
@@ -332,8 +339,8 @@
 .decade-markers {
   display: flex;
   justify-content: space-between;
-  margin-top: 8px;
-  padding: 0 20px;
+  margin-top: 6px;
+  padding: 0 16px;
 }
 
 .decade-marker {
@@ -348,7 +355,7 @@
 /* Completion Encouragement */
 .completion-encouragement {
   text-align: center;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 
 .completion-encouragement p {

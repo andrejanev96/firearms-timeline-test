@@ -29,10 +29,6 @@ const ChronologicalSlots: React.FC<ChronologicalSlotsProps> = ({
   const [canScrollRight, setCanScrollRight] = React.useState(true);
 
   const handleDragOver = (e: React.DragEvent, position: number) => {
-    // Prevent drag over if position is already occupied
-    if (orderedFirearms[position] !== null) {
-      return;
-    }
     e.preventDefault();
     setDragOverPosition(position);
   };
@@ -47,11 +43,6 @@ const ChronologicalSlots: React.FC<ChronologicalSlotsProps> = ({
     e.preventDefault();
     setDragOverPosition(null);
 
-    // Prevent drop if position is already occupied
-    if (orderedFirearms[position] !== null) {
-      return;
-    }
-
     try {
       const firearmData = JSON.parse(e.dataTransfer.getData('text/plain'));
       onDrop(firearmData, position);
@@ -61,13 +52,13 @@ const ChronologicalSlots: React.FC<ChronologicalSlotsProps> = ({
   };
 
   const handlePositionClick = (position: number, _e: React.MouseEvent) => {
-    if (isSelectionMode && orderedFirearms[position] === null) {
+    if (isSelectionMode) {
       onPositionSelect(position);
     }
   };
 
   const handlePositionKeyDown = (position: number, e: React.KeyboardEvent) => {
-    if (!isSelectionMode || orderedFirearms[position] !== null) return;
+    if (!isSelectionMode) return;
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
       onPositionSelect(position);
@@ -84,16 +75,13 @@ const ChronologicalSlots: React.FC<ChronologicalSlotsProps> = ({
 
   // Touch handlers for individual slots
   const handleSlotTouchStart = (position: number, e: React.TouchEvent) => {
-    // Only handle if it's a selection mode touch on an empty slot
-    if (isSelectionMode && orderedFirearms[position] === null) {
+    if (isSelectionMode) {
       e.stopPropagation(); // Prevent timeline scroll
     }
   };
 
   const handleSlotTouchEnd = (position: number, e: React.TouchEvent) => {
-    // Only handle if it's a selection mode touch on an empty slot
-    if (isSelectionMode && orderedFirearms[position] === null) {
-      // Remove preventDefault() to avoid passive event listener warning
+    if (isSelectionMode) {
       e.stopPropagation(); // Prevent timeline scroll
       onPositionSelect(position);
     }
@@ -188,7 +176,7 @@ const ChronologicalSlots: React.FC<ChronologicalSlotsProps> = ({
         aria-live="polite"
       >
         Use drag and drop or keyboard navigation to place firearms in chronological order.
-        Each position can hold only one firearm. Use the back arrow button to remove items.
+        You can replace an occupied position; the previous firearm returns to the bank. Use the back arrow button to remove items manually.
       </div>
       <div className="timeline-visual">
         <div className="timeline-line"></div>
@@ -224,24 +212,25 @@ const ChronologicalSlots: React.FC<ChronologicalSlotsProps> = ({
           {orderedFirearms.map((firearm, position) => (
           <div
             key={position}
-            className={`timeline-slot ${isSelectionMode && firearm === null ? 'selectable' : ''} ${isHighlighted ? 'highlighted' : ''} ${dragOverPosition === position ? 'drag-over' : ''} ${firearm !== null ? 'occupied' : ''}`}
+            className={`timeline-slot ${isSelectionMode ? 'selectable' : ''} ${isHighlighted ? 'highlighted' : ''} ${dragOverPosition === position ? 'drag-over' : ''} ${firearm !== null ? 'occupied' : ''}`}
             onDragOver={(e) => handleDragOver(e, position)}
             onDragLeave={handleDragLeave}
             onDrop={(e) => handleDrop(e, position)}
             onClick={(e) => handlePositionClick(position, e)}
             onTouchStart={(e) => handleSlotTouchStart(position, e)}
             onTouchEnd={(e) => handleSlotTouchEnd(position, e)}
-            tabIndex={isSelectionMode && firearm === null ? 0 : -1}
-            role={isSelectionMode && firearm === null ? 'button' : 'group'}
+            tabIndex={isSelectionMode ? 0 : -1}
+            role={isSelectionMode ? 'button' : 'group'}
             aria-label={
               firearm
-                ? `Position ${position + 1}, occupied by ${firearm.name}. Press X to remove.`
+                ? isSelectionMode
+                  ? `Position ${position + 1}, currently ${firearm.name}. Activate to replace with the selected firearm.`
+                  : `Position ${position + 1}, occupied by ${firearm.name}. Press X to remove.`
                 : isSelectionMode
-                ? `Position ${position + 1}, empty. Press Enter or Space to place selected firearm here.`
+                ? `Position ${position + 1}, empty. Activate to place the selected firearm here.`
                 : `Position ${position + 1}, empty drop zone`
             }
-            aria-disabled={firearm !== null}
-            aria-describedby={isSelectionMode && firearm === null ? 'chronological-instructions' : undefined}
+            aria-describedby={isSelectionMode ? 'chronological-instructions' : undefined}
             onKeyDown={(e) => handlePositionKeyDown(position, e)}
           >
             <div className="slot-number">{position + 1}</div>

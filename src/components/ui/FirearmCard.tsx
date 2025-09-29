@@ -65,13 +65,6 @@ const FirearmCard: React.FC<FirearmCardProps> = ({
     if (!openViewer || !viewerItems || typeof viewerIndex !== 'number') return;
     openViewer(viewerItems, viewerIndex, viewBtnRef.current);
   };
-  const handleViewerKey = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      handleOpenViewer(e);
-    }
-  };
-
   return (
     <div
       className={`firearm-card ${isDragging ? 'dragging' : ''} ${inTimeline ? 'in-timeline' : ''} ${isSelected ? 'selected' : ''} ${isSelectionMode && !isSelected ? 'dimmed' : ''} ${isMobile ? 'mobile-card' : ''} ${isTopCard ? 'top-card' : ''}`}
@@ -93,11 +86,6 @@ const FirearmCard: React.FC<FirearmCardProps> = ({
         )}
         <div 
           className="firearm-image"
-          onClick={openViewer ? handleOpenViewer : undefined}
-          onKeyDown={openViewer ? handleViewerKey : undefined}
-          role={openViewer ? 'button' : undefined}
-          tabIndex={openViewer ? 0 : -1}
-          aria-label={openViewer ? `View larger image of ${firearm.name}` : undefined}
         >
           <img
             src={firearm.image}
