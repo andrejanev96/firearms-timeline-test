@@ -74,7 +74,7 @@ const ChronologicalSlots: React.FC<ChronologicalSlotsProps> = ({
   };
 
   // Touch handlers for individual slots
-  const handleSlotTouchStart = (position: number, e: React.TouchEvent) => {
+  const handleSlotTouchStart = (_position: number, e: React.TouchEvent) => {
     if (isSelectionMode) {
       e.stopPropagation(); // Prevent timeline scroll
     }

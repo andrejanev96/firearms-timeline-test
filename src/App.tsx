@@ -409,7 +409,7 @@ const App: React.FC = () => {
         </div>
 
         {/* Mobile Card Stack Interface */}
-        {(isMobile || window.innerWidth <= 1399 || ('ontouchstart' in window) || (navigator.maxTouchPoints > 0)) ? (
+        {isMobile ? (
           <MobileCardStack
             firearmsList={bank}
             onFirearmSelect={selectFirearm}
@@ -504,7 +504,7 @@ const App: React.FC = () => {
 
 
         {/* Mobile Complete CTA (non-blocking) */}
-        {isComplete && (isMobile || window.innerWidth <= 1399 || ('ontouchstart' in window) || (navigator.maxTouchPoints > 0)) && bank.length > 0 && (
+        {isComplete && isMobile && bank.length > 0 && (
           <div className="mobile-complete-cta">
             <button
               onClick={handleComplete}
