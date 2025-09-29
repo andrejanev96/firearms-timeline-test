@@ -45,6 +45,11 @@ const FirearmCard: React.FC<FirearmCardProps> = React.memo(({
   };
 
   const handleClick = (e: React.MouseEvent) => {
+    // Only stop propagation if NOT in timeline during selection mode
+    // (we want clicks to bubble up to trigger swaps in selection mode)
+    if (!(inTimeline && isSelectionMode)) {
+      e.stopPropagation(); // Prevent click from bubbling to container
+    }
     if (onClick && !(inTimeline && isSelectionMode)) {
       onClick(firearm, e);
     }
@@ -81,7 +86,7 @@ const FirearmCard: React.FC<FirearmCardProps> = React.memo(({
       >
         {isSelected && !isMobile && (
           <div className="selection-indicator">
-            ✓ Selected - Click a position on the timeline
+            ✓ Selected
           </div>
         )}
         <div 

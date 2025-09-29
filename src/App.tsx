@@ -396,13 +396,13 @@ const App: React.FC = () => {
 
   return (
     <>
-    <motion.div 
+    <motion.div
       className="app"
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: showQuizAnimation ? 1 : 0, y: showQuizAnimation ? 0 : 30 }}
       transition={{ duration: 0.8 }}
     >
-      <div className="container">
+      <div className="container" onClick={() => selectionMode && selectFirearm(null)}>
         {/* Progress Bar */}
         <div className="progress-container">
           <div className="progress-bar">

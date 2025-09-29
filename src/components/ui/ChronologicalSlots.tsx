@@ -57,7 +57,8 @@ const ChronologicalSlots: React.FC<ChronologicalSlotsProps> = React.memo(({
     }
   };
 
-  const handlePositionClick = (position: number, _e: React.MouseEvent) => {
+  const handlePositionClick = (position: number, e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent click from bubbling to container
     if (isSelectionMode) {
       onPositionSelect(position);
     }
@@ -245,6 +246,7 @@ const ChronologicalSlots: React.FC<ChronologicalSlotsProps> = React.memo(({
                 <FirearmCard
                   firearm={firearm}
                   inTimeline={true}
+                  isSelectionMode={isSelectionMode}
                   openViewer={openViewer}
                   viewerItems={placedFirearms}
                   viewerIndex={placedFirearms.findIndex((f) => f.id === firearm.id)}

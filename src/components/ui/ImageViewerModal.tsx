@@ -178,21 +178,24 @@ export default function ImageViewerModal({ open, items, index, onClose, onNaviga
             <div className="image-viewer-details" aria-labelledby="viewer-details-heading">
               <h3 id="viewer-details-heading" className="sr-only">Details</h3>
               <div className="details-inner">
-                <div className="header-row">
-                  <div className="details-label">Fact Unlocked</div>
-                  {typeof current.year === 'number' && (
+                <div className="details-label">✨ Fact Unlocked</div>
+                {typeof current.year === 'number' && (
+                  <div className="year-introduced">
+                    <span className="year-label">Year Introduced:</span>
                     <span className="year-badge" aria-label={`Year ${current.year}`}>{current.year}</span>
-                  )}
+                  </div>
+                )}
+                <div className="fact-content">
+                  {Array.isArray(current.facts) && current.facts.length > 0 ? (
+                    <ul style={{ margin: 0, paddingLeft: '18px' }}>
+                      {current.facts.slice(0, 3).map((s, i) => (
+                        <li key={i} className="fact-text">{s}</li>
+                      ))}
+                    </ul>
+                  ) : current.fact ? (
+                    <p className="fact-text">{current.fact}</p>
+                  ) : null}
                 </div>
-                {Array.isArray(current.facts) && current.facts.length > 0 ? (
-                  <ul style={{ margin: 0, paddingLeft: '18px' }}>
-                    {current.facts.slice(0, 3).map((s, i) => (
-                      <li key={i} className="fact-text">{s}</li>
-                    ))}
-                  </ul>
-                ) : current.fact ? (
-                  <p className="fact-text">{current.fact}</p>
-                ) : null}
               </div>
             </div>
           )}

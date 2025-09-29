@@ -648,7 +648,7 @@ body::after {
 
 .selection-indicator {
   position: absolute;
-  top: -12px;
+  top: 4px;
   left: 50%;
   transform: translateX(-50%);
   background: #daa520;
