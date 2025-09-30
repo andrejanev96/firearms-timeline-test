@@ -9,7 +9,7 @@ interface ChronologicalSlotsProps {
   onPositionSelect: (position: number) => void;
   isSelectionMode: boolean;
   isHighlighted: boolean;
-  openViewer?: (items: Firearm[], index: number, returnFocusEl?: HTMLElement | null) => void;
+  openViewer?: (firearm: Firearm, returnFocusEl?: HTMLElement | null) => void;
 }
 
 const ChronologicalSlots: React.FC<ChronologicalSlotsProps> = React.memo(({
@@ -28,11 +28,6 @@ const ChronologicalSlots: React.FC<ChronologicalSlotsProps> = React.memo(({
   const [canScrollLeft, setCanScrollLeft] = React.useState(false);
   const [canScrollRight, setCanScrollRight] = React.useState(true);
 
-  // Memoize filtered firearms to avoid repeated filtering on every render
-  const placedFirearms = React.useMemo(
-    () => orderedFirearms.filter(Boolean) as Firearm[],
-    [orderedFirearms]
-  );
 
   const handleDragOver = (e: React.DragEvent, position: number) => {
     e.preventDefault();
@@ -185,21 +180,13 @@ const ChronologicalSlots: React.FC<ChronologicalSlotsProps> = React.memo(({
         Use drag and drop or keyboard navigation to place firearms in chronological order.
         You can replace an occupied position; the previous firearm returns to the bank. Use the back arrow button to remove items manually.
       </div>
-      <div className="timeline-visual">
-        <div className="timeline-line"></div>
-        <div className="decade-markers">
-          <span className="decade-marker">1750s</span>
-          <span className="decade-marker">1800s</span>
-          <span className="decade-marker">1850s</span>
-          <span className="decade-marker">1900s</span>
-          <span className="decade-marker">1950s</span>
-          <span className="decade-marker">2000s</span>
-        </div>
-      </div>
       <div className="timeline-container">
-        <button 
+        <button
           className={`scroll-btn scroll-left ${!canScrollLeft ? 'disabled' : ''}`}
-          onClick={scrollLeft}
+          onClick={(e) => {
+            e.stopPropagation();
+            scrollLeft();
+          }}
           disabled={!canScrollLeft}
           aria-label="Scroll timeline left"
         >
@@ -248,8 +235,6 @@ const ChronologicalSlots: React.FC<ChronologicalSlotsProps> = React.memo(({
                   inTimeline={true}
                   isSelectionMode={isSelectionMode}
                   openViewer={openViewer}
-                  viewerItems={placedFirearms}
-                  viewerIndex={placedFirearms.findIndex((f) => f.id === firearm.id)}
                 />
                 {!isSelectionMode && (
                   <button
@@ -273,9 +258,12 @@ const ChronologicalSlots: React.FC<ChronologicalSlotsProps> = React.memo(({
           </div>
         ))}
         </div>
-        <button 
+        <button
           className={`scroll-btn scroll-right ${!canScrollRight ? 'disabled' : ''}`}
-          onClick={scrollRight}
+          onClick={(e) => {
+            e.stopPropagation();
+            scrollRight();
+          }}
           disabled={!canScrollRight}
           aria-label="Scroll timeline right"
         >

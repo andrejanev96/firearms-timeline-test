@@ -279,21 +279,20 @@ body::after {
 .firearms-grid {
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
-  grid-auto-rows: auto;
+  grid-auto-rows: minmax(auto, max-content);
   gap: 12px;
   padding: 16px;
   background: rgba(255, 255, 255, 0.04);
   border-radius: 16px;
   border: 1px dashed rgba(218, 165, 32, 0.25);
   justify-items: center;
-  align-items: stretch;
+  align-items: start;
   max-width: 1080px;
   margin: 0 auto;
   position: relative;
   transition: all 0.3s ease;
   overflow: hidden;
   min-height: 0;
-  flex: 1;
 }
 
 .firearms-grid.selection-mode {
@@ -705,6 +704,75 @@ body::after {
   font-size: 0.95rem;
 }
 
+/* Keyboard shortcuts tip */
+.keyboard-tip {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  max-width: 420px;
+  background: linear-gradient(135deg, #4CAF50, #45a049);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 12px;
+  padding: 14px 18px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  font-size: 0.9rem;
+  z-index: 1000;
+  animation: slideInRight 0.4s ease-out;
+}
+
+.keyboard-tip strong {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 1rem;
+}
+
+.keyboard-tip kbd {
+  display: inline-block;
+  background: rgba(0,0,0,0.25);
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-family: monospace;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin: 0 2px;
+}
+
+.keyboard-tip-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(0,0,0,0.2);
+  border: none;
+  color: #fff;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+}
+
+.keyboard-tip-close:hover {
+  background: rgba(0,0,0,0.4);
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(100px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
 /* removed .timeline-card-wrapper and related animations (unused) */
 
 /* (mobile-progress removed in JSX) */
@@ -843,6 +911,7 @@ body::after {
 .firearms-grid .firearm-card {
   height: auto;            /* let content determine height */
   min-height: 240px;       /* keep reasonable minimum */
+  max-height: 280px;       /* prevent stretching when only 1 row */
   justify-content: flex-start; /* stack image then name without centering squeeze */
 }
 
@@ -865,7 +934,7 @@ body::after {
 
 /* MOBILE CARD STACK - COMPLETELY NEW */
 .mobile-card-container {
-  padding: clamp(8px, 2vw, 15px);
+  padding: clamp(1rem, 4vw, 1.5rem);
   min-height: 100vh;
   width: 100vw;
   max-width: 100vw;
@@ -952,6 +1021,8 @@ body::after {
   height: 100% !important;
   border-radius: 0 !important;
   overflow: visible !important;
+  position: relative;
+  z-index: 1;
 }
 .image-nav-wrap .firearm-card.mobile-card::before { display: none !important; }
 
@@ -973,21 +1044,130 @@ body::after {
 }
 .image-nav-wrap .nav-btn:disabled { opacity: 0.35; pointer-events: none; filter: grayscale(100%); }
 
-/* Media shell wraps the image neatly */
+/* Media shell wraps the image neatly - Mobile/Tablet only golden gradient */
 .media-shell {
   width: 100%;
   max-width: 100%;
   height: clamp(220px, 60vh, 440px);
   border-radius: 16px;
-  background: #ffffff;
-  border: 1px solid rgba(0,0,0,0.06);
+  background: transparent;
+  border: none;
   padding: 16px;
-  overflow: hidden;
+  overflow: visible;
   display: flex;
   align-items: center;
   justify-content: center;
   flex: 1 1 auto; /* take remaining width between arrows */
+  position: relative;
+  transition: all 0.3s ease;
 }
+
+/* Golden glow effect behind the weapon image */
+.media-shell::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 70%;
+  height: 70%;
+  background: radial-gradient(circle at center,
+    rgba(218, 165, 32, 0.4) 0%,
+    rgba(218, 165, 32, 0.28) 25%,
+    rgba(184, 134, 11, 0.18) 50%,
+    rgba(139, 69, 19, 0.08) 75%,
+    transparent 100%
+  );
+  filter: blur(25px);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.media-shell::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  height: 90%;
+  background: radial-gradient(ellipse at center,
+    rgba(255, 215, 0, 0.15) 0%,
+    rgba(218, 165, 32, 0.1) 40%,
+    transparent 70%
+  );
+  filter: blur(35px);
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Swipe animations for mobile */
+.media-shell.swipe-left {
+  animation: swipeLeftAnimation 0.4s ease-out;
+}
+
+.media-shell.swipe-right {
+  animation: swipeRightAnimation 0.4s ease-out;
+}
+
+@keyframes swipeLeftAnimation {
+  0% {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+  30% {
+    transform: translateX(-20px) scale(0.95);
+    opacity: 0.7;
+  }
+  70% {
+    transform: translateX(20px) scale(0.95);
+    opacity: 0.7;
+  }
+  100% {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes swipeRightAnimation {
+  0% {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+  30% {
+    transform: translateX(20px) scale(0.95);
+    opacity: 0.7;
+  }
+  70% {
+    transform: translateX(-20px) scale(0.95);
+    opacity: 0.7;
+  }
+  100% {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+}
+
+/* Placement animation for mobile timeline positions */
+.mobile-timeline-period.placement-success {
+  animation: placementPulse 0.6s ease-out;
+}
+
+@keyframes placementPulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 rgba(218, 165, 32, 0.7);
+  }
+  50% {
+    transform: scale(1.08);
+    box-shadow: 0 0 25px rgba(218, 165, 32, 0.7), inset 0 0 20px rgba(218, 165, 32, 0.3);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 rgba(218, 165, 32, 0);
+  }
+}
+
 .media-shell .firearm-image {
   width: 100% !important;
   height: 100% !important;
@@ -997,6 +1177,8 @@ body::after {
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
+  z-index: 1;
 }
 .media-shell .firearm-image img {
   height: 100% !important;
@@ -1005,6 +1187,8 @@ body::after {
   object-fit: contain !important;
   display: block;
   margin: 0 auto !important;
+  position: relative;
+  z-index: 1;
 }
 
 /* Mobile phones - use grid, guarantee arrows never overlay image */
@@ -1283,7 +1467,7 @@ body::after {
   z-index: 1000;
   display: flex;
   flex-direction: column;
-  padding: 15px;
+  padding: clamp(1rem, 4vw, 1.5rem);
   animation: slideUp 0.3s ease-out;
   overflow-y: auto;
 }
@@ -1298,18 +1482,20 @@ body::after {
 }
 
 .mobile-timeline-header {
-  margin-bottom: 20px;
-  padding: calc(env(safe-area-inset-top) + 10px) 12px 10px;
-  background: rgba(218, 165, 32, 0.1);
+  margin-bottom: clamp(1.25rem, 3vw, 1.6rem);
+  padding: calc(env(safe-area-inset-top) + 10px) clamp(12px, 3vw, 16px) 10px;
+  background: rgba(218, 165, 32, 0.12);
   border-radius: 12px;
-  border: 2px solid rgba(218, 165, 32, 0.3);
+  border: 1px solid rgba(218, 165, 32, 0.32);
   flex-shrink: 0;
   position: relative;
   display: flex;
   align-items: center;
-  justify-content: center; /* center the info block */
-  gap: 12px;
-  padding-left: 64px; /* reserve space for absolute back button */
+  justify-content: center;
+  gap: clamp(10px, 2.5vw, 14px);
+  padding-left: 64px;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.25);
 }
 
 .back-btn {
@@ -1368,83 +1554,95 @@ body::after {
   object-fit: contain;
 }
 
-.selected-firearm-text { text-align: center; }
+.selected-firearm-text {
+  text-align: center;
+}
 
 .selected-firearm-text h3 {
   color: #daa520;
   margin-bottom: 4px;
-  font-size: 1.1rem;
-  line-height: 1.2;
+  font-size: clamp(1rem, 2.5vw, 1.2rem);
+  line-height: 1.3;
+  font-weight: 600;
 }
 
 .selected-firearm-text p {
-  color: #cccccc;
-  font-size: 0.9rem;
+  color: #ffffff;
+  font-size: clamp(0.85rem, 2vw, 0.95rem);
   margin: 0;
+  opacity: 0.86;
+  line-height: 1.45;
 }
 
 .mobile-timeline-periods {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: clamp(0.75rem, 2vw, 1rem);
   overflow-y: auto;
-  padding-bottom: 20px;
+  padding-bottom: clamp(1.25rem, 3vw, 1.6rem);
 }
 
 .mobile-timeline-period {
-  background: rgba(255, 255, 255, 0.05);
-  border: 2px solid rgba(218, 165, 32, 0.3);
+  background: rgba(218, 165, 32, 0.12);
+  border: 1px solid rgba(218, 165, 32, 0.32);
   border-radius: 12px;
-  padding: 15px;
+  padding: clamp(1rem, 3vw, 1.25rem);
   cursor: pointer;
   transition: all 0.3s ease;
   text-align: center;
   flex-shrink: 0;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.25);
 }
 
 .mobile-timeline-period:hover {
-  background: rgba(218, 165, 32, 0.1);
-  border-color: #daa520;
-  transform: scale(1.02);
+  background: rgba(218, 165, 32, 0.18);
+  border-color: rgba(218, 165, 32, 0.5);
+  transform: translateY(-1px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.28);
 }
 
 .mobile-timeline-period.occupied {
-  background: rgba(231, 76, 60, 0.1);
-  border-color: rgba(231, 76, 60, 0.5);
+  background: rgba(231, 76, 60, 0.12);
+  border-color: rgba(231, 76, 60, 0.32);
   cursor: default;
 }
 
 .mobile-timeline-period.occupied:hover {
-  background: rgba(231, 76, 60, 0.15);
-  border-color: rgba(231, 76, 60, 0.7);
-  transform: none;
+  background: rgba(231, 76, 60, 0.18);
+  border-color: rgba(231, 76, 60, 0.5);
+  transform: translateY(-1px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.28);
 }
 
 .mobile-timeline-period.available {
-  background: rgba(76, 175, 80, 0.1);
-  border-color: rgba(76, 175, 80, 0.5);
+  background: rgba(76, 175, 80, 0.12);
+  border-color: rgba(76, 175, 80, 0.32);
 }
 
 .mobile-timeline-period.available:hover {
-  background: rgba(76, 175, 80, 0.15);
-  border-color: #4CAF50;
-  transform: scale(1.02);
+  background: rgba(76, 175, 80, 0.18);
+  border-color: rgba(76, 175, 80, 0.5);
+  transform: translateY(-1px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.28);
 }
 
 .mobile-period-label {
-  font-size: 1rem;
+  font-size: clamp(0.9rem, 2.2vw, 1.05rem);
   font-weight: 600;
   color: #daa520;
   margin-bottom: 4px;
-  line-height: 1.2;
+  line-height: 1.3;
 }
 
 .mobile-period-content {
-  color: #cccccc;
-  font-size: 0.85rem;
+  color: #ffffff;
+  font-size: clamp(0.8rem, 1.8vw, 0.9rem);
   text-align: center;
   font-weight: 500;
+  opacity: 0.86;
+  line-height: 1.45;
 }
 
 /* Mobile timeline occupied actions */
@@ -1494,35 +1692,49 @@ body::after {
 .empty-stack-panel {
   margin: auto;
   text-align: center;
-  background: rgba(218, 165, 32, 0.1);
-  border: 2px solid rgba(218, 165, 32, 0.3);
+  background: rgba(218, 165, 32, 0.12);
+  border: 1px solid rgba(218, 165, 32, 0.32);
   border-radius: 16px;
-  padding: 24px;
+  padding: clamp(1.5rem, 4vw, 2rem);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.25);
+}
+
+.empty-stack-panel h3 {
+  font-size: clamp(1.25rem, 2.5vw, 1.45rem);
+  margin-bottom: clamp(0.75rem, 2vw, 1rem);
+}
+
+.empty-stack-panel p {
+  font-size: clamp(0.9rem, 2vw, 1rem);
+  opacity: 0.86;
+  line-height: 1.55;
 }
 
 .empty-stack-actions {
   display: flex;
-  gap: 12px;
+  gap: clamp(0.75rem, 2vw, 1rem);
   justify-content: center;
-  margin-top: 12px;
+  margin-top: clamp(1rem, 2.5vw, 1.25rem);
+  flex-wrap: wrap;
 }
 
 .timeline-btn {
   background: transparent;
   color: #daa520;
   border: 2px solid #daa520;
-  padding: 14px 32px;
+  padding: clamp(0.75rem, 2vh, 1rem) clamp(1.5rem, 4vw, 2rem);
   border-radius: 50px;
-  font-size: 1.1rem;
+  font-size: clamp(0.9rem, 2.2vw, 1.05rem);
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .timeline-btn:hover {
-  background: rgba(218, 165, 32, 0.1);
-  transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(218, 165, 32, 0.2);
+  background: rgba(218, 165, 32, 0.18);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(218, 165, 32, 0.3);
 }
 
 /* Confirmation modal */
@@ -1609,17 +1821,20 @@ body::after {
   background: linear-gradient(45deg, #daa520, #b8860b);
   color: white;
   border: none;
-  padding: 10px 18px;
-  border-radius: 20px;
-  font-size: 0.9rem;
+  padding: clamp(0.75rem, 2vh, 1rem) clamp(1.5rem, 4vw, 2rem);
+  border-radius: 999px;
+  font-size: clamp(0.9rem, 2.2vw, 1.05rem);
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
+  box-shadow: 0 10px 30px rgba(218, 165, 32, 0.28);
+  letter-spacing: 0.4px;
 }
 
 .mobile-complete-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(218, 165, 32, 0.4);
+  box-shadow: 0 14px 28px rgba(218, 165, 32, 0.32);
+  background: linear-gradient(45deg, #e0af1a, #c89e15);
 }
 
 /* Timeline Styles - Consolidated in chronological.css */

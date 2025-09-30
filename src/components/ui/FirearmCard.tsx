@@ -14,9 +14,7 @@ interface FirearmCardProps {
   isTopCard?: boolean;
   hideName?: boolean;
   // Viewer support
-  openViewer?: (items: Firearm[], index: number, returnFocusEl?: HTMLElement | null) => void;
-  viewerItems?: Firearm[];
-  viewerIndex?: number;
+  openViewer?: (firearm: Firearm, returnFocusEl?: HTMLElement | null) => void;
 }
 
 const FirearmCard: React.FC<FirearmCardProps> = React.memo(({
@@ -31,8 +29,6 @@ const FirearmCard: React.FC<FirearmCardProps> = React.memo(({
   isMobile = false,
   isTopCard = false,
   openViewer,
-  viewerItems,
-  viewerIndex,
   hideName = false
 }) => {
   
@@ -67,8 +63,8 @@ const FirearmCard: React.FC<FirearmCardProps> = React.memo(({
   const viewBtnRef = React.useRef<HTMLButtonElement | null>(null);
   const handleOpenViewer = (e: React.SyntheticEvent) => {
     e.stopPropagation();
-    if (!openViewer || !viewerItems || typeof viewerIndex !== 'number') return;
-    openViewer(viewerItems, viewerIndex, viewBtnRef.current);
+    if (!openViewer) return;
+    openViewer(firearm, viewBtnRef.current);
   };
   return (
     <div
@@ -98,7 +94,7 @@ const FirearmCard: React.FC<FirearmCardProps> = React.memo(({
             style={{ width: '100%', height: 'auto' }}
             loading={isMobile && isTopCard ? 'eager' : undefined}
           />
-          {openViewer && viewerItems && typeof viewerIndex === 'number' && (
+          {openViewer && (
             <button
               className="magnifier-btn"
               aria-label={`View larger image of ${firearm.name}`}

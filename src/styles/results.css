@@ -616,7 +616,7 @@
   border: none;
   color: white;
   padding: clamp(12px, 2.5vw, 16px) clamp(24px, 4vw, 32px);
-  border-radius: 12px;
+  border-radius: 999px;
   cursor: pointer;
   font-size: clamp(0.95rem, 2vw, 1.05rem);
   font-weight: 700;
@@ -801,8 +801,8 @@
 
 /* Timeline Results View */
 .results-timeline {
-  margin: 3rem 0;
-  padding: 30px 20px 40px 20px;
+  margin: clamp(2rem, 5vw, 3rem) 0;
+  padding: clamp(1.5rem, 4vw, 2.5rem) clamp(1rem, 3vw, 1.5rem);
   background: rgba(0, 0, 0, 0.1);
   border-radius: 15px;
   min-height: 360px;
@@ -810,25 +810,27 @@
 }
 
 .results-timeline h3 {
-  font-size: 1.8rem;
+  font-size: clamp(1.4rem, 3.5vw, 1.8rem);
   color: #DAA520;
-  margin-bottom: 0.5rem;
+  margin-bottom: clamp(0.5rem, 1.5vw, 0.75rem);
   text-align: center;
+  font-weight: 600;
 }
 
 .timeline-instructions {
   text-align: center;
-  color: #ccc;
-  font-size: 1rem;
-  margin-bottom: 2rem;
-  line-height: 1.5;
+  color: #ffffff;
+  font-size: clamp(0.85rem, 2vw, 1rem);
+  margin-bottom: clamp(1.5rem, 3vw, 2rem);
+  line-height: 1.55;
+  opacity: 0.86;
 }
 
 .timeline-results-container {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: clamp(10px, 2vw, 15px);
   padding-right: 10px;
   overflow: visible; /* allow tooltips to overflow */
 }
@@ -853,9 +855,9 @@
   position: relative;
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: clamp(10px, 2vw, 15px);
   min-width: 1200px;
-  padding: 30px 80px 30px 0; /* extra right padding so last card clears the (overlay) right arrow */
+  padding: clamp(1.5rem, 4vw, 2rem) 80px clamp(1.5rem, 4vw, 2rem) 0;
   height: 280px;
   overflow-x: auto;
   overflow-y: visible;
@@ -911,18 +913,18 @@
 .timeline-result-slot .slot-number {
   background: #DAA520;
   color: #000;
-  width: 28px;
-  height: 28px;
+  width: clamp(26px, 5vw, 30px);
+  height: clamp(26px, 5vw, 30px);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: bold;
-  font-size: 0.9rem;
+  font-size: clamp(0.85rem, 1.8vw, 0.95rem);
   border: 2px solid #fff;
   position: static;
   transform: none;
-  margin-bottom: 8px;
+  margin-bottom: clamp(6px, 1.5vw, 8px);
 }
 
 .timeline-result-slot.correct .slot-number {
@@ -938,9 +940,9 @@
   flex-direction: column;
   height: 160px;
   width: 140px;
-  padding: 12px;
+  padding: clamp(10px, 2.5vw, 14px);
   border-radius: 12px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.25);
   background: linear-gradient(145deg, #333333, #404040);
   margin: 0 auto;
   pointer-events: auto;
@@ -950,6 +952,7 @@
   -webkit-tap-highlight-color: transparent;
   box-sizing: border-box;
   max-width: 100%;
+  backdrop-filter: blur(6px);
 }
 
 .results-timeline .firearm-image {
@@ -1010,11 +1013,11 @@
 }
 
 .firearm-info h4 {
-  font-size: 0.9rem;
+  font-size: clamp(0.8rem, 1.8vw, 0.95rem);
   color: #ffffff;
-  margin-bottom: 0.5rem;
+  margin-bottom: clamp(0.4rem, 1vw, 0.5rem);
   font-weight: 600;
-  line-height: 1.2;
+  line-height: 1.3;
   text-align: center;
 }
 
@@ -1027,13 +1030,14 @@
 .year-badge {
   background: #10B981; /* emerald-500 */
   color: #0a0a0a;
-  padding: 4px 10px;
+  padding: clamp(3px, 1vw, 5px) clamp(8px, 2vw, 12px);
   border-radius: 999px;
   font-weight: 700;
-  font-size: 0.75rem; /* xs */
+  font-size: clamp(0.7rem, 1.5vw, 0.8rem);
   text-transform: uppercase;
   display: inline-block;
   margin: 0 auto;
+  letter-spacing: 0.3px;
 }
 
 .status-indicator {
@@ -1055,13 +1059,17 @@
 
 /* Color the whole slot */
 .timeline-result-slot.correct {
-  border: 2px solid #4CAF50;
-  background: rgba(76, 175, 80, 0.08);
+  border: 1px solid rgba(76, 175, 80, 0.32);
+  background: rgba(76, 175, 80, 0.12);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.25);
 }
 
 .timeline-result-slot.incorrect {
-  border: 2px solid #FF9800;
-  background: rgba(255, 152, 0, 0.08);
+  border: 1px solid rgba(255, 152, 0, 0.32);
+  background: rgba(255, 152, 0, 0.12);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.25);
 }
 
 .empty-result-slot {

@@ -3,6 +3,7 @@ import type { QuizStore, QuizResults, ResultAnswer, IncorrectAnswer } from '@/ty
 import { firearms } from '@/data/firearms';
 import { subscribeToMailChimp } from '@/utils/mailchimp';
 import { trackQuizEvents } from '@/utils/analytics';
+import { QUIZ_CONFIG, STORAGE_KEYS } from '@/constants/breakpoints';
 
 // Fisher-Yates shuffle function for proper randomization
 const shuffleArray = <T>(array: T[]): T[] => {
@@ -14,10 +15,65 @@ const shuffleArray = <T>(array: T[]): T[] => {
   return shuffled;
 };
 
+// LocalStorage persistence helpers
+const saveProgressToStorage = (bank: typeof firearms, orderedFirearms: (typeof firearms[number] | null)[]) => {
+  try {
+    const progress = {
+      bank: bank.map(f => f.id),
+      orderedFirearms: orderedFirearms.map(f => f?.id || null),
+      timestamp: Date.now(),
+    };
+    localStorage.setItem(STORAGE_KEYS.QUIZ_PROGRESS, JSON.stringify(progress));
+  } catch (error) {
+    console.warn('Failed to save quiz progress:', error);
+  }
+};
+
+const loadProgressFromStorage = (): { bank: typeof firearms; orderedFirearms: (typeof firearms[number] | null)[] } | null => {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEYS.QUIZ_PROGRESS);
+    if (!saved) return null;
+
+    const progress = JSON.parse(saved);
+    // Expire progress after 7 days
+    const SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000;
+    if (Date.now() - progress.timestamp > SEVEN_DAYS) {
+      localStorage.removeItem(STORAGE_KEYS.QUIZ_PROGRESS);
+      return null;
+    }
+
+    // Reconstruct firearms from IDs
+    const bank = progress.bank
+      .map((id: string) => firearms.find(f => f.id === id))
+      .filter(Boolean);
+    const orderedFirearms = progress.orderedFirearms.map((id: string | null) =>
+      id ? firearms.find(f => f.id === id) || null : null
+    );
+
+    return { bank, orderedFirearms };
+  } catch (error) {
+    console.warn('Failed to load quiz progress:', error);
+    return null;
+  }
+};
+
+const clearProgressFromStorage = () => {
+  try {
+    localStorage.removeItem(STORAGE_KEYS.QUIZ_PROGRESS);
+  } catch (error) {
+    console.warn('Failed to clear quiz progress:', error);
+  }
+};
+
+// Load initial state with progress restoration
+const loadedProgress = loadProgressFromStorage();
+const initialBank = loadedProgress?.bank || shuffleArray(firearms);
+const initialOrderedFirearms = loadedProgress?.orderedFirearms || Array(QUIZ_CONFIG.TIMELINE_SLOTS).fill(null);
+
 const useQuizStore = create<QuizStore>((set, get) => ({
-  // Initial state - randomized from start
-  bank: shuffleArray(firearms),
-  orderedFirearms: Array(12).fill(null),
+  // Initial state - try to restore progress, otherwise randomize
+  bank: initialBank,
+  orderedFirearms: initialOrderedFirearms,
   showResults: false,
   showSuccess: false,
   isLoading: false,
@@ -108,8 +164,13 @@ const useQuizStore = create<QuizStore>((set, get) => ({
       // Place firearm in new position
       newOrderedFirearms[position] = firearm;
 
+      const sortedBank = newBank.sort((a, b) => parseInt(a.id) - parseInt(b.id));
+
+      // Save progress
+      saveProgressToStorage(sortedBank, newOrderedFirearms);
+
       return {
-        bank: newBank.sort((a, b) => parseInt(a.id) - parseInt(b.id)),
+        bank: sortedBank,
         orderedFirearms: newOrderedFirearms,
         selectedFirearm: null,
         selectionMode: false,
@@ -127,12 +188,17 @@ const useQuizStore = create<QuizStore>((set, get) => ({
     set((state) => {
       const firearm = state.orderedFirearms[position];
       if (!firearm) return state;
-      
+
       const newOrderedFirearms = [...state.orderedFirearms];
       newOrderedFirearms[position] = null;
-      
+
+      const sortedBank = [...state.bank, firearm].sort((a, b) => parseInt(a.id) - parseInt(b.id));
+
+      // Save progress
+      saveProgressToStorage(sortedBank, newOrderedFirearms);
+
       return {
-        bank: [...state.bank, firearm].sort((a, b) => parseInt(a.id) - parseInt(b.id)),
+        bank: sortedBank,
         orderedFirearms: newOrderedFirearms
       };
     });
@@ -143,24 +209,29 @@ const useQuizStore = create<QuizStore>((set, get) => ({
     set((state) => {
       const newBank = state.bank.filter(f => f.id !== firearm.id);
       const newOrderedFirearms = [...state.orderedFirearms];
-      
+
       // Remove firearm from any existing position
       for (let i = 0; i < newOrderedFirearms.length; i++) {
         if (newOrderedFirearms[i]?.id === firearm.id) {
           newOrderedFirearms[i] = null;
         }
       }
-      
+
       // If position is occupied, move that firearm back to bank
       if (newOrderedFirearms[position]) {
         newBank.push(newOrderedFirearms[position]!);
       }
-      
+
       // Place firearm in new position
       newOrderedFirearms[position] = firearm;
-      
+
+      const sortedBank = newBank.sort((a, b) => parseInt(a.id) - parseInt(b.id));
+
+      // Save progress
+      saveProgressToStorage(sortedBank, newOrderedFirearms);
+
       return {
-        bank: newBank.sort((a, b) => parseInt(a.id) - parseInt(b.id)),
+        bank: sortedBank,
         orderedFirearms: newOrderedFirearms,
         draggedFirearm: null,
         selectedFirearm: null,
@@ -174,7 +245,7 @@ const useQuizStore = create<QuizStore>((set, get) => ({
     let correctCount = 0;
     const correctAnswers: ResultAnswer[] = [];
     const incorrectAnswers: IncorrectAnswer[] = [];
-    
+
     state.orderedFirearms.forEach((firearm, position) => {
       if (firearm) {
         if (firearm.correctPosition === position) {
@@ -195,7 +266,7 @@ const useQuizStore = create<QuizStore>((set, get) => ({
         }
       }
     });
-    
+
     const results: QuizResults = {
       correctCount,
       totalCount: firearms.length,
@@ -203,6 +274,9 @@ const useQuizStore = create<QuizStore>((set, get) => ({
       correctAnswers,
       incorrectAnswers
     };
+
+    // Clear saved progress when quiz is completed
+    clearProgressFromStorage();
 
     set({
       showResults: true,
@@ -250,9 +324,12 @@ const useQuizStore = create<QuizStore>((set, get) => ({
   },
 
   resetQuiz: () => {
+    // Clear saved progress when resetting
+    clearProgressFromStorage();
+
     set({
       bank: shuffleArray(firearms),
-      orderedFirearms: Array(12).fill(null),
+      orderedFirearms: Array(QUIZ_CONFIG.TIMELINE_SLOTS).fill(null),
       showResults: false,
       showSuccess: false,
       isLoading: false,
@@ -276,8 +353,7 @@ const useQuizStore = create<QuizStore>((set, get) => ({
       bank: [...state.bank],
       orderedFirearms: [...state.orderedFirearms] as (typeof state.orderedFirearms[number])[],
     };
-    const MAX = 10;
-    const next = [...(state._history || []), snapshot].slice(-MAX);
+    const next = [...(state._history || []), snapshot].slice(-QUIZ_CONFIG.MAX_UNDO_HISTORY);
     set({ _history: next, historyLength: next.length });
   },
 
@@ -299,11 +375,14 @@ const useQuizStore = create<QuizStore>((set, get) => ({
   },
 
   shuffleAndRetry: () => {
+    // Clear saved progress when starting fresh
+    clearProgressFromStorage();
+
     // Use the shared shuffle function for consistency
     const shuffled = shuffleArray(firearms);
     set({
       bank: shuffled,
-      orderedFirearms: Array(12).fill(null),
+      orderedFirearms: Array(QUIZ_CONFIG.TIMELINE_SLOTS).fill(null),
       showResults: false,
       showSuccess: false,
       isLoading: false,

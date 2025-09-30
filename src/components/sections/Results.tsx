@@ -5,6 +5,8 @@ import type { EmailFormData } from '@/types/quiz';
 import { useQuizStore } from '@/stores/quizStore';
 import { trackQuizEvents } from '@/utils/analytics';
 import { getShareUrls, openShareWindow } from '@/utils/share';
+import { emailValidationRules } from '@/utils/validation';
+import { QUIZ_CONFIG } from '@/constants/breakpoints';
 import ImageViewerModal from '@/components/ui/ImageViewerModal';
 import type { Firearm } from '@/types/quiz';
 
@@ -26,22 +28,19 @@ const Results: React.FC = React.memo(() => {
 
   // Local image viewer for Results
   const [viewerOpen, setViewerOpen] = useState(false);
-  const [viewerItems, setViewerItems] = useState<Firearm[]>([]);
-  const [viewerIndex, setViewerIndex] = useState(0);
+  const [viewerFirearm, setViewerFirearm] = useState<Firearm | null>(null);
   const viewerReturnFocusRef = useRef<HTMLElement | null>(null);
-  const openViewer = (items: Firearm[], index: number, returnFocusEl?: HTMLElement | null) => {
-    setViewerItems(items);
-    setViewerIndex(index);
+  const openViewer = (firearm: Firearm, returnFocusEl?: HTMLElement | null) => {
+    setViewerFirearm(firearm);
     viewerReturnFocusRef.current = returnFocusEl ?? null;
     setViewerOpen(true);
   };
   const closeViewer = () => setViewerOpen(false);
-  const handleNavigate = (nextIndex: number) => setViewerIndex(nextIndex);
 
   // Soft pulse to draw attention to info buttons briefly on first mount
   const [showInfoPulse, setShowInfoPulse] = useState(true);
   useEffect(() => {
-    const t = setTimeout(() => setShowInfoPulse(false), 1200);
+    const t = setTimeout(() => setShowInfoPulse(false), QUIZ_CONFIG.INFO_PULSE_DURATION);
     return () => clearTimeout(t);
   }, []);
 
@@ -305,27 +304,7 @@ const Results: React.FC = React.memo(() => {
                   id="email"
                   type="email"
                   placeholder="Enter your email address"
-                  {...register('email', {
-                    required: 'Email is required',
-                    validate: {
-                      validFormat: (value: string) => {
-                        const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
-                        return emailRegex.test(value) || 'Please enter a valid email address';
-                      },
-                      validLength: (value: string) => {
-                        return value.length <= 254 || 'Email address is too long';
-                      },
-                      validDomain: (value: string) => {
-                        const domain = value.split('@')[1];
-                        return (domain && domain.length >= 3 && domain.includes('.')) || 'Please enter a valid email domain';
-                      },
-                      noDisposable: (value: string) => {
-                        const disposableDomains = ['10minutemail.com', 'tempmail.org', 'guerrillamail.com', 'mailinator.com', '0-mail.com'];
-                        const domain = value.split('@')[1]?.toLowerCase();
-                        return !disposableDomains.includes(domain) || 'Please use a permanent email address';
-                      }
-                    }
-                  })}
+                  {...register('email', emailValidationRules)}
                   className={errors.email ? 'error' : ''}
                 />
                 {errors.email && (
@@ -461,8 +440,10 @@ const Results: React.FC = React.memo(() => {
                               aria-label="View details"
                               onClick={(e) => {
                                 e.stopPropagation();
-                                const idx = viewerFirearms.findIndex((f) => f.id === userFirearm.id);
-                                openViewer(viewerFirearms, Math.max(0, idx), e.currentTarget as HTMLElement);
+                                const firearmWithFacts = viewerFirearms.find((f) => f.id === userFirearm.id);
+                                if (firearmWithFacts) {
+                                  openViewer(firearmWithFacts, e.currentTarget as HTMLElement);
+                                }
                               }}
                               title="View year & fact"
                             >
@@ -557,18 +538,9 @@ const Results: React.FC = React.memo(() => {
             <button
               onClick={() => useQuizStore.getState().resetQuiz()}
               className="retake-btn"
+              title="Start fresh with a new random order"
             >
-              🎯 Take Another Shot
-            </button>
-            <button
-              onClick={() => useQuizStore.getState().shuffleAndRetry()}
-              className="retake-btn"
-              title="New random order - different firearms each time!"
-            >
-              🔀 Fresh Challenge
-              <span style={{fontSize: '0.8em', opacity: 0.9, display: 'block', fontWeight: 'normal', textTransform: 'none', letterSpacing: 'normal', marginTop: '2px'}}>
-                New order every time
-              </span>
+              Take Another Shot
             </button>
           </div>
         </div>
@@ -576,11 +548,8 @@ const Results: React.FC = React.memo(() => {
       {/* Results Image Viewer */}
       <ImageViewerModal
         open={viewerOpen}
-        items={viewerItems}
-        index={viewerIndex}
+        firearm={viewerFirearm}
         onClose={closeViewer}
-        onNavigate={handleNavigate}
-        loop={true}
         returnFocusEl={viewerReturnFocusRef.current}
       />
     </motion.div>

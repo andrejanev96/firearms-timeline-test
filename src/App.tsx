@@ -9,6 +9,7 @@ import FirearmCard from '@/components/ui/FirearmCard';
 import ChronologicalSlots from '@/components/ui/ChronologicalSlots';
 import ImageViewerModal from '@/components/ui/ImageViewerModal';
 import { firearms } from '@/data/firearms';
+import { BREAKPOINTS, QUIZ_CONFIG, STORAGE_KEYS } from '@/constants/breakpoints';
 import type { Firearm } from '@/types/quiz';
 import './App.css';
 import './styles/intro.css';
@@ -31,7 +32,7 @@ const MobileCardStack: React.FC<{
   const [touchStart, setTouchStart] = React.useState<number | null>(null);
   const [touchEnd, setTouchEnd] = React.useState<number | null>(null);
 
-  const minSwipeDistance = 50;
+  const minSwipeDistance = QUIZ_CONFIG.MIN_SWIPE_DISTANCE;
 
   React.useEffect(() => {
     if (currentCardIndex >= firearmsList.length) {
@@ -55,7 +56,7 @@ const MobileCardStack: React.FC<{
 
   const onTouchEnd = () => {
     if (!touchStart || !touchEnd) return;
-    
+
     const distance = touchStart - touchEnd;
     const isLeftSwipe = distance > minSwipeDistance;
     const isRightSwipe = distance < -minSwipeDistance;
@@ -63,10 +64,18 @@ const MobileCardStack: React.FC<{
     if (isLeftSwipe && currentCardIndex < firearmsList.length - 1) {
       setCurrentCardIndex(currentCardIndex + 1);
       hapticFeedback('light');
+      // Trigger swipe animation
+      const mediaShell = document.querySelector('.media-shell');
+      mediaShell?.classList.add('swipe-left');
+      setTimeout(() => mediaShell?.classList.remove('swipe-left'), 400);
     }
     if (isRightSwipe && currentCardIndex > 0) {
       setCurrentCardIndex(currentCardIndex - 1);
       hapticFeedback('light');
+      // Trigger swipe animation
+      const mediaShell = document.querySelector('.media-shell');
+      mediaShell?.classList.add('swipe-right');
+      setTimeout(() => mediaShell?.classList.remove('swipe-right'), 400);
     }
   };
 
@@ -112,11 +121,16 @@ const MobileCardStack: React.FC<{
               <div
                 key={index}
                 className={`mobile-timeline-period ${isOccupied ? 'occupied' : 'available'}`}
-                onClick={() => {
+                data-period-index={index}
+                onClick={(e) => {
                   // Allow selecting either empty or occupied (swap) when a firearm is selected
                   if (selectedFirearm) {
                     onPeriodSelect(index);
                     hapticFeedback('success');
+                    // Trigger placement animation
+                    const target = e.currentTarget as HTMLElement;
+                    target.classList.add('placement-success');
+                    setTimeout(() => target.classList.remove('placement-success'), 600);
                   }
                 }}
               >
@@ -278,12 +292,14 @@ const App: React.FC = () => {
   const [showConfirm, setShowConfirm] = useState(false);
   // Image viewer state
   const [viewerOpen, setViewerOpen] = useState(false);
-  const [viewerItems, setViewerItems] = useState<Firearm[]>([]);
-  const [viewerIndex, setViewerIndex] = useState(0);
+  const [viewerFirearm, setViewerFirearm] = useState<Firearm | null>(null);
   const viewerReturnFocusRef = useRef<HTMLElement | null>(null);
   // First-load tooltip for discoverability
   const [showViewerTip, setShowViewerTip] = useState(false);
   const viewerTipTimerRef = useRef<number | null>(null);
+  // Keyboard shortcuts tooltip
+  const [showKeyboardTip, setShowKeyboardTip] = useState(false);
+  const keyboardTipTimerRef = useRef<number | null>(null);
   // Image preloading state
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const [imageLoadError, setImageLoadError] = useState(false);
@@ -299,11 +315,11 @@ const App: React.FC = () => {
   useEffect(() => {
     const checkMobile = () => {
       // Force mobile layout for:
-      // 1. Screen width <= 1399px (covers most tablets/smaller desktops)
+      // 1. Screen width <= MOBILE_MAX (covers most tablets/smaller desktops)
       // 2. Touch-capable devices (tablets, phones)
       // 3. Devices with coarse pointer (touch-based)
       const isMobileLayout =
-        window.innerWidth <= 1399 ||
+        window.innerWidth <= BREAKPOINTS.MOBILE_MAX ||
         ('ontouchstart' in window) ||
         (navigator.maxTouchPoints > 0) ||
         (window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
@@ -332,13 +348,13 @@ const App: React.FC = () => {
 
   // Discoverability tooltip on first page load
   useEffect(() => {
-    const shown = localStorage.getItem('viewerTipSeen');
+    const shown = localStorage.getItem(STORAGE_KEYS.VIEWER_TIP_SEEN);
     if (!shown) {
       setShowViewerTip(true);
       viewerTipTimerRef.current = window.setTimeout(() => {
         setShowViewerTip(false);
-        localStorage.setItem('viewerTipSeen', '1');
-      }, 3500);
+        localStorage.setItem(STORAGE_KEYS.VIEWER_TIP_SEEN, '1');
+      }, QUIZ_CONFIG.VIEWER_TIP_DURATION);
     }
     return () => {
       if (viewerTipTimerRef.current) window.clearTimeout(viewerTipTimerRef.current);
@@ -348,19 +364,58 @@ const App: React.FC = () => {
   const markViewerTipSeen = () => {
     if (viewerTipTimerRef.current) window.clearTimeout(viewerTipTimerRef.current);
     setShowViewerTip(false);
-    localStorage.setItem('viewerTipSeen', '1');
+    localStorage.setItem(STORAGE_KEYS.VIEWER_TIP_SEEN, '1');
   };
 
+  // Keyboard shortcuts tooltip (desktop only, after user places first firearm)
+  useEffect(() => {
+    if (isMobile || currentSection !== 'quiz') return;
+
+    const shown = localStorage.getItem(STORAGE_KEYS.KEYBOARD_TIP_SEEN);
+    const hasPlacedOne = orderedFirearms.some(f => f !== null);
+
+    if (!shown && hasPlacedOne && !showKeyboardTip) {
+      setShowKeyboardTip(true);
+      keyboardTipTimerRef.current = window.setTimeout(() => {
+        setShowKeyboardTip(false);
+        localStorage.setItem(STORAGE_KEYS.KEYBOARD_TIP_SEEN, '1');
+      }, 5000);
+    }
+
+    return () => {
+      if (keyboardTipTimerRef.current) window.clearTimeout(keyboardTipTimerRef.current);
+    };
+  }, [orderedFirearms, isMobile, currentSection, showKeyboardTip]);
+
+  const dismissKeyboardTip = () => {
+    if (keyboardTipTimerRef.current) window.clearTimeout(keyboardTipTimerRef.current);
+    setShowKeyboardTip(false);
+    localStorage.setItem(STORAGE_KEYS.KEYBOARD_TIP_SEEN, '1');
+  };
+
+  // ESC key to deselect firearm during quiz
+  useEffect(() => {
+    if (currentSection !== 'quiz' || !selectionMode) return;
+
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        selectFirearm(null);
+      }
+    };
+
+    window.addEventListener('keydown', handleEscape);
+    return () => window.removeEventListener('keydown', handleEscape);
+  }, [currentSection, selectionMode, selectFirearm]);
+
   // Viewer wiring
-  const openViewer = (items: Firearm[], index: number, returnFocusEl?: HTMLElement | null) => {
-    setViewerItems(items);
-    setViewerIndex(index);
+  const openViewer = (firearm: Firearm, returnFocusEl?: HTMLElement | null) => {
+    setViewerFirearm(firearm);
     viewerReturnFocusRef.current = returnFocusEl ?? null;
     setViewerOpen(true);
     markViewerTipSeen();
   };
   const closeViewer = () => setViewerOpen(false);
-  const handleNavigate = (nextIndex: number) => setViewerIndex(nextIndex);
 
 
   // Calculate progress
@@ -469,8 +524,6 @@ const App: React.FC = () => {
                       onDragEnd={handleDragEnd}
                       onClick={selectFirearm}
                       openViewer={openViewer}
-                      viewerItems={bank}
-                      viewerIndex={index}
                     />
                   ))}
                 </div>
@@ -493,6 +546,19 @@ const App: React.FC = () => {
               {showViewerTip && (
                 <div className="viewer-tip" role="status" aria-live="polite">
                   Tip: Click any firearm image to view it larger.
+                </div>
+              )}
+              {/* Keyboard shortcuts tip - shown after first placement */}
+              {showKeyboardTip && !isMobile && (
+                <div className="keyboard-tip" role="status" aria-live="polite">
+                  <button
+                    className="keyboard-tip-close"
+                    onClick={dismissKeyboardTip}
+                    aria-label="Dismiss tip"
+                  >
+                    ×
+                  </button>
+                  <strong>⌨️ Keyboard Shortcuts:</strong> Use <kbd>Ctrl+Z</kbd> to undo • Click or drag to place firearms
                 </div>
               )}
             </section>
@@ -553,11 +619,8 @@ const App: React.FC = () => {
     {/* Image Viewer Modal */}
     <ImageViewerModal
       open={viewerOpen}
-      items={viewerItems}
-      index={viewerIndex}
+      firearm={viewerFirearm}
       onClose={closeViewer}
-      onNavigate={handleNavigate}
-      loop={true}
       returnFocusEl={viewerReturnFocusRef.current}
     />
     </>

@@ -4,43 +4,15 @@ import type { Firearm } from '@/types/quiz';
 
 type Props = {
   open: boolean;
-  items: Firearm[];
-  index: number;
+  firearm: Firearm | null;
   onClose: () => void;
-  onNavigate: (nextIndex: number) => void;
-  loop?: boolean;
   returnFocusEl?: HTMLElement | null;
 };
 
-const clampIndex = (i: number, len: number, loop: boolean) => {
-  if (len <= 0) return 0;
-  if (!loop) return Math.max(0, Math.min(len - 1, i));
-  const mod = ((i % len) + len) % len;
-  return mod;
-};
-
-export default function ImageViewerModal({ open, items, index, onClose, onNavigate, loop = true, returnFocusEl }: Props) {
+export default function ImageViewerModal({ open, firearm, onClose, returnFocusEl }: Props) {
   const overlayRef = React.useRef<HTMLDivElement | null>(null);
   const contentRef = React.useRef<HTMLDivElement | null>(null);
   const closeBtnRef = React.useRef<HTMLButtonElement | null>(null);
-  const startTouchX = React.useRef<number | null>(null);
-  const startTouchY = React.useRef<number | null>(null);
-  const [localIndex, setLocalIndex] = React.useState(index);
-  const len = items.length;
-
-  React.useEffect(() => {
-    setLocalIndex(index);
-  }, [index]);
-
-  // Focus management: trap focus and restore
-  const navigate = React.useCallback((delta: number) => {
-    if (len <= 0) return;
-    setLocalIndex((prev) => {
-      const next = clampIndex(prev + delta, len, loop);
-      onNavigate(next);
-      return next;
-    });
-  }, [len, loop, onNavigate]);
 
   React.useEffect(() => {
     if (!open) return;
@@ -51,12 +23,6 @@ export default function ImageViewerModal({ open, items, index, onClose, onNaviga
       if (e.key === 'Escape') {
         e.preventDefault();
         onClose();
-      } else if (e.key === 'ArrowRight') {
-        e.preventDefault();
-        navigate(1);
-      } else if (e.key === 'ArrowLeft') {
-        e.preventDefault();
-        navigate(-1);
       } else if (e.key === 'Tab') {
         // Simple focus trap
         const focusable = overlayRef.current?.querySelectorAll<HTMLElement>(
@@ -92,7 +58,7 @@ export default function ImageViewerModal({ open, items, index, onClose, onNaviga
         prevActive?.focus?.();
       }
     };
-  }, [open, navigate, onClose, returnFocusEl]);
+  }, [open, onClose, returnFocusEl]);
 
   // Backdrop click closes - handle both overlay and content area clicks
   const onBackdrop = (e: React.MouseEvent) => {
@@ -101,45 +67,7 @@ export default function ImageViewerModal({ open, items, index, onClose, onNaviga
     }
   };
 
-  // Touch swipe navigation
-  const onTouchStart = (e: React.TouchEvent) => {
-    const t = e.touches[0];
-    startTouchX.current = t.clientX;
-    startTouchY.current = t.clientY;
-  };
-  const onTouchMove = (_e: React.TouchEvent) => {
-    // allow
-  };
-  const onTouchEnd = (e: React.TouchEvent) => {
-    const end = e.changedTouches[0];
-    const sx = startTouchX.current;
-    const sy = startTouchY.current;
-    startTouchX.current = null;
-    startTouchY.current = null;
-    if (sx == null || sy == null) return;
-    const dx = end.clientX - sx;
-    const dy = end.clientY - sy;
-    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
-      if (dx < 0) navigate(1);
-      else navigate(-1);
-    }
-  };
-
-  // Preload next/prev images
-  React.useEffect(() => {
-    if (!open || len <= 1) return;
-    const next = clampIndex(localIndex + 1, len, loop);
-    const prev = clampIndex(localIndex - 1, len, loop);
-    const toLoad = [items[next]?.image, items[prev]?.image].filter(Boolean) as string[];
-    toLoad.forEach(src => {
-      const img = new Image();
-      img.src = src;
-    });
-  }, [open, localIndex, len, loop, items]);
-
-  if (!open) return null;
-
-  const current = items[localIndex];
+  if (!open || !firearm) return null;
 
   return (
     <Portal>
@@ -149,71 +77,52 @@ export default function ImageViewerModal({ open, items, index, onClose, onNaviga
         onClick={onBackdrop}
         role="dialog"
         aria-modal="true"
-        aria-label={current?.name ? `Image viewer: ${current.name}` : 'Image viewer'}
+        aria-label={`Image viewer: ${firearm.name}`}
       >
         <div
           className="image-viewer-content"
           ref={contentRef}
           onClick={onBackdrop}
-          onTouchStart={onTouchStart}
-          onTouchMove={onTouchMove}
-          onTouchEnd={onTouchEnd}
         >
           <figure className="image-viewer-figure">
-            {current && (
-              <div className="image-viewer-canvas">
-                <img
-                  key={current.id}
-                  src={current.imageLarge ?? current.image}
-                  alt={current.name}
-                  className="image-viewer-img"
-                  draggable={false}
-                />
-              </div>
-            )}
-            {current && <figcaption className="image-viewer-caption">{current.name}</figcaption>}
+            <div className="image-viewer-canvas">
+              <img
+                key={firearm.id}
+                src={firearm.imageLarge ?? firearm.image}
+                alt={firearm.name}
+                className="image-viewer-img"
+                draggable={false}
+              />
+            </div>
+            <figcaption className="image-viewer-caption">{firearm.name}</figcaption>
           </figure>
           {/* Details block for correct items */}
-          {current && current.correct && (
+          {firearm.correct && (
             <div className="image-viewer-details" aria-labelledby="viewer-details-heading">
               <h3 id="viewer-details-heading" className="sr-only">Details</h3>
               <div className="details-inner">
                 <div className="details-label">✨ Fact Unlocked</div>
-                {typeof current.year === 'number' && (
+                {typeof firearm.year === 'number' && (
                   <div className="year-introduced">
                     <span className="year-label">Introduced In:</span>
-                    <span className="year-badge" aria-label={`Year ${current.year}`}>{current.year}</span>
+                    <span className="year-badge" aria-label={`Year ${firearm.year}`}>{firearm.year}</span>
                   </div>
                 )}
                 <div className="fact-content">
-                  {Array.isArray(current.facts) && current.facts.length > 0 ? (
+                  {Array.isArray(firearm.facts) && firearm.facts.length > 0 ? (
                     <ul style={{ margin: 0, paddingLeft: '18px' }}>
-                      {current.facts.slice(0, 3).map((s, i) => (
+                      {firearm.facts.slice(0, 3).map((s, i) => (
                         <li key={i} className="fact-text">{s}</li>
                       ))}
                     </ul>
-                  ) : current.fact ? (
-                    <p className="fact-text">{current.fact}</p>
+                  ) : firearm.fact ? (
+                    <p className="fact-text">{firearm.fact}</p>
                   ) : null}
                 </div>
               </div>
             </div>
           )}
           <div className="image-viewer-controls">
-            <button
-              className="viewer-btn viewer-prev"
-              onClick={() => navigate(-1)}
-              aria-label="Previous image"
-            >
-              ‹
-            </button>
-            <button
-              className="viewer-btn viewer-next"
-              onClick={() => navigate(1)}
-              aria-label="Next image"
-            >
-              ›
-            </button>
             <button
               className="viewer-btn viewer-close"
               onClick={onClose}
