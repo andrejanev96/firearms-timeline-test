@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useLayoutEffect, useCallback } from 'react';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import type { EmailFormData } from '@/types/quiz';
 import { useQuizStore } from '@/stores/quizStore';
@@ -436,22 +436,34 @@ const Results: React.FC = React.memo(() => {
               ←
             </button>
             <div className="timeline-track" ref={timelineRef} onScroll={checkScrollPosition}>
-              {Array.from({ length: 12 }, (_, index) => {
-                const position = index;
-                const userFirearm = orderedFirearms[position];
-                const isCorrect = userFirearm?.correctPosition === position;
+              <AnimatePresence mode="popLayout">
+                {Array.from({ length: 12 }, (_, index) => {
+                  const position = index;
+                  const userFirearm = orderedFirearms[position];
+                  const isCorrect = userFirearm?.correctPosition === position;
 
-                const slotClasses = [
-                  'timeline-result-slot',
-                  userFirearm ? (isCorrect ? 'correct' : 'incorrect') : '',
-                  userFirearm ? 'filled' : 'empty',
-                  isCorrect ? 'has-tooltip' : '',
-                ].filter(Boolean).join(' ');
+                  const slotClasses = [
+                    'timeline-result-slot',
+                    userFirearm ? (isCorrect ? 'correct' : 'incorrect') : '',
+                    userFirearm ? 'filled' : 'empty',
+                    isCorrect ? 'has-tooltip' : '',
+                  ].filter(Boolean).join(' ');
 
-                return (
-                  <div
+                  return (
+                  <motion.div
                     key={position}
                     className={slotClasses}
+                    layout
+                    initial={{ opacity: 0, y: 20, scale: 0.96 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -12, scale: 0.94 }}
+                    transition={{
+                      type: 'spring',
+                      stiffness: 320,
+                      damping: 24,
+                      mass: 0.6,
+                      delay: index * 0.045,
+                    }}
                   >
                     <div className="slot-number">{position + 1}</div>
                     {userFirearm ? (
@@ -502,9 +514,10 @@ const Results: React.FC = React.memo(() => {
                       </div>
                     )}
                     {/* Hover tooltips removed per requirements */}
-                  </div>
-                );
-              })}
+                  </motion.div>
+                  );
+                })}
+              </AnimatePresence>
             </div>
             <button
               className={`scroll-btn scroll-right ${!canScrollRight ? 'disabled' : ''}`}

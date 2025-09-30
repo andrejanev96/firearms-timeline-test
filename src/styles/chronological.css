@@ -411,6 +411,51 @@
   }
 }
 
+@keyframes empty-slot-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.3);
+  }
+  60% {
+    box-shadow: 0 0 0 10px rgba(76, 175, 80, 0.12);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(76, 175, 80, 0);
+  }
+}
+
+@keyframes slot-number-flash {
+  0% {
+    transform: scale(0.92);
+    background: #4CAF50;
+    box-shadow: 0 0 10px rgba(76, 175, 80, 0.4);
+  }
+  55% {
+    transform: scale(1.15);
+    background: #4CAF50;
+    box-shadow: 0 0 18px rgba(76, 175, 80, 0.6);
+  }
+  100% {
+    transform: scale(1);
+    background: #DAA520;
+    box-shadow: none;
+  }
+}
+
+@keyframes slot-placed-ring {
+  0% {
+    box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.6);
+    transform: translateZ(0);
+  }
+  60% {
+    box-shadow: 0 0 0 12px rgba(76, 175, 80, 0);
+    transform: translateZ(0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(76, 175, 80, 0);
+    transform: translateZ(0);
+  }
+}
+
 /* Drag and drop states */
 .timeline-slot.drag-over {
   transform: scale(1.05);
@@ -430,10 +475,19 @@
     rgba(76, 175, 80, 0.3) 8px,
     rgba(76, 175, 80, 0.3) 16px
   );
+  animation: empty-slot-pulse 1.15s ease-in-out infinite;
 }
 
 .timeline-slot.drag-over .slot-placeholder {
   color: #4CAF50;
+}
+
+.timeline-slot.just-placed .slot-number {
+  animation: slot-number-flash 0.6s ease-out;
+}
+
+.timeline-slot.just-placed .firearm-wrapper {
+  animation: slot-placed-ring 0.6s ease-out forwards;
 }
 
 /* Desktop - large screens */

@@ -28,6 +28,9 @@ const ChronologicalSlots: React.FC<ChronologicalSlotsProps> = React.memo(({
   const timelineRef = React.useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = React.useState(false);
   const [canScrollRight, setCanScrollRight] = React.useState(true);
+  const [recentlyPlacedSlot, setRecentlyPlacedSlot] = React.useState<number | null>(null);
+  const placementTimeoutRef = React.useRef<number | null>(null);
+  const previousFirearmsRef = React.useRef<(Firearm | null)[]>(orderedFirearms);
 
 
   const handleDragOver = (e: React.DragEvent, position: number) => {
@@ -170,6 +173,42 @@ const ChronologicalSlots: React.FC<ChronologicalSlotsProps> = React.memo(({
     }
   }, []);
 
+  React.useEffect(() => {
+    const prev = previousFirearmsRef.current;
+    let updatedIndex: number | null = null;
+
+    for (let i = 0; i < orderedFirearms.length; i += 1) {
+      const nextFirearm = orderedFirearms[i];
+      const prevFirearm = prev[i];
+
+      if (nextFirearm && (!prevFirearm || prevFirearm.id !== nextFirearm.id)) {
+        updatedIndex = i;
+        break;
+      }
+    }
+
+    previousFirearmsRef.current = orderedFirearms;
+
+    if (updatedIndex !== null) {
+      setRecentlyPlacedSlot(updatedIndex);
+      if (typeof window !== 'undefined') {
+        if (placementTimeoutRef.current !== null) {
+          window.clearTimeout(placementTimeoutRef.current);
+        }
+        placementTimeoutRef.current = window.setTimeout(() => {
+          setRecentlyPlacedSlot(null);
+          placementTimeoutRef.current = null;
+        }, 650);
+      }
+    }
+  }, [orderedFirearms]);
+
+  React.useEffect(() => () => {
+    if (placementTimeoutRef.current !== null && typeof window !== 'undefined') {
+      window.clearTimeout(placementTimeoutRef.current);
+    }
+  }, []);
+
   return (
     <div className="chronological-timeline">
       <h3>Drag firearms to their chronological positions (earliest to latest)</h3>
@@ -209,7 +248,7 @@ const ChronologicalSlots: React.FC<ChronologicalSlotsProps> = React.memo(({
           {orderedFirearms.map((firearm, position) => (
           <div
             key={position}
-            className={`timeline-slot ${isSelectionMode ? 'selectable' : ''} ${isHighlighted ? 'highlighted' : ''} ${dragOverPosition === position ? 'drag-over' : ''} ${firearm !== null ? 'occupied' : ''}`}
+            className={`timeline-slot ${isSelectionMode ? 'selectable' : ''} ${isHighlighted ? 'highlighted' : ''} ${dragOverPosition === position ? 'drag-over' : ''} ${firearm !== null ? 'occupied' : ''} ${recentlyPlacedSlot === position ? 'just-placed' : ''}`}
             onDragOver={(e) => handleDragOver(e, position)}
             onDragLeave={handleDragLeave}
             onDrop={(e) => handleDrop(e, position)}

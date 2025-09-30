@@ -94,7 +94,7 @@ const FirearmCard: React.FC<FirearmCardProps> = React.memo(({
             style={{ width: '100%', height: 'auto' }}
             loading={isMobile && isTopCard ? 'eager' : undefined}
           />
-          {openViewer && (
+          {openViewer && !isMobile && (
             <button
               className="magnifier-btn"
               aria-label={`View larger image of ${firearm.name}`}

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useQuizStore } from '@/stores/quizStore';
 import { preloadImages } from '@/utils/images';
 import { hapticFeedback } from '@/utils/haptics';
@@ -27,10 +27,12 @@ const MobileCardStack: React.FC<{
   selectedFirearm: Firearm | null;
   showTimeline: boolean;
   orderedFirearms: (Firearm | null)[];
-}> = ({ firearmsList, onFirearmSelect, onPeriodSelect, onRemovePosition, onOpenTimeline, onComplete, selectedFirearm, showTimeline, orderedFirearms }) => {
+  openViewer: (firearm: Firearm, returnFocusEl?: HTMLElement | null) => void;
+}> = ({ firearmsList, onFirearmSelect, onPeriodSelect, onRemovePosition, onOpenTimeline, onComplete, selectedFirearm, showTimeline, orderedFirearms, openViewer }) => {
   const [currentCardIndex, setCurrentCardIndex] = React.useState(0);
   const [touchStart, setTouchStart] = React.useState<number | null>(null);
   const [touchEnd, setTouchEnd] = React.useState<number | null>(null);
+  const [swipeDirection, setSwipeDirection] = React.useState<'forward' | 'backward'>('forward');
 
   const minSwipeDistance = QUIZ_CONFIG.MIN_SWIPE_DISTANCE;
 
@@ -62,28 +64,49 @@ const MobileCardStack: React.FC<{
     const isRightSwipe = distance < -minSwipeDistance;
 
     if (isLeftSwipe && currentCardIndex < firearmsList.length - 1) {
-      setCurrentCardIndex(currentCardIndex + 1);
+      setSwipeDirection('forward');
+      setCurrentCardIndex((prev) => Math.min(prev + 1, firearmsList.length - 1));
       hapticFeedback('light');
-      // Trigger swipe animation
-      const mediaShell = document.querySelector('.media-shell');
-      mediaShell?.classList.add('swipe-left');
-      setTimeout(() => mediaShell?.classList.remove('swipe-left'), 400);
     }
     if (isRightSwipe && currentCardIndex > 0) {
-      setCurrentCardIndex(currentCardIndex - 1);
+      setSwipeDirection('backward');
+      setCurrentCardIndex((prev) => Math.max(prev - 1, 0));
       hapticFeedback('light');
-      // Trigger swipe animation
-      const mediaShell = document.querySelector('.media-shell');
-      mediaShell?.classList.add('swipe-right');
-      setTimeout(() => mediaShell?.classList.remove('swipe-right'), 400);
     }
   };
 
   const currentFirearm = firearmsList[currentCardIndex];
 
+  const cardVariants = React.useMemo(() => ({
+    enter: (direction: 'forward' | 'backward') => ({
+      x: direction === 'forward' ? 56 : -56,
+      opacity: 0,
+      rotate: direction === 'forward' ? 1.8 : -1.8,
+      scale: 0.96,
+    }),
+    center: {
+      x: 0,
+      opacity: 1,
+      rotate: 0,
+      scale: 1,
+    },
+    exit: (direction: 'forward' | 'backward') => ({
+      x: direction === 'forward' ? -48 : 48,
+      opacity: 0,
+      rotate: direction === 'forward' ? -1.8 : 1.8,
+      scale: 0.97,
+    }),
+  }), []);
+
   if (showTimeline) {
     return (
-      <div className="mobile-timeline-overlay">
+      <motion.div
+        className="mobile-timeline-overlay"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: 20 }}
+        transition={{ duration: 0.25, ease: 'easeOut' }}
+      >
         <div className="mobile-timeline-header">
           <button
             className="back-btn"
@@ -118,10 +141,13 @@ const MobileCardStack: React.FC<{
             const occupiedFirearm = orderedFirearms[index];
 
             return (
-              <div
+              <motion.div
                 key={index}
                 className={`mobile-timeline-period ${isOccupied ? 'occupied' : 'available'}`}
                 data-period-index={index}
+                layout
+                whileTap={{ scale: 0.98 }}
+                transition={{ type: 'spring', stiffness: 380, damping: 26 }}
                 onClick={(e) => {
                   // Allow selecting either empty or occupied (swap) when a firearm is selected
                   if (selectedFirearm) {
@@ -152,11 +178,11 @@ const MobileCardStack: React.FC<{
                 ) : (
                   <div className="mobile-period-content">Available</div>
                 )}
-              </div>
+              </motion.div>
             );
           })}
         </div>
-      </div>
+      </motion.div>
     );
   }
 
@@ -204,7 +230,8 @@ const MobileCardStack: React.FC<{
             onClick={(e) => {
               e.stopPropagation();
               if (currentCardIndex > 0) {
-                setCurrentCardIndex(currentCardIndex - 1);
+                setSwipeDirection('backward');
+                setCurrentCardIndex((prev) => Math.max(prev - 1, 0));
                 hapticFeedback('light');
               }
             }}
@@ -214,16 +241,45 @@ const MobileCardStack: React.FC<{
             ←
           </button>
           <div className="media-shell">
-            <FirearmCard
-              firearm={currentFirearm}
-              isMobile={true}
-              isTopCard
-              hideName={true}
+            <AnimatePresence initial={false} mode="popLayout" custom={swipeDirection}>
+              <motion.div
+                key={currentFirearm?.id ?? 'placeholder-card'}
+                className="mobile-card-motion-wrapper"
+                custom={swipeDirection}
+                variants={cardVariants}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                transition={{ type: 'spring', stiffness: 520, damping: 32, mass: 0.55 }}
+                onTouchStart={() => hapticFeedback('light')}
+                whileTap={{ scale: 0.98 }}
+              >
+                <FirearmCard
+                  firearm={currentFirearm}
+                  isMobile={true}
+                  isTopCard
+                  hideName={true}
+                  openViewer={openViewer}
+                  onClick={() => {
+                    onFirearmSelect(currentFirearm);
+                    hapticFeedback('medium');
+                  }}
+                />
+              </motion.div>
+            </AnimatePresence>
+            <button
+              type="button"
+              className="view-image-btn"
+              aria-label="View full image"
               onClick={() => {
-                onFirearmSelect(currentFirearm);
-                hapticFeedback('medium');
+                if (currentFirearm) {
+                  openViewer(currentFirearm);
+                  hapticFeedback('light');
+                }
               }}
-            />
+            >
+              🔍
+            </button>
           </div>
           <button 
             className="nav-btn next-btn"
@@ -231,7 +287,8 @@ const MobileCardStack: React.FC<{
             onClick={(e) => {
               e.stopPropagation();
               if (currentCardIndex < firearmsList.length - 1) {
-                setCurrentCardIndex(currentCardIndex + 1);
+                setSwipeDirection('forward');
+                setCurrentCardIndex((prev) => Math.min(prev + 1, firearmsList.length - 1));
                 hapticFeedback('light');
               }
             }}
@@ -246,7 +303,14 @@ const MobileCardStack: React.FC<{
         <div className="mobile-image-title">{currentFirearm?.name}</div>
 
         {/* Hint above the primary action */}
-        <div className="swipe-hint-row">👈 Swipe to browse • Tap to select 👆</div>
+        <motion.div
+          className="swipe-hint-row"
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.15, duration: 0.3 }}
+        >
+          👈 Swipe to browse • Tap to select 👆
+        </motion.div>
       </div>
 
       <div className="mobile-navigation">
@@ -506,6 +570,7 @@ const App: React.FC = () => {
             selectedFirearm={selectedFirearm}
             showTimeline={showMobileOrdering}
             orderedFirearms={orderedFirearms}
+            openViewer={openViewer}
           />
         ) : (
           <div className="quiz-sections">
