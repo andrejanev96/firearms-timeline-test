@@ -1,4 +1,5 @@
 import React from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import type { Firearm } from '@/types/quiz';
 import FirearmCard from './FirearmCard';
 
@@ -230,26 +231,36 @@ const ChronologicalSlots: React.FC<ChronologicalSlotsProps> = React.memo(({
             onKeyDown={(e) => handlePositionKeyDown(position, e)}
           >
             <div className="slot-number">{position + 1}</div>
-            {firearm && (
-              <div className="firearm-wrapper">
-                <FirearmCard
-                  firearm={firearm}
-                  inTimeline={true}
-                  isSelectionMode={isSelectionMode}
-                  openViewer={openViewer}
-                />
-                {!isSelectionMode && (
-                  <button
-                    className="remove-firearm-btn"
-                    aria-label={`Remove ${firearm.name} from position ${position + 1}`}
-                    onClick={(e) => handleFirearmClick(position, e)}
-                    title="Send back to bank"
-                  >
-                    ↩
-                  </button>
-                )}
-              </div>
-            )}
+            <AnimatePresence initial={false} mode="popLayout">
+              {firearm && (
+                <motion.div
+                  key={firearm.id}
+                  layout
+                  className="firearm-wrapper"
+                  initial={{ scale: 0.9, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0.92, opacity: 0 }}
+                  transition={{ type: 'spring', stiffness: 280, damping: 22 }}
+                >
+                  <FirearmCard
+                    firearm={firearm}
+                    inTimeline={true}
+                    isSelectionMode={isSelectionMode}
+                    openViewer={openViewer}
+                  />
+                  {!isSelectionMode && (
+                    <button
+                      className="remove-firearm-btn"
+                      aria-label={`Remove ${firearm.name} from position ${position + 1}`}
+                      onClick={(e) => handleFirearmClick(position, e)}
+                      title="Send back to bank"
+                    >
+                      ↩
+                    </button>
+                  )}
+                </motion.div>
+              )}
+            </AnimatePresence>
             {!firearm && (
               <div className="empty-slot" onClick={(e) => handlePositionClick(position, e)}>
                 <div className="slot-placeholder">
