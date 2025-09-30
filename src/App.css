@@ -5,51 +5,6 @@
   box-sizing: border-box;
 }
 
-/* Landscape mode blocking - hide all content and show rotate message */
-@media screen and (max-width: 1366px) and (orientation: landscape) {
-  .app {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100vw !important;
-    height: 100vh !important;
-    background: #000 !important;
-    z-index: 9999 !important;
-    overflow: hidden !important;
-  }
-
-  .app > *:not(.landscape-warning) {
-    display: none !important;
-  }
-
-  .app::before {
-    content: "";
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: #000;
-    z-index: 10000;
-  }
-
-  .app::after {
-    content: "📱 Please get back to Portrait mode for the best and most enjoyable experience.";
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: #DAA520;
-    text-align: center;
-    font-size: clamp(1.2rem, 4vw, 1.8rem);
-    font-weight: 600;
-    line-height: 1.6;
-    max-width: 80vw;
-    z-index: 10001;
-    text-shadow: 0 2px 8px rgba(0,0,0,0.8);
-  }
-}
-
 /* Body and Root fill viewport */
 body {
   min-height: 100vh;
@@ -82,6 +37,14 @@ body::after {
   background: linear-gradient(180deg, rgba(255, 186, 73, 0.05) 0%, rgba(0, 0, 0, 0.6) 100%);
   pointer-events: none;
   z-index: 0;
+}
+
+@media (max-width: 768px) {
+  body::before,
+  body::after {
+    content: none;
+    opacity: 0;
+  }
 }
 
 #root {
@@ -515,12 +478,18 @@ body::after {
 }
 .image-viewer-img {
   max-width: 100%;
-  max-height: 50vh;
+  max-height: 40vh;
   width: auto;
   height: auto;
   object-fit: contain;
   border-radius: 4px;
   animation: imageIn 220ms ease-out;
+}
+
+@media (min-width: 600px) {
+  .image-viewer-img {
+    max-height: 50vh;
+  }
 }
 
 @media (min-width: 768px) {
@@ -670,6 +639,7 @@ body::after {
   font-size: 20px;
   cursor: pointer;
   transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+  z-index: 10;
 }
 .viewer-btn:hover,
 .viewer-btn:focus-visible {
@@ -679,7 +649,21 @@ body::after {
 }
 .viewer-prev { left: 20px; top: 50%; transform: translateY(-50%); }
 .viewer-next { right: 20px; top: 50%; transform: translateY(-50%); }
-.viewer-close { right: 20px; top: 20px; }
+.viewer-close {
+  right: clamp(12px, 3vw, 20px);
+  top: clamp(12px, 3vh, 20px);
+  background: rgba(0, 0, 0, 0.7);
+  border: 2px solid rgba(218, 165, 32, 0.8);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  font-weight: bold;
+}
+.viewer-close:hover,
+.viewer-close:focus-visible {
+  background: rgba(218, 165, 32, 0.9);
+  border-color: rgba(218, 165, 32, 1);
+  color: #000;
+  transform: scale(1.1);
+}
 
 @keyframes viewerFade {
   from { opacity: 0; }
@@ -1626,6 +1610,27 @@ body::after {
   border-color: rgba(76, 175, 80, 0.5);
   transform: translateY(-1px);
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.28);
+}
+
+@media (max-width: 768px) {
+  .mobile-timeline-header {
+    backdrop-filter: none;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.22);
+    background: rgba(218, 165, 32, 0.1);
+  }
+
+  .mobile-timeline-period {
+    backdrop-filter: none;
+    box-shadow: 0 5px 14px rgba(0, 0, 0, 0.2);
+    transform: none;
+  }
+
+  .mobile-timeline-period:hover,
+  .mobile-timeline-period.occupied:hover,
+  .mobile-timeline-period.available:hover {
+    transform: none;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.22);
+  }
 }
 
 .mobile-period-label {

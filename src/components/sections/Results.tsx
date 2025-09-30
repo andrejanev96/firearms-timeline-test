@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useLayoutEffect } from 'react';
+import React, { useState, useEffect, useRef, useLayoutEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import type { EmailFormData } from '@/types/quiz';
@@ -88,11 +88,8 @@ const Results: React.FC = React.memo(() => {
     const { el, end } = m;
     const slots = Array.from(el.querySelectorAll<HTMLElement>('.timeline-result-slot'));
     if (slots.length === 0) return;
-    // Account for right arrow overlay width if present
-    const rightBtn = el.parentElement?.querySelector('.scroll-right') as HTMLElement | null;
-    const rightOverlay = rightBtn ? rightBtn.offsetWidth + 12 : 0; // include margin
     const current = el.scrollLeft;
-    const visibleRight = current + el.clientWidth - rightOverlay;
+    const visibleRight = current + el.clientWidth;
     const epsilon = 2;
     // Find first slot whose right edge is beyond the current visible area
     const nextIndex = slots.findIndex((s) => (s.offsetLeft + s.offsetWidth) > (visibleRight + epsilon));
@@ -127,15 +124,16 @@ const Results: React.FC = React.memo(() => {
     el.scrollTo({ left: next, behavior: 'smooth' });
   };
 
-  const checkScrollPosition = () => {
-    if (timelineRef.current) {
-      const el = timelineRef.current;
-      const sl = Math.round(el.scrollLeft);
-      const max = Math.max(0, el.scrollWidth - el.clientWidth);
-      setCanScrollLeft(sl > 0);
-      setCanScrollRight(sl < max);
-    }
-  };
+  const checkScrollPosition = useCallback(() => {
+    const el = timelineRef.current;
+    if (!el) return;
+    const sl = Math.round(el.scrollLeft);
+    const max = Math.max(0, el.scrollWidth - el.clientWidth);
+    // Add tolerance to account for sub-pixel rendering and ensure last element is reachable
+    const tolerance = 10;
+    setCanScrollLeft(sl > tolerance);
+    setCanScrollRight(sl < max - tolerance);
+  }, []);
 
   useLayoutEffect(() => {
     // Initial measurement after layout
@@ -149,7 +147,30 @@ const Results: React.FC = React.memo(() => {
       if (el) el.removeEventListener('scroll', checkScrollPosition);
       window.removeEventListener('resize', onResize);
     };
-  }, []);
+  }, [checkScrollPosition]);
+
+  useEffect(() => {
+    const el = timelineRef.current;
+    if (!el) return;
+
+    checkScrollPosition();
+
+    const handleLoad = () => checkScrollPosition();
+    const images = Array.from(el.querySelectorAll('img'));
+    const pending: HTMLImageElement[] = [];
+
+    images.forEach((img) => {
+      if (img.complete) return;
+      img.addEventListener('load', handleLoad);
+      pending.push(img);
+    });
+
+    return () => {
+      pending.forEach((img) => {
+        img.removeEventListener('load', handleLoad);
+      });
+    };
+  }, [orderedFirearms, resultsUnlocked, checkScrollPosition]);
 
   // Fire confetti after results mount (lazy-load)
   useEffect(() => {
@@ -420,49 +441,61 @@ const Results: React.FC = React.memo(() => {
                 const userFirearm = orderedFirearms[position];
                 const isCorrect = userFirearm?.correctPosition === position;
 
+                const slotClasses = [
+                  'timeline-result-slot',
+                  userFirearm ? (isCorrect ? 'correct' : 'incorrect') : '',
+                  userFirearm ? 'filled' : 'empty',
+                  isCorrect ? 'has-tooltip' : '',
+                ].filter(Boolean).join(' ');
+
                 return (
                   <div
                     key={position}
-                    className={`timeline-result-slot ${isCorrect ? 'correct' : 'incorrect'} ${userFirearm ? 'filled' : 'empty'} ${isCorrect ? 'has-tooltip' : ''}`}
+                    className={slotClasses}
                   >
                     <div className="slot-number">{position + 1}</div>
                     {userFirearm ? (
-                      <div className={`result-firearm-card`}>
+                      <div className="result-firearm-card">
                         <div className="firearm-image">
                           <img
                             src={userFirearm.image}
                             alt={userFirearm.name}
                           />
                           {isCorrect && (
-                            <button
-                              type="button"
-                              className={`result-info-btn ${showInfoPulse ? 'pulse-once' : ''}`}
-                              aria-label="View details"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                const firearmWithFacts = viewerFirearms.find((f) => f.id === userFirearm.id);
-                                if (firearmWithFacts) {
-                                  openViewer(firearmWithFacts, e.currentTarget as HTMLElement);
-                                }
-                              }}
-                              title="View year & fact"
-                            >
-                              i
-                            </button>
+                            <>
+                              <button
+                                type="button"
+                                className={`result-info-btn ${showInfoPulse ? 'pulse-once' : ''}`}
+                                aria-label="View details"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  const firearmWithFacts = viewerFirearms.find((f) => f.id === userFirearm.id);
+                                  if (firearmWithFacts) {
+                                    openViewer(firearmWithFacts, e.currentTarget as HTMLElement);
+                                  }
+                                }}
+                                title="View year & fact"
+                              >
+                                i
+                              </button>
+                              <span className="year-badge">{userFirearm.year}</span>
+                            </>
+                          )}
+                          {!isCorrect && (
+                            <span className="year-badge year-badge--placeholder" aria-hidden="true">
+                              {userFirearm.year}
+                            </span>
                           )}
                         </div>
                         <div className="firearm-info">
                           <h4>{userFirearm.name}</h4>
-                          {isCorrect && (
-                            <div className="correct-info">
-                              <span className="year-badge">{userFirearm.year}</span>
-                            </div>
-                          )}
                         </div>
                       </div>
                     ) : (
                       <div className="result-firearm-card">
-                        <div className="firearm-image" />
+                        <div className="firearm-image">
+                          <span className="year-badge year-badge--placeholder" aria-hidden="true">0000</span>
+                        </div>
                         <div className="firearm-info">
                           <h4>No firearm placed</h4>
                         </div>

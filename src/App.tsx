@@ -102,7 +102,7 @@ const MobileCardStack: React.FC<{
               </div>
               <div className="selected-firearm-text">
                 <h3>{selectedFirearm?.name}</h3>
-                <p>Choose the correct time period</p>
+                <p>Order from earliest to latest</p>
               </div>
             </div>
           ) : (
@@ -513,7 +513,7 @@ const App: React.FC = () => {
               )}
               {bank.length > 0 && (
                 <div className={`firearms-grid ${selectionMode ? 'selection-mode' : ''}`}>
-                  {bank.map((firearm, index) => (
+                  {bank.map((firearm) => (
                     <FirearmCard
                       key={firearm.id}
                       firearm={firearm}
