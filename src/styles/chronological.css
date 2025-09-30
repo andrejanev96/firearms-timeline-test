@@ -29,8 +29,8 @@
 .chronological-timeline h3 {
   text-align: center;
   color: #DAA520;
-  margin-bottom: 10px;
-  font-size: 1.5rem;
+  margin-bottom: 8px;
+  font-size: clamp(1.1rem, 2.2vw, 1.35rem);
 }
 
 /* Hide decorative line in quiz timeline */
@@ -46,6 +46,37 @@
   background: transparent;
   flex: 1;
   min-height: 0;
+}
+
+.timeline-container::before,
+.timeline-container::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 48px;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  opacity: 0;
+  z-index: 3;
+}
+
+.timeline-container::before {
+  left: 0;
+  background: linear-gradient(90deg, rgba(26, 26, 26, 0.95), rgba(26, 26, 26, 0));
+}
+
+.timeline-container::after {
+  right: 0;
+  background: linear-gradient(270deg, rgba(26, 26, 26, 0.95), rgba(26, 26, 26, 0));
+}
+
+.timeline-container.can-scroll-left::before {
+  opacity: 1;
+}
+
+.timeline-container.can-scroll-right::after {
+  opacity: 1;
 }
 
 .timeline-track {
@@ -498,6 +529,11 @@
     padding: clamp(20px, 5vw, 35px) clamp(6px, 2vw, 10px) clamp(10px, 3vw, 16px);
   }
 
+  .timeline-container::before,
+  .timeline-container::after {
+    width: 28px;
+  }
+
   .timeline-slot {
     min-width: clamp(40px, 12vw, 60px);
   }
@@ -558,6 +594,11 @@
     height: clamp(26px, 8vw, 32px);
     font-size: clamp(0.7rem, 2vw, 0.9rem);
     z-index: 10;
+  }
+
+  .timeline-container::before,
+  .timeline-container::after {
+    width: 24px;
   }
 
   .timeline-container .scroll-left {

@@ -35,10 +35,10 @@ const IntroScreen: React.FC = React.memo(() => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
         >
-          <div className="title-with-flag">
-            <AmericanFlag />
+          <div className="intro-title-with-flag">
+            <AmericanFlag className="intro-flag" />
             <h1>American Firearms Timeline Challenge</h1>
-            <AmericanFlag />
+            <AmericanFlag className="intro-flag" />
           </div>
           <p className="intro-subtitle">
             Think you know firearms history? Prove it by putting these 12 iconic weapons in chronological order!

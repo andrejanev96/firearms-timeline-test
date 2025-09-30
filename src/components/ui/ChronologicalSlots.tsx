@@ -180,7 +180,9 @@ const ChronologicalSlots: React.FC<ChronologicalSlotsProps> = React.memo(({
         Use drag and drop or keyboard navigation to place firearms in chronological order.
         You can replace an occupied position; the previous firearm returns to the bank. Use the back arrow button to remove items manually.
       </div>
-      <div className="timeline-container">
+      <div
+        className={`timeline-container ${canScrollLeft ? 'can-scroll-left' : ''} ${canScrollRight ? 'can-scroll-right' : ''}`.trim()}
+      >
         <button
           className={`scroll-btn scroll-left ${!canScrollLeft ? 'disabled' : ''}`}
           onClick={(e) => {

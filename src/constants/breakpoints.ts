@@ -3,7 +3,7 @@
  */
 export const BREAKPOINTS = {
   /** Mobile layout threshold - devices below this width use mobile interface */
-  MOBILE_MAX: 1399,
+  MOBILE_MAX: 1199,
 
   /** Tablet minimum width */
   TABLET_MIN: 768,

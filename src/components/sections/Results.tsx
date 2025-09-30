@@ -406,17 +406,15 @@ const Results: React.FC = React.memo(() => {
           <p>Results for: <strong>{userEmail}</strong></p>
         </div>
 
-        {/* Score Display */}
         <div className="score-display">
+          <h3 className="assessment-eyebrow">Timeline Assessment</h3>
+
           <div className="score-circle" style={{ borderColor: performance.color }}>
             <span className="percentage">{results.percentage}%</span>
             <span className="score-details">{results.correctCount} / {results.totalCount} correct</span>
           </div>
-          
-          <div className="performance-info">
-            <h3 style={{ color: performance.color }}>Timeline Assessment</h3>
-            <p>{performance.message}</p>
-          </div>
+
+          <p className="assessment-message">{performance.message}</p>
         </div>
 
         {/* Timeline Results View */}
@@ -426,7 +424,9 @@ const Results: React.FC = React.memo(() => {
             <span style={{color: '#4CAF50', fontWeight: 'bold'}}>Green = Perfect placement</span>, <span style={{color: '#FF9800', fontWeight: 'bold'}}>Orange = Try again</span>
           </p>
           
-          <div className="timeline-results-container">
+          <div
+            className={`timeline-results-container ${canScrollLeft ? 'can-scroll-left' : ''} ${canScrollRight ? 'can-scroll-right' : ''}`.trim()}
+          >
             <button
               className={`scroll-btn scroll-left ${!canScrollLeft ? 'disabled' : ''}`}
               onClick={scrollLeft}

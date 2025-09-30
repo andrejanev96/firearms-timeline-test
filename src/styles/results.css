@@ -122,6 +122,15 @@
   text-decoration: none;
 }
 
+.preview-btn.secondary-action:focus-visible,
+.retake-btn:focus-visible,
+.submit-btn:focus-visible,
+.preview-btn:focus-visible {
+  outline: 3px solid rgba(218, 165, 32, 0.85);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 4px rgba(218, 165, 32, 0.3);
+}
+
 /* Sneak Peek Styles */
 .sneak-peek {
   background: rgba(0, 0, 0, 0.3);
@@ -361,14 +370,14 @@
 
 .results-header {
   text-align: center;
-  margin-bottom: clamp(24px, 5vw, 36px);
+  margin-bottom: clamp(18px, 4vw, 28px);
 }
 
 .results-header h2 {
   color: #DAA520;
-  margin-bottom: clamp(8px, 2vw, 10px);
-  font-size: clamp(1.5rem, 3.5vw, 2rem);
-  line-height: 1.2;
+  margin-bottom: clamp(8px, 1.6vw, 10px);
+  font-size: clamp(1.4rem, 3.1vw, 1.85rem);
+  line-height: 1.18;
 }
 
 .results-header p {
@@ -379,108 +388,75 @@
 
 /* Score Display */
 .score-display {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: clamp(12px, 2.5vw, 24px);
-  margin: clamp(18px, 3.5vw, 28px) auto;
-  padding: clamp(12px, 2.5vw, 20px);
-  max-width: clamp(280px, 85vw, 520px);
-  width: 100%;
-  flex-wrap: wrap;
-  background: rgba(0, 0, 0, 0.3);
-  border-radius: 16px;
-  border: 1px solid rgba(218, 165, 32, 0.2);
+  text-align: center;
+  margin: clamp(16px, 4vw, 28px) auto;
+  padding: clamp(10px, 2.5vw, 18px);
+  max-width: clamp(300px, 80vw, 500px);
+}
+
+.assessment-eyebrow {
+  margin-bottom: clamp(10px, 2.5vw, 16px);
+  font-size: clamp(1.05rem, 3vw, 1.4rem);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #DAA520;
 }
 
 .score-circle {
-  width: clamp(80px, 16vw, 110px);
-  height: clamp(80px, 16vw, 110px);
-  border: 2.5px solid #DAA520;
+  width: clamp(100px, 22vw, 130px);
+  height: clamp(100px, 22vw, 130px);
   border-radius: 50%;
+  border: 4px solid rgba(255, 255, 255, 0.25);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: rgba(218, 165, 32, 0.1);
-  padding: clamp(6px, 1.5vw, 10px);
+  margin: 0 auto clamp(14px, 2.5vw, 22px);
+  background: linear-gradient(45deg, #daa520, #b8860b);
+  color: #fff;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.35);
   box-sizing: border-box;
 }
 
 .percentage {
-  font-size: clamp(1.25rem, 2.5vw, 1.8rem);
-  font-weight: bold;
-  color: #fff;
+  font-size: clamp(1.8rem, 5vw, 2.6rem);
+  font-weight: 700;
   line-height: 1;
 }
 
 .score-details {
-  font-size: clamp(0.65rem, 1.2vw, 0.75rem);
+  margin-top: clamp(4px, 1vw, 8px);
+  font-size: clamp(0.85rem, 2.2vw, 1rem);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.assessment-message {
+  margin: clamp(12px, 3vw, 18px) auto 0;
+  max-width: clamp(260px, 78vw, 420px);
+  font-size: clamp(0.9rem, 2.3vw, 1.05rem);
+  line-height: 1.6;
   color: #ccc;
-  margin-top: 4px;
-  text-align: center;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%;
-}
-
-
-.performance-info {
-  text-align: center;
-  flex: 1 1 180px;
-  min-width: 160px;
-}
-
-.performance-info h3 {
-  font-size: clamp(1.3rem, 3vw, 1.7rem);
-  margin-bottom: 8px;
-  line-height: 1.2;
-}
-
-.performance-info p {
-  font-size: clamp(0.8rem, 1.8vw, 0.95rem);
-  color: #ccc;
-  line-height: 1.4;
 }
 
 @media (max-width: 600px) {
   .score-display {
-    flex-direction: column;
-    gap: clamp(8px, 3vw, 12px);
-    padding: clamp(10px, 3.5vw, 14px);
-    max-width: clamp(220px, 88vw, 280px);
-    margin: clamp(14px, 3vw, 20px) auto;
-  }
-
-  .performance-info {
-    min-width: 0;
-    width: 100%;
-  }
-
-  .performance-info h3 {
-    font-size: clamp(1rem, 4vw, 1.2rem);
-    margin-bottom: 5px;
-  }
-
-  .performance-info p {
-    font-size: clamp(0.7rem, 3vw, 0.8rem);
+    padding: clamp(10px, 4vw, 16px);
+    max-width: clamp(260px, 90vw, 320px);
   }
 
   .score-circle {
-    width: clamp(65px, 18vw, 85px);
-    height: clamp(65px, 18vw, 85px);
-    border-width: 2px;
-    padding: clamp(4px, 1vw, 6px);
+    width: clamp(95px, 28vw, 120px);
+    height: clamp(95px, 28vw, 120px);
+    border-width: 3px;
+    margin-bottom: clamp(12px, 4vw, 20px);
   }
 
   .percentage {
-    font-size: clamp(1rem, 4.5vw, 1.3rem);
+    font-size: clamp(1.4rem, 6vw, 1.9rem);
   }
 
   .score-details {
-    font-size: clamp(0.55rem, 2.5vw, 0.65rem);
-    margin-top: 3px;
+    font-size: clamp(0.75rem, 3vw, 0.9rem);
   }
 }
 
@@ -856,8 +832,8 @@
 
 /* Timeline Results View */
 .results-timeline {
-  margin: clamp(2rem, 5vw, 3rem) 0;
-  padding: clamp(1.5rem, 4vw, 2.5rem) clamp(1rem, 3vw, 1.5rem);
+  margin: clamp(1.6rem, 4vw, 2.6rem) 0;
+  padding: clamp(1.2rem, 3vw, 2.2rem) clamp(0.75rem, 2.5vw, 1.2rem);
   background: rgba(0, 0, 0, 0.1);
   border-radius: 15px;
   min-height: fit-content;
@@ -888,7 +864,7 @@
   text-align: center;
   color: #ffffff;
   font-size: clamp(0.75rem, 1.8vw, 0.9rem);
-  margin-bottom: clamp(1.2rem, 2.5vw, 1.8rem);
+  margin-bottom: clamp(0.8rem, 2vw, 1.2rem);
   line-height: 1.5;
   opacity: 0.86;
 }
@@ -899,6 +875,37 @@
   max-width: none;
   box-sizing: border-box;
   overflow: visible;
+}
+
+.timeline-results-container::before,
+.timeline-results-container::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 48px;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  opacity: 0;
+  z-index: 1;
+}
+
+.timeline-results-container::before {
+  left: 0;
+  background: linear-gradient(90deg, rgba(26, 26, 26, 0.95), rgba(26, 26, 26, 0));
+}
+
+.timeline-results-container::after {
+  right: 0;
+  background: linear-gradient(270deg, rgba(26, 26, 26, 0.95), rgba(26, 26, 26, 0));
+}
+
+.timeline-results-container.can-scroll-left::before {
+  opacity: 1;
+}
+
+.timeline-results-container.can-scroll-right::after {
+  opacity: 1;
 }
 
 /* Tooltip styles for correct results (desktop only) */
@@ -1124,6 +1131,11 @@
     flex: 0 0 clamp(112px, 34vw, 144px);
     width: clamp(112px, 34vw, 144px);
   }
+
+  .timeline-results-container::before,
+  .timeline-results-container::after {
+    width: 28px;
+  }
 }
 
 /* Additional fix for 600px range where 12th element gets cut off */
@@ -1206,6 +1218,11 @@
 
   .timeline-instructions {
     margin-bottom: clamp(1rem, 6vw, 1.5rem);
+  }
+
+  .timeline-results-container::before,
+  .timeline-results-container::after {
+    width: 22px;
   }
 }
 
