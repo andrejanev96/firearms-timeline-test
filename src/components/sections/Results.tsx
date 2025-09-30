@@ -97,8 +97,8 @@ const Results: React.FC = React.memo(() => {
       el.scrollTo({ left: end, behavior: 'smooth' });
       return;
     }
-    // If this is the last or near-last cards, snap to the true end
-    if (nextIndex >= slots.length - 1) {
+    // If this is the last 3 cards or beyond, snap to the true end to ensure last card is fully visible
+    if (nextIndex >= slots.length - 3) {
       el.scrollTo({ left: end, behavior: 'smooth' });
       return;
     }
@@ -130,7 +130,7 @@ const Results: React.FC = React.memo(() => {
     const sl = Math.round(el.scrollLeft);
     const max = Math.max(0, el.scrollWidth - el.clientWidth);
     // Add tolerance to account for sub-pixel rendering and ensure last element is reachable
-    const tolerance = 10;
+    const tolerance = 2;
     setCanScrollLeft(sl > tolerance);
     setCanScrollRight(sl < max - tolerance);
   }, []);
@@ -423,7 +423,7 @@ const Results: React.FC = React.memo(() => {
         <div className="results-timeline">
           <h3>Your Timeline Results</h3>
           <p className="timeline-instructions">
-            <span style={{color: '#4CAF50', fontWeight: 'bold'}}>Green = Perfect placement</span>, <span style={{color: '#FF9800', fontWeight: 'bold'}}>Orange = Try again</span> - ready for another round?
+            <span style={{color: '#4CAF50', fontWeight: 'bold'}}>Green = Perfect placement</span>, <span style={{color: '#FF9800', fontWeight: 'bold'}}>Orange = Try again</span>
           </p>
           
           <div className="timeline-results-container">

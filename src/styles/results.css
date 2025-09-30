@@ -896,6 +896,7 @@
 .timeline-results-container {
   position: relative;
   width: 100%;
+  max-width: none;
   box-sizing: border-box;
   overflow: visible;
 }
@@ -953,7 +954,8 @@
   align-items: center;
   gap: clamp(12px, 2.4vw, 18px);
   width: 100%;
-  padding: clamp(3rem, 6vw, 4rem) clamp(70px, 12vw, 100px);
+  max-width: none;
+  padding-block: clamp(3rem, 6vw, 4rem);
   padding-inline-start: clamp(80px, 14vw, 120px);
   padding-inline-end: clamp(80px, 14vw, 120px);
   overflow-x: auto;
@@ -1126,10 +1128,16 @@
 
 /* Additional fix for 600px range where 12th element gets cut off */
 @media (max-width: 650px) {
-  .timeline-track {
-    padding-inline-end: clamp(75px, 15vw, 110px);
-    scroll-padding-inline-end: clamp(75px, 15vw, 110px);
+  .results-timeline .timeline-track {
+    padding-inline-end: clamp(100px, 20vw, 130px) !important;
+    scroll-padding-inline-end: clamp(100px, 20vw, 130px) !important;
   }
+
+  .results-timeline .timeline-result-slot {
+    flex: 0 0 clamp(105px, 32vw, 138px);
+    width: clamp(105px, 32vw, 138px);
+  }
+}
 
   .timeline-result-slot.correct,
   .timeline-result-slot.incorrect {
@@ -1166,38 +1174,64 @@
 }
 
 @media (max-width: 480px) {
-  .timeline-track {
-    padding: clamp(2rem, 6vw, 2.8rem) clamp(50px, 12vw, 75px);
-    padding-inline-start: clamp(55px, 13vw, 85px);
-    padding-inline-end: clamp(70px, 16vw, 100px);
-    scroll-padding-inline-start: clamp(55px, 13vw, 85px);
-    scroll-padding-inline-end: clamp(70px, 16vw, 100px);
+  .results-timeline .timeline-track {
+    padding-block: clamp(2rem, 6vw, 2.8rem) !important;
+    padding-inline-start: clamp(55px, 13vw, 85px) !important;
+    padding-inline-end: clamp(110px, 25vw, 140px) !important;
+    scroll-padding-inline-start: clamp(55px, 13vw, 85px) !important;
+    scroll-padding-inline-end: clamp(110px, 25vw, 140px) !important;
     gap: clamp(10px, 6vw, 18px);
   }
 
-  .timeline-result-slot {
-    flex: 0 0 clamp(100px, 66vw, 132px);
-    width: clamp(100px, 66vw, 132px);
+  .results-timeline .timeline-result-slot {
+    flex: 0 0 clamp(95px, 64vw, 125px);
+    width: clamp(95px, 64vw, 125px);
   }
 
-  .result-firearm-card {
-    height: clamp(135px, 26vh, 170px);
-    min-height: clamp(135px, 26vh, 170px);
+  .results-timeline .result-firearm-card {
+    height: clamp(130px, 26vh, 165px);
+    min-height: clamp(130px, 26vh, 165px);
     padding: clamp(6px, 3.5vw, 9px);
   }
 
   .results-timeline .firearm-image {
-    height: clamp(48px, 30vw, 70px);
+    height: clamp(46px, 29vw, 68px);
     padding: clamp(4px, 4vw, 6px);
   }
 
-  .timeline-result-slot .slot-number {
+  .results-timeline .timeline-result-slot .slot-number {
     width: clamp(22px, 9vw, 26px);
     height: clamp(22px, 9vw, 26px);
   }
 
   .timeline-instructions {
     margin-bottom: clamp(1rem, 6vw, 1.5rem);
+  }
+}
+
+/* Extra small screens - iPhone 14 Pro and similar */
+@media (max-width: 400px) {
+  .results-timeline .timeline-track {
+    padding-block: clamp(2rem, 6vw, 2.8rem) !important;
+    padding-inline-start: clamp(55px, 13vw, 85px) !important;
+    padding-inline-end: clamp(140px, 35vw, 180px) !important;
+    scroll-padding-inline-start: clamp(55px, 13vw, 85px) !important;
+    scroll-padding-inline-end: clamp(140px, 35vw, 180px) !important;
+  }
+
+  .results-timeline .timeline-result-slot {
+    flex: 0 0 clamp(90px, 60vw, 115px);
+    width: clamp(90px, 60vw, 115px);
+  }
+
+  .results-timeline .result-firearm-card {
+    height: clamp(125px, 27vh, 160px);
+    min-height: clamp(125px, 27vh, 160px);
+    padding: clamp(5px, 3vw, 8px);
+  }
+
+  .results-timeline .firearm-image {
+    height: clamp(45px, 28vw, 65px);
   }
 }
 
