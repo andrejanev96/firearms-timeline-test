@@ -250,7 +250,17 @@ const MobileCardStack: React.FC<{
       </div>
 
       <div className="mobile-navigation">
-        <button 
+        <button
+          className="timeline-btn"
+          onClick={() => {
+            onOpenTimeline();
+            hapticFeedback('light');
+          }}
+          aria-label="View Timeline"
+        >
+          📋 Timeline
+        </button>
+        <button
           className="select-btn"
             onClick={() => {
             onFirearmSelect(currentFirearm);

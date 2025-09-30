@@ -23,29 +23,14 @@
   --timeline-slot-number-size: 26px;
   --timeline-track-height: calc(var(--timeline-card-min-height) + 110px);
 
-  /* Tablet optimizations */
-  --tablet-card-stack-width: 320px;
-  --tablet-card-stack-height: 380px;
-
   /* Design tokens */
-  --color-bg: #1a1a1a;
-  --color-panel: rgba(255,255,255,0.04);
-  --color-text: #eeeeee;
   --color-gold: #daa520;
-  --color-gold-weak: rgba(218,165,32,0.15);
-  --color-green: #4caf50;
-  --color-red: #f44336;
 
   --shadow-sm: 0 2px 6px rgba(0,0,0,0.25);
   --shadow-md: 0 6px 16px rgba(0,0,0,0.35);
   --shadow-lg: 0 12px 28px rgba(0,0,0,0.4);
 
-  --duration-quick: 120ms;
-  --duration-normal: 240ms;
-  --duration-slow: 360ms;
-  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
   --radius: 12px;
-  --gap: 10px;
 }
 
 /* Responsive timeline variables - consolidated 3 breakpoint system */
@@ -64,8 +49,8 @@
   }
 }
 
-/* Mobile: up to 767px */
-@media (max-width: 767px) {
+/* Mobile: up to 768px */
+@media (max-width: 768px) {
   :root {
     --timeline-card-width: clamp(90px, 21vw, 120px);
     --timeline-card-min-height: clamp(95px, 23vh, 120px);

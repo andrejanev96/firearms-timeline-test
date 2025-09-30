@@ -147,7 +147,7 @@
 }
 
 /* Mobile - phones and small screens */
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   .intro-instructions h3 {
     font-size: clamp(1.05rem, 3.6vw, 1.25rem);
     margin-bottom: clamp(1.1rem, 3vw, 1.4rem);
@@ -165,27 +165,6 @@
 
   .step p {
     font-size: clamp(0.75rem, 2.2vw, 0.85rem);
-  }
-}
-
-@media (max-width: 480px) {
-  .intro-instructions h3 {
-    font-size: 1.15rem;
-    margin-bottom: 1.1rem;
-  }
-
-  .step {
-    padding: 1rem;
-  }
-
-  .step-number {
-    width: 1.8rem;
-    height: 1.8rem;
-    font-size: 0.9rem;
-  }
-
-  .step p {
-    font-size: 0.8rem;
   }
 }
 
@@ -342,10 +321,10 @@
   }
 
   .intro-content {
-    padding: 20px 15px;
-    flex: 1;
+    padding: 16px 12px;
     display: flex;
     flex-direction: column;
+    box-sizing: border-box;
   }
 
   .intro-title-with-flag {
@@ -375,15 +354,15 @@
 
   /* Add top margin and reduce bottom margin for intro-instructions */
   .intro-instructions {
-    margin-top: 3rem;
+    margin-top: 1rem;
     margin-bottom: 1rem;
   }
 
   /* Stack instruction steps vertically with proper spacing */
   .instruction-steps {
     grid-template-columns: 1fr;
-    gap: 1rem;
-    margin-bottom: 0.5rem;
+    gap: 0.8rem;
+    margin-bottom: 0.8rem;
   }
 
   .step {
@@ -413,11 +392,8 @@
 
   /* Make CTA section sticky at bottom */
   .intro-actions {
-    margin-top: auto;
-    position: sticky;
-    bottom: 0;
-    padding: 1rem 0 calc(env(safe-area-inset-bottom) + 1rem);
-    z-index: 10;
+    margin-top: 0.5rem;
+    padding: 0.8rem 0 calc(env(safe-area-inset-bottom) + 0.8rem);
   }
 
   .start-quiz-btn {
@@ -445,24 +421,118 @@
 }
 
 @media (max-width: 480px) {
+  .intro-screen {
+    padding: clamp(10px, 2vw, 14px);
+  }
+
+  .intro-content {
+    padding: clamp(16px, 3.5vw, 20px) clamp(12px, 3vw, 16px);
+  }
+
   .intro-title-with-flag {
-    gap: 10px;
+    gap: 8px;
+    margin-bottom: 10px;
   }
 
   .intro-flag {
-    width: 24px;
-    height: 18px;
+    width: 20px;
+    height: 15px;
   }
 
   .intro-header h1 {
-    font-size: 1.7rem;
+    font-size: clamp(1.3rem, 5.5vw, 1.6rem);
+    line-height: 1.25;
   }
 
   .intro-subtitle {
-    font-size: 0.9rem;
+    font-size: clamp(0.8rem, 3.2vw, 0.9rem);
+    margin-bottom: 0.6rem;
+    line-height: 1.5;
   }
 
   .intro-description {
+    font-size: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .intro-instructions {
+    margin-top: 1.2rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .intro-instructions h3 {
+    font-size: clamp(1rem, 4.2vw, 1.2rem);
+    margin-bottom: 0.8rem;
+  }
+
+  .instruction-steps {
+    gap: 0.75rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .step {
+    padding: clamp(0.75rem, 3vw, 0.9rem);
+  }
+
+  .step-number {
+    width: clamp(1.6rem, 4.2vw, 1.8rem);
+    height: clamp(1.6rem, 4.2vw, 1.8rem);
+    font-size: clamp(0.8rem, 3vw, 0.9rem);
+  }
+
+  .step p {
+    font-size: clamp(0.7rem, 2.6vw, 0.8rem);
+    line-height: 1.5;
+  }
+
+  .intro-actions {
+    padding: 0.8rem 0 calc(env(safe-area-inset-bottom) + 0.8rem);
+  }
+
+  .start-quiz-btn {
+    padding: clamp(0.7rem, 2.5vh, 0.85rem) clamp(1.2rem, 5vw, 1.5rem);
+    font-size: clamp(0.85rem, 3.2vw, 0.95rem);
+    margin-bottom: 0.4rem;
+  }
+
+  .time-estimate {
+    font-size: clamp(0.7rem, 2.5vw, 0.75rem);
+  }
+}
+
+/* Extra small screens - iPhone 14 Pro and similar (393px) */
+@media (max-width: 400px) {
+  .intro-screen {
+    padding: 10px;
+  }
+
+  .intro-content {
+    padding: 14px 10px;
+  }
+
+  .intro-header h1 {
+    font-size: clamp(1.25rem, 5.2vw, 1.5rem);
+  }
+
+  .intro-subtitle {
+    font-size: clamp(0.8rem, 3.2vw, 0.9rem);
+  }
+
+  .intro-instructions h3 {
+    font-size: clamp(1rem, 4vw, 1.15rem);
+  }
+
+  .step {
+    padding: 0.8rem;
+  }
+
+  .step p {
+    font-size: clamp(0.72rem, 2.7vw, 0.8rem);
+  }
+
+  .step-number {
+    width: 1.8rem;
+    height: 1.8rem;
     font-size: 0.85rem;
   }
 }

@@ -1,5 +1,15 @@
 /* Results and Email Gate Styles */
 
+/* Motion sensitivity support */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 .results-container {
   --results-h-pad: clamp(16px, 4vw, 36px);
   --results-v-pad: clamp(12px, 3vh, 24px);
@@ -375,43 +385,43 @@
 
 .results-header h2 {
   color: #DAA520;
-  margin-bottom: clamp(8px, 1.6vw, 10px);
-  font-size: clamp(1.4rem, 3.1vw, 1.85rem);
+  margin-bottom: clamp(6px, 1.4vw, 10px);
+  font-size: clamp(1.2rem, 2.8vw, 1.85rem);
   line-height: 1.18;
 }
 
 .results-header p {
   color: #ccc;
-  font-size: clamp(0.8rem, 2vw, 0.95rem);
+  font-size: clamp(0.75rem, 1.9vw, 0.95rem);
   line-height: 1.4;
 }
 
 /* Score Display */
 .score-display {
   text-align: center;
-  margin: clamp(16px, 4vw, 28px) auto;
-  padding: clamp(10px, 2.5vw, 18px);
-  max-width: clamp(300px, 80vw, 500px);
+  margin: clamp(12px, 3vw, 28px) auto;
+  padding: clamp(8px, 2vw, 18px);
+  max-width: clamp(280px, 75vw, 500px);
 }
 
 .assessment-eyebrow {
-  margin-bottom: clamp(10px, 2.5vw, 16px);
-  font-size: clamp(1.05rem, 3vw, 1.4rem);
+  margin-bottom: clamp(8px, 2vw, 16px);
+  font-size: clamp(0.9rem, 2.8vw, 1.4rem);
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: #DAA520;
 }
 
 .score-circle {
-  width: clamp(100px, 22vw, 130px);
-  height: clamp(100px, 22vw, 130px);
+  width: clamp(85px, 20vw, 130px);
+  height: clamp(85px, 20vw, 130px);
   border-radius: 50%;
   border: 4px solid rgba(255, 255, 255, 0.25);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin: 0 auto clamp(14px, 2.5vw, 22px);
+  margin: 0 auto clamp(10px, 2vw, 22px);
   background: linear-gradient(45deg, #daa520, #b8860b);
   color: #fff;
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.35);
@@ -419,46 +429,25 @@
 }
 
 .percentage {
-  font-size: clamp(1.8rem, 5vw, 2.6rem);
+  font-size: clamp(1.5rem, 4.5vw, 2.6rem);
   font-weight: 700;
   line-height: 1;
 }
 
 .score-details {
-  margin-top: clamp(4px, 1vw, 8px);
-  font-size: clamp(0.85rem, 2.2vw, 1rem);
+  margin-top: clamp(3px, 0.8vw, 8px);
+  font-size: clamp(0.7rem, 2vw, 1rem);
   color: rgba(255, 255, 255, 0.9);
 }
 
 .assessment-message {
-  margin: clamp(12px, 3vw, 18px) auto 0;
-  max-width: clamp(260px, 78vw, 420px);
-  font-size: clamp(0.9rem, 2.3vw, 1.05rem);
-  line-height: 1.6;
+  margin: clamp(10px, 2.5vw, 18px) auto 0;
+  max-width: clamp(240px, 75vw, 420px);
+  font-size: clamp(0.8rem, 2.1vw, 1.05rem);
+  line-height: 1.5;
   color: #ccc;
 }
 
-@media (max-width: 600px) {
-  .score-display {
-    padding: clamp(10px, 4vw, 16px);
-    max-width: clamp(260px, 90vw, 320px);
-  }
-
-  .score-circle {
-    width: clamp(95px, 28vw, 120px);
-    height: clamp(95px, 28vw, 120px);
-    border-width: 3px;
-    margin-bottom: clamp(12px, 4vw, 20px);
-  }
-
-  .percentage {
-    font-size: clamp(1.4rem, 6vw, 1.9rem);
-  }
-
-  .score-details {
-    font-size: clamp(0.75rem, 3vw, 0.9rem);
-  }
-}
 
 /* Answer Lists */
 .correct-section,
@@ -599,43 +588,6 @@
   border-color: rgba(255, 69, 0, 0.3);
 }
 
-/* Alternative: Brand color backgrounds (uncomment to use) */
-/*
-.share-btn-x {
-  background: #000000;
-  border-color: #000000;
-}
-
-.share-btn-x svg {
-  fill: #ffffff !important;
-}
-
-.share-btn-facebook {
-  background: #1877F2;
-  border-color: #1877F2;
-}
-
-.share-btn-facebook svg {
-  fill: #ffffff !important;
-}
-
-.share-btn-reddit {
-  background: #FF4500;
-  border-color: #FF4500;
-}
-
-.share-btn-reddit svg {
-  fill: #ffffff !important;
-}
-
-.share-btn-x:hover,
-.share-btn-facebook:hover,
-.share-btn-reddit:hover {
-  opacity: 0.9;
-  transform: translateY(-2px);
-}
-*/
-
 .retake-actions {
   display: flex;
   justify-content: center;
@@ -664,7 +616,7 @@
 }
 
 /* Mobile - phones and small screens */
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   .email-gate {
     padding: 25px 20px;
   }
@@ -918,6 +870,8 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
+  min-width: 44px;
+  min-height: 44px;
   width: clamp(44px, 8vw, 60px);
   height: clamp(44px, 8vw, 60px);
   border-radius: 50%;
@@ -933,6 +887,8 @@
   z-index: 10;
   transition: all 0.3s ease;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  will-change: transform, background-color, box-shadow;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .results-timeline .scroll-btn:hover:not(:disabled) {
@@ -941,8 +897,20 @@
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
 }
 
+.results-timeline .scroll-btn:active:not(:disabled) {
+  transform: translateY(-50%) scale(0.95);
+  background: rgba(218, 165, 32, 0.85);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.results-timeline .scroll-btn:focus-visible {
+  outline: 3px solid rgba(218, 165, 32, 0.9);
+  outline-offset: 4px;
+  box-shadow: 0 0 0 4px rgba(218, 165, 32, 0.3), 0 6px 20px rgba(0, 0, 0, 0.5);
+}
+
 .results-timeline .scroll-btn:disabled {
-  opacity: 0.3;
+  opacity: 0.5;
   cursor: not-allowed;
   pointer-events: none;
 }
@@ -971,7 +939,8 @@
   scroll-behavior: smooth;
   scroll-padding-inline-start: clamp(80px, 14vw, 120px);
   scroll-padding-inline-end: clamp(80px, 14vw, 120px);
-  touch-action: pan-x;
+  scroll-snap-type: x proximity;
+  touch-action: auto;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE/Edge */
@@ -998,6 +967,7 @@
   border-radius: 12px;
   transition: none;
   padding: clamp(8px, 2vw, 12px) clamp(6px, 1.6vw, 10px);
+  scroll-snap-align: center;
   pointer-events: auto;
   user-select: none;
   -webkit-user-select: none;
@@ -1149,7 +1119,6 @@
     flex: 0 0 clamp(105px, 32vw, 138px);
     width: clamp(105px, 32vw, 138px);
   }
-}
 
   .timeline-result-slot.correct,
   .timeline-result-slot.incorrect {
@@ -1183,6 +1152,8 @@
   .firearm-info h4 {
     font-size: clamp(0.76rem, 3.2vw, 0.88rem);
   }
+}
+
 @media (max-width: 480px) {
   .results-timeline .timeline-track {
     padding-block: clamp(2rem, 6vw, 2.8rem) !important;
@@ -1227,26 +1198,59 @@
 /* Extra small screens - iPhone 14 Pro and similar */
 @media (max-width: 400px) {
   .results-timeline .timeline-track {
-    padding-block: clamp(2rem, 6vw, 2.8rem) !important;
-    padding-inline-start: clamp(55px, 13vw, 85px) !important;
-    padding-inline-end: clamp(140px, 35vw, 180px) !important;
-    scroll-padding-inline-start: clamp(55px, 13vw, 85px) !important;
-    scroll-padding-inline-end: clamp(140px, 35vw, 180px) !important;
+    padding-block: clamp(1.5rem, 5vw, 2.4rem) !important;
+    padding-inline-start: clamp(45px, 11vw, 75px) !important;
+    padding-inline-end: clamp(120px, 32vw, 160px) !important;
+    scroll-padding-inline-start: clamp(45px, 11vw, 75px) !important;
+    scroll-padding-inline-end: clamp(120px, 32vw, 160px) !important;
+    gap: clamp(8px, 4vw, 14px);
   }
 
   .results-timeline .timeline-result-slot {
-    flex: 0 0 clamp(90px, 60vw, 115px);
-    width: clamp(90px, 60vw, 115px);
+    flex: 0 0 clamp(80px, 55vw, 105px);
+    width: clamp(80px, 55vw, 105px);
+    padding: clamp(5px, 1.5vw, 8px) clamp(4px, 1vw, 6px);
   }
 
   .results-timeline .result-firearm-card {
-    height: clamp(125px, 27vh, 160px);
-    min-height: clamp(125px, 27vh, 160px);
-    padding: clamp(5px, 3vw, 8px);
+    height: clamp(110px, 24vh, 145px);
+    min-height: clamp(110px, 24vh, 145px);
+    padding: clamp(4px, 2.5vw, 7px);
   }
 
   .results-timeline .firearm-image {
-    height: clamp(45px, 28vw, 65px);
+    height: clamp(38px, 24vw, 58px);
+    padding: clamp(3px, 2vw, 5px);
+    margin-bottom: clamp(4px, 1.2vw, 7px);
+  }
+
+  .results-timeline .timeline-result-slot .slot-number {
+    width: clamp(20px, 7vw, 24px);
+    height: clamp(20px, 7vw, 24px);
+    font-size: clamp(0.7rem, 3vw, 0.8rem);
+    margin-bottom: clamp(4px, 1.2vw, 6px);
+  }
+
+  .firearm-info h4 {
+    font-size: clamp(0.65rem, 2.8vw, 0.78rem);
+    line-height: 1.25;
+  }
+
+  .results-header h2 {
+    font-size: clamp(1.1rem, 5vw, 1.5rem);
+  }
+
+  .results-header p {
+    font-size: clamp(0.7rem, 3.5vw, 0.85rem);
+  }
+
+  .timeline-instructions {
+    font-size: clamp(0.7rem, 3.2vw, 0.82rem);
+    margin-bottom: clamp(0.8rem, 4vw, 1.2rem);
+  }
+
+  .results-timeline h3 {
+    font-size: clamp(1.05rem, 4.5vw, 1.35rem);
   }
 }
 

@@ -34,8 +34,6 @@
 }
 
 /* Hide decorative line in quiz timeline */
-/* removed .timeline-line (unused) */
-
 /* Timeline container with scroll buttons */
 .timeline-container {
   position: relative;
@@ -194,12 +192,6 @@
   right: 0;
 }
 
-/* removed .timeline-line (unused) */
-
-/* removed .timeline-line decorations (unused) */
-
-/* removed .timeline-line decorations (unused) */
-
 .timeline-slot {
   /* Use fixed slot width per breakpoint to avoid stretch */
   flex: 0 0 var(--timeline-slot-min-width);
@@ -349,40 +341,6 @@
   box-shadow: 0 0 0 3px rgba(218, 165, 32, 0.4);
 }
 
-/* Timeline Visual Elements */
-.timeline-visual {
-  position: relative;
-  margin-bottom: 12px;
-  padding: 6px 56px; /* Account for scroll buttons */
-}
-
-.timeline-line {
-  height: 2px;
-  background: linear-gradient(to right,
-    rgba(218, 165, 32, 0.3) 0%,
-    rgba(218, 165, 32, 0.6) 50%,
-    rgba(218, 165, 32, 0.3) 100%
-  );
-  border-radius: 1px;
-  position: relative;
-}
-
-.decade-markers {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 6px;
-  padding: 0 16px;
-}
-
-.decade-marker {
-  font-size: 0.75rem;
-  color: rgba(218, 165, 32, 0.7);
-  font-weight: 500;
-  text-align: center;
-  opacity: 0.8;
-  user-select: none;
-}
-
 /* Completion Encouragement */
 .completion-encouragement {
   text-align: center;
@@ -508,7 +466,7 @@
 }
 
 /* Mobile - phones and small tablets */
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   .chronological-timeline {
     padding: clamp(10px, 3vw, 20px) clamp(5px, 2vw, 10px);
   }

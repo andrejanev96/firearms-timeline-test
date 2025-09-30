@@ -582,7 +582,7 @@ body::after {
   font-weight: 600;
 }
 
-.year-badge {
+.year-introduced .year-badge {
   font-size: clamp(0.85rem, 1.8vw, 1rem);
   font-weight: 700;
   color: #DAA520;
@@ -1174,7 +1174,7 @@ body::after {
 }
 
 /* Mobile phones - use grid, guarantee arrows never overlay image */
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   .image-nav-wrap {
     width: min(96vw, 900px);
     grid-template-columns: var(--arrow-col, clamp(44px, 8vw, 52px)) 1fr var(--arrow-col, clamp(44px, 8vw, 52px));
@@ -1250,12 +1250,17 @@ body::after {
 
 /* Bottom CTA centered and comfortable width */
 @media (max-width: 1199px) {
-  .mobile-navigation { justify-content: center; }
+  .mobile-navigation { justify-content: center; flex-wrap: wrap; gap: clamp(10px, 2.5vw, 14px); }
+
+  .mobile-navigation .timeline-btn {
+    flex: 0 1 auto;
+    min-width: clamp(110px, 32vw, 150px);
+  }
+
   .mobile-navigation .select-btn {
-    position: sticky;
-    bottom: calc(env(safe-area-inset-bottom) + 14px);
-    width: clamp(80%, 90vw, 700px);
-    margin: 8px auto 0;
+    flex: 1 1 auto;
+    min-width: clamp(150px, 42vw, 220px);
+    margin: 0;
     padding: clamp(8px, 2vh, 14px) clamp(12px, 3vw, 24px);
     font-size: clamp(0.8rem, 2.5vw, 1.1rem);
   }
@@ -1352,7 +1357,7 @@ body::after {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: clamp(12px, 3vw, 20px);
+  gap: clamp(10px, 2.5vw, 16px);
   margin-top: 20px;
   z-index: 10;
   position: relative;
@@ -1360,6 +1365,23 @@ body::after {
   max-width: 100vw;
   padding: 0 clamp(8px, 2vw, 16px);
   box-sizing: border-box;
+  flex-wrap: wrap;
+}
+
+/* Timeline button in mobile navigation context */
+.mobile-navigation .timeline-btn {
+  flex: 0 1 auto;
+  min-width: clamp(100px, 30vw, 140px);
+  padding: clamp(10px, 2.2vh, 14px) clamp(16px, 3.5vw, 24px);
+  font-size: clamp(0.8rem, 2.2vw, 0.95rem);
+  white-space: nowrap;
+}
+
+/* Select button adjustments when paired with timeline button */
+.mobile-navigation .select-btn {
+  flex: 1 1 auto;
+  min-width: clamp(140px, 40vw, 200px);
+  max-width: calc(100vw - clamp(130px, 35vw, 180px));
 }
 
 /* Cards Remaining Container */
@@ -1904,84 +1926,7 @@ body::after {
   box-shadow: 0 12px 30px rgba(218, 165, 32, 0.4);
 }
 
-/* Modal Styles */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.85);
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
-
-.modal {
-  background: linear-gradient(145deg, #2a2a2a, #3a3a3a);
-  border-radius: 25px;
-  max-width: 550px;
-  width: 100%;
-  max-height: 90vh;
-  overflow-y: auto;
-  border: 2px solid rgba(218, 165, 32, 0.3);
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
-}
-
-.modal-header {
-  padding: 35px 35px 25px;
-  text-align: center;
-  border-bottom: 1px solid rgba(218, 165, 32, 0.2);
-  position: relative;
-}
-
-.modal-header h2 {
-  color: #daa520;
-  font-size: 2rem;
-  font-weight: bold;
-}
-
-.close-btn {
-  position: absolute;
-  top: 15px;
-  right: 20px;
-  background: none;
-  border: none;
-  color: #999;
-  font-size: 2rem;
-  cursor: pointer;
-  padding: 5px;
-}
-
-.close-btn:hover {
-  color: #daa520;
-}
-
-.modal-body {
-  padding: 35px;
-}
-
-.email-form h3 {
-  color: #daa520;
-  margin-bottom: 15px;
-  text-align: center;
-  font-size: 1.4rem;
-}
-
-.email-form p {
-  color: #cccccc;
-  margin-bottom: 30px;
-  text-align: center;
-  line-height: 1.6;
-}
-
-.form-container {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
+/* Form Styles */
 
 .form-group {
   margin-bottom: 25px;
@@ -2079,113 +2024,6 @@ body::after {
   background: linear-gradient(45deg, #888, #777);
 }
 
-/* Success Overlay */
-.success-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.9);
-  z-index: 1100;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
-
-.success-message {
-  background: linear-gradient(145deg, #2a2a2a, #3a3a3a);
-  padding: 50px;
-  border-radius: 25px;
-  border: 2px solid rgba(218, 165, 32, 0.3);
-  text-align: center;
-  max-width: 450px;
-  animation: fadeIn 0.5s ease;
-}
-
-.success-icon {
-  width: 90px;
-  height: 90px;
-  background: #daa520;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 2.5rem;
-  color: white;
-  margin: 0 auto 25px;
-  box-shadow: 0 10px 25px rgba(218, 165, 32, 0.3);
-}
-
-.success-message h2 {
-  margin-bottom: 15px;
-  font-size: 1.8rem;
-}
-
-.success-message p {
-  color: #cccccc;
-  margin-bottom: 30px;
-  line-height: 1.6;
-}
-
-.success-message .close-btn {
-  background: linear-gradient(45deg, #daa520, #b8860b);
-  color: white;
-  border: none;
-  padding: 15px 35px;
-  border-radius: 30px;
-  cursor: pointer;
-  font-size: 1.1rem;
-  transition: all 0.3s ease;
-  position: relative;
-}
-
-.success-message .close-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(218, 165, 32, 0.4);
-}
-
-/* Animations */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: scale(0.9);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-/* Slide-in animation for when cards are placed in timeline positions */
-@keyframes slideInPlace {
-  0% {
-    opacity: 0;
-    transform: scale(0.8) translateY(-20px);
-  }
-  50% {
-    opacity: 0.7;
-    transform: scale(1.05) translateY(-10px);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
-}
-
-/* Gentle pulse for newly placed items */
-@keyframes gentlePulse {
-  0% {
-    box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.4);
-  }
-  50% {
-    box-shadow: 0 0 0 8px rgba(76, 175, 80, 0.1);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.0);
-  }
-}
 
 /* Card entrance/exit animations for mobile stack (opacity-only to avoid transform conflicts) */
 @keyframes cardEnter {
@@ -2419,39 +2257,6 @@ body::after {
     word-break: break-word;
   }
 
-  .timeline-periods {
-    flex-direction: column;
-    gap: 30px;
-    min-width: auto;
-    margin: 0 20px;
-  }
-
-  .timeline-line {
-    display: none;
-  }
-
-  .period-marker {
-    display: none;
-  }
-
-  .drop-zone {
-    min-height: 120px;
-  }
-
-  .modal {
-    margin: 10px;
-    max-height: 95vh;
-  }
-
-  .modal-body {
-    padding: 25px;
-  }
-
-  .success-message {
-    padding: 35px 25px;
-    max-width: 400px;
-  }
-
   .selection-indicator {
     position: static;
     transform: none;
@@ -2464,11 +2269,6 @@ body::after {
     padding: 12px;
   }
 
-  .drop-zone.highlighted {
-    animation: none;
-    background: rgba(218, 165, 32, 0.12);
-    border-width: 3px;
-  }
 }
 
 /* Tablet specific styles consolidated into main tablet media query above */
@@ -2557,8 +2357,23 @@ body::after {
     font-size: clamp(13px, 2.8vw, 18px) !important;
   }
 
-  .mobile-navigation { justify-content: center; }
-  .select-btn { width: clamp(80%, 90vw, 700px); padding: clamp(8px, 2vh, 14px) clamp(12px, 3vw, 24px); font-size: clamp(0.8rem, 2.5vw, 1.1rem); position: sticky; bottom: calc(env(safe-area-inset-bottom) + 12px); margin: 6px auto 0; max-width: calc(100vw - clamp(24px, 6vw, 40px)); }
+  .mobile-navigation { justify-content: center; gap: clamp(8px, 2vw, 12px); }
+
+  .mobile-navigation .timeline-btn {
+    padding: clamp(8px, 2vh, 12px) clamp(12px, 3vw, 18px);
+    font-size: clamp(0.75rem, 2vw, 0.85rem);
+    min-width: clamp(90px, 28vw, 120px);
+  }
+
+  .mobile-navigation .select-btn {
+    width: auto;
+    flex: 1 1 auto;
+    min-width: clamp(130px, 38vw, 180px);
+    padding: clamp(8px, 2vh, 14px) clamp(12px, 3vw, 24px);
+    font-size: clamp(0.8rem, 2.5vw, 1.1rem);
+    margin: 6px 0 0 0;
+    max-width: calc(100vw - clamp(110px, 32vw, 140px));
+  }
 
   .complete-btn {
     padding: 15px 35px;
@@ -2670,6 +2485,71 @@ body::after {
     font-size: 0.9rem;
     color: #cccccc;
     line-height: 1.3;
+  }
+}
+
+/* Extra small screens - iPhone 14 Pro and similar (393px) */
+@media (max-width: 400px) {
+  .container {
+    padding: clamp(8px, 1.5vw, 16px);
+    gap: clamp(8px, 1.2vh, 14px);
+  }
+
+  .progress-text {
+    font-size: 0.65rem;
+  }
+
+  .card-stack {
+    height: clamp(240px, 48vh, 380px) !important;
+  }
+
+  .image-nav-wrap {
+    width: min(78vw, 460px);
+    max-height: clamp(160px, 52vh, 320px);
+  }
+
+  .image-nav-wrap .firearm-image {
+    height: clamp(160px, 52vh, 320px) !important;
+  }
+
+  .mobile-card .firearm-name {
+    font-size: clamp(0.9rem, 4vw, 1.1rem);
+    margin: 8px auto 6px;
+  }
+
+  .swipe-hint-row {
+    font-size: 0.7rem;
+    margin-top: 3px;
+    margin-bottom: 4px;
+  }
+
+  .mobile-navigation .timeline-btn {
+    padding: clamp(7px, 1.8vh, 11px) clamp(10px, 2.8vw, 16px);
+    font-size: clamp(0.7rem, 1.9vw, 0.8rem);
+    min-width: clamp(85px, 26vw, 110px);
+  }
+
+  .mobile-navigation .select-btn {
+    min-width: clamp(120px, 36vw, 170px);
+    padding: clamp(7px, 1.8vh, 12px) clamp(10px, 2.8vw, 20px);
+    font-size: clamp(0.75rem, 2.3vw, 1rem);
+    max-width: calc(100vw - clamp(105px, 30vw, 130px));
+  }
+
+  .firearms-bank-header h2 {
+    font-size: 1rem;
+  }
+
+  .selection-help p {
+    font-size: 0.7rem;
+  }
+
+  .empty-bank-content h3 {
+    font-size: 1.1rem;
+  }
+
+  .empty-bank-content p {
+    font-size: 0.75rem;
   }
 }
 
