@@ -181,7 +181,7 @@ export default function ImageViewerModal({ open, items, index, onClose, onNaviga
                 <div className="details-label">✨ Fact Unlocked</div>
                 {typeof current.year === 'number' && (
                   <div className="year-introduced">
-                    <span className="year-label">Year Introduced:</span>
+                    <span className="year-label">Introduced In:</span>
                     <span className="year-badge" aria-label={`Year ${current.year}`}>{current.year}</span>
                   </div>
                 )}
