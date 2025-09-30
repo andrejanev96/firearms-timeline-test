@@ -6,10 +6,24 @@ import { trackQuizEvents } from '@/utils/analytics';
 import { QUIZ_CONFIG, STORAGE_KEYS } from '@/constants/breakpoints';
 
 // Fisher-Yates shuffle function for proper randomization
+const secureRandomIndex = (limit: number): number => {
+  if (typeof window !== 'undefined' && window.crypto?.getRandomValues) {
+    const array = new Uint32Array(1);
+    const max = Math.floor(0x100000000 / limit) * limit;
+    let value = 0;
+    do {
+      window.crypto.getRandomValues(array);
+      value = array[0];
+    } while (value >= max);
+    return value % limit;
+  }
+  return Math.floor(Math.random() * limit);
+};
+
 const shuffleArray = <T>(array: T[]): T[] => {
   const shuffled = [...array];
   for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
+    const j = secureRandomIndex(i + 1);
     [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
   }
   return shuffled;
