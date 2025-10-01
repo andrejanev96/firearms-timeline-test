@@ -3,7 +3,7 @@ import type { Firearm } from '@/types/quiz';
 export const firearms: Firearm[] = [
   {
     id: '1',
-    name: 'Kentucky Long Rifle',
+    name: 'Kentucky Rifle',
     description: 'American frontier hunting rifle',
     correctPosition: 0,
     year: 1750,
@@ -17,7 +17,7 @@ export const firearms: Firearm[] = [
   },
   {
     id: '2',
-    name: 'Colt Walker Revolver',
+    name: 'Colt Walker',
     description: 'Powerful six-shooter for Texas Rangers',
     correctPosition: 1,
     year: 1847,
@@ -45,7 +45,7 @@ export const firearms: Firearm[] = [
   },
   {
     id: '4',
-    name: 'Winchester Rifle',
+    name: 'Winchester Model 1873',
     description: 'The Gun That Won the West',
     correctPosition: 3,
     year: 1873,
@@ -73,7 +73,7 @@ export const firearms: Firearm[] = [
   },
   {
     id: '6',
-    name: 'Winchester Carbine',
+    name: 'Winchester Model 1894',
     description: 'Popular lever-action hunting rifle',
     correctPosition: 5,
     year: 1894,
@@ -87,7 +87,7 @@ export const firearms: Firearm[] = [
   },
   {
     id: '7',
-    name: 'Colt Pistol',
+    name: 'Colt M1911',
     description: 'Legendary military semi-automatic pistol',
     correctPosition: 6,
     year: 1911,
