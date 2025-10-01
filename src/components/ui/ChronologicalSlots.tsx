@@ -49,11 +49,33 @@ const ChronologicalSlots: React.FC<ChronologicalSlotsProps> = React.memo(({
     setDragOverPosition(null);
 
     try {
-      const firearmData = JSON.parse(e.dataTransfer.getData('text/plain'));
-      onDrop(firearmData, position);
-    } catch (error) {
-      console.error('Error parsing drag data:', error);
+      const dragData = JSON.parse(e.dataTransfer.getData('text/plain'));
+
+      // Check if dragging from timeline (has sourcePosition) or from bank
+      if (dragData.sourcePosition !== undefined) {
+        // Dragging from timeline to timeline - remove sourcePosition before passing to onDrop
+        const sourcePos = dragData.sourcePosition;
+        if (sourcePos !== position) {
+          const { sourcePosition, ...firearmData } = dragData;
+          // onDrop already handles removing from existing position and swapping
+          onDrop(firearmData, position);
+        }
+      } else {
+        // Dragging from bank
+        onDrop(dragData, position);
+      }
+    } catch {
+      // Silently ignore invalid drag data
     }
+  };
+
+  const handleTimelineDragStart = (e: React.DragEvent, firearm: Firearm, position: number) => {
+    const dragData = {
+      ...firearm,
+      sourcePosition: position
+    };
+    e.dataTransfer.setData('text/plain', JSON.stringify(dragData));
+    setDragOverPosition(null);
   };
 
   const handlePositionClick = (position: number, e: React.MouseEvent) => {
@@ -108,7 +130,13 @@ const ChronologicalSlots: React.FC<ChronologicalSlotsProps> = React.memo(({
 
   // Drag-to-scroll functionality
   const handleMouseDown = (e: React.MouseEvent) => {
-    if (e.target === timelineRef.current || (e.target as Element).closest('.timeline-track')) {
+    // Don't start drag-to-scroll if clicking on a firearm card (they need to be draggable)
+    const target = e.target as Element;
+    if (target.closest('.firearm-card') || target.closest('.firearm-wrapper')) {
+      return;
+    }
+
+    if (e.target === timelineRef.current || target.closest('.timeline-track')) {
       setIsDragging(true);
       setDragStart(e.clientX);
       e.preventDefault();
@@ -135,7 +163,13 @@ const ChronologicalSlots: React.FC<ChronologicalSlotsProps> = React.memo(({
 
   // Touch support for mobile
   const handleTouchStart = (e: React.TouchEvent) => {
-    if (e.target === timelineRef.current || (e.target as Element).closest('.timeline-track')) {
+    // Don't start drag-to-scroll if touching a firearm card
+    const target = e.target as Element;
+    if (target.closest('.firearm-card') || target.closest('.firearm-wrapper')) {
+      return;
+    }
+
+    if (e.target === timelineRef.current || target.closest('.timeline-track')) {
       setIsDragging(true);
       setDragStart(e.touches[0].clientX);
     }
@@ -286,6 +320,8 @@ const ChronologicalSlots: React.FC<ChronologicalSlotsProps> = React.memo(({
                     inTimeline={true}
                     isSelectionMode={isSelectionMode}
                     openViewer={openViewer}
+                    onDragStart={(e) => handleTimelineDragStart(e, firearm, position)}
+                    onDragEnd={() => setDragOverPosition(null)}
                   />
                   {!isSelectionMode && (
                     <button

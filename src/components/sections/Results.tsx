@@ -538,7 +538,7 @@ const Results: React.FC = React.memo(() => {
               onClick={() => {
                 const tier = getTierName();
                 trackQuizEvents.socialShare?.('x', results.correctCount, tier);
-                const { x } = getShareUrls({ score: results.correctCount, total: results.totalCount, tierName: tier });
+                const { x } = getShareUrls({ score: results.correctCount, total: results.totalCount, tierName: tier, percentage: results.percentage });
                 openShareWindow(x);
               }}
               aria-label="Share on X"
@@ -553,7 +553,7 @@ const Results: React.FC = React.memo(() => {
               onClick={() => {
                 const tier = getTierName();
                 trackQuizEvents.socialShare?.('facebook', results.correctCount, tier);
-                const { facebook } = getShareUrls({ score: results.correctCount, total: results.totalCount, tierName: tier });
+                const { facebook } = getShareUrls({ score: results.correctCount, total: results.totalCount, tierName: tier, percentage: results.percentage });
                 openShareWindow(facebook);
               }}
               aria-label="Share on Facebook"
@@ -568,7 +568,7 @@ const Results: React.FC = React.memo(() => {
               onClick={() => {
                 const tier = getTierName();
                 trackQuizEvents.socialShare?.('reddit', results.correctCount, tier);
-                const { reddit } = getShareUrls({ score: results.correctCount, total: results.totalCount, tierName: tier });
+                const { reddit } = getShareUrls({ score: results.correctCount, total: results.totalCount, tierName: tier, percentage: results.percentage });
                 openShareWindow(reddit);
               }}
               aria-label="Share on Reddit"

@@ -4,7 +4,7 @@ export const firearms: Firearm[] = [
   {
     id: '1',
     name: 'Kentucky Rifle',
-    description: 'American frontier hunting rifle',
+    description: 'Colonial frontier long rifle',
     correctPosition: 0,
     year: 1750,
     image: `${import.meta.env.BASE_URL}images/kentucky_rifle.png`,
@@ -18,7 +18,7 @@ export const firearms: Firearm[] = [
   {
     id: '2',
     name: 'Colt Walker',
-    description: 'Powerful six-shooter for Texas Rangers',
+    description: 'Mexican-American War heavy cavalry revolver',
     correctPosition: 1,
     year: 1847,
     image: `${import.meta.env.BASE_URL}images/colt_walker.png`,
@@ -32,7 +32,7 @@ export const firearms: Firearm[] = [
   {
     id: '3',
     name: 'Spencer Repeating Rifle',
-    description: 'Civil War seven-shot repeater',
+    description: 'Civil War lever-action repeating rifle',
     correctPosition: 2,
     year: 1860,
     image: `${import.meta.env.BASE_URL}images/spencer_rifle.png`,
@@ -46,7 +46,7 @@ export const firearms: Firearm[] = [
   {
     id: '4',
     name: 'Winchester Model 1873',
-    description: 'The Gun That Won the West',
+    description: 'Western expansion lever-action rifle',
     correctPosition: 3,
     year: 1873,
     image: `${import.meta.env.BASE_URL}images/winchester_1873.png`,
@@ -60,7 +60,7 @@ export const firearms: Firearm[] = [
   {
     id: '5',
     name: 'Colt Single Action Army',
-    description: 'Peacemaker revolver of the Old West',
+    description: 'Old West military service revolver',
     correctPosition: 4,
     year: 1873,
     image: `${import.meta.env.BASE_URL}images/colt_saa.png`,
@@ -74,7 +74,7 @@ export const firearms: Firearm[] = [
   {
     id: '6',
     name: 'Winchester Model 1894',
-    description: 'Popular lever-action hunting rifle',
+    description: 'Turn-of-century smokeless powder sporting rifle',
     correctPosition: 5,
     year: 1894,
     image: `${import.meta.env.BASE_URL}images/winchester_1894.png`,
@@ -88,7 +88,7 @@ export const firearms: Firearm[] = [
   {
     id: '7',
     name: 'Colt M1911',
-    description: 'Legendary military semi-automatic pistol',
+    description: 'WWI-era military semi-automatic pistol',
     correctPosition: 6,
     year: 1911,
     image: `${import.meta.env.BASE_URL}images/colt_1911.png`,
@@ -102,7 +102,7 @@ export const firearms: Firearm[] = [
   {
     id: '8',
     name: 'Thompson Submachine Gun',
-    description: 'Tommy Gun of the Prohibition era',
+    description: 'Prohibition-era automatic submachine gun',
     correctPosition: 7,
     year: 1918,
     image: `${import.meta.env.BASE_URL}images/thompson_smg.png`,
@@ -116,7 +116,7 @@ export const firearms: Firearm[] = [
   {
     id: '9',
     name: 'M1 Garand',
-    description: 'WWII semi-automatic battle rifle',
+    description: 'WWII semi-automatic service rifle',
     correctPosition: 8,
     year: 1936,
     image: `${import.meta.env.BASE_URL}images/m1_garand.png`,
@@ -130,7 +130,7 @@ export const firearms: Firearm[] = [
   {
     id: '10',
     name: 'ArmaLite AR-15',
-    description: 'Modern sporting rifle platform',
+    description: 'Cold War-era modular sporting rifle',
     correctPosition: 9,
     year: 1959,
     image: `${import.meta.env.BASE_URL}images/ar15.png`,
@@ -144,7 +144,7 @@ export const firearms: Firearm[] = [
   {
     id: '11',
     name: 'Ruger 10/22',
-    description: 'Popular .22 caliber rifle',
+    description: 'Post-war rimfire training rifle',
     correctPosition: 10,
     year: 1964,
     image: `${import.meta.env.BASE_URL}images/ruger_1022.png`,
@@ -158,7 +158,7 @@ export const firearms: Firearm[] = [
   {
     id: '12',
     name: 'Smith & Wesson M&P9',
-    description: 'Military & Police 9mm pistol',
+    description: 'Modern law enforcement polymer pistol',
     correctPosition: 11,
     year: 2005,
     image: `${import.meta.env.BASE_URL}images/sw_mp9.png`,

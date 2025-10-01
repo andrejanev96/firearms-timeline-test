@@ -98,11 +98,15 @@
   .timeline-container {
     width: 100%;
     display: grid;
-    grid-template-columns: auto 1fr auto;  /* left arrow | track | right arrow */
+    grid-template-columns: auto minmax(0, 1fr) auto;  /* left arrow | track | right arrow */
     align-items: center;
     column-gap: clamp(10px, 1.2vw, 16px);
+    overflow: visible;
   }
-  .timeline-track { min-width: 0; }
+  .timeline-track {
+    min-width: 0;
+    overflow-x: auto;
+  }
 }
 
 .timeline-track.dragging {
@@ -295,6 +299,16 @@
   transform: none; /* use natural sizing from .firearm-card.in-timeline */
   transform-origin: center;
   margin: 0;
+  cursor: grab;
+}
+
+.firearm-wrapper .firearm-card:active {
+  cursor: grabbing;
+}
+
+/* Disable drag cursor in selection mode */
+.timeline-slot.selectable .firearm-wrapper .firearm-card {
+  cursor: pointer;
 }
 
 /* Ensure timeline firearm images have white backgrounds */

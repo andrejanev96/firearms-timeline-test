@@ -92,6 +92,7 @@ export default function ImageViewerModal({ open, firearm, onClose, returnFocusEl
                 alt={firearm.name}
                 className="image-viewer-img"
                 draggable={false}
+                loading="lazy"
               />
             </div>
             <figcaption className="image-viewer-caption">{firearm.name}</figcaption>

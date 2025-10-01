@@ -75,7 +75,7 @@ const FirearmCard: React.FC<FirearmCardProps> = React.memo(({
       onKeyDown={handleKeyDown}
     >
       <div
-        draggable={!inTimeline && !isSelectionMode && !isMobile}
+        draggable={!isSelectionMode && !isMobile}
         onDragStart={handleNativeDragStart}
         onDragEnd={onDragEnd}
         style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}
