@@ -29,6 +29,7 @@ const App: React.FC = () => {
     isMobile,
     showMobileOrdering,
     currentSection,
+    historyLength,
     setMobile,
     selectFirearm,
     selectPosition,
@@ -36,7 +37,8 @@ const App: React.FC = () => {
     removeFirearm,
     dropFirearm,
     completeQuiz,
-    setShowMobileOrdering
+    setShowMobileOrdering,
+    undoLast
   } = useQuizStore();
   const timelineSectionRef = useRef<HTMLElement | null>(null);
   
@@ -159,6 +161,23 @@ const App: React.FC = () => {
     window.addEventListener('keydown', handleEscape);
     return () => window.removeEventListener('keydown', handleEscape);
   }, [currentSection, selectionMode, selectFirearm]);
+
+  // Ctrl+Z / Cmd+Z to undo last action during quiz
+  useEffect(() => {
+    if (currentSection !== 'quiz' || isMobile) return;
+
+    const handleUndo = (e: KeyboardEvent) => {
+      // Check for Ctrl+Z (Windows/Linux) or Cmd+Z (Mac)
+      if ((e.ctrlKey || e.metaKey) && e.key === 'z' && historyLength > 0) {
+        e.preventDefault();
+        undoLast();
+        hapticFeedback();
+      }
+    };
+
+    window.addEventListener('keydown', handleUndo);
+    return () => window.removeEventListener('keydown', handleUndo);
+  }, [currentSection, isMobile, historyLength, undoLast]);
 
   // Viewer wiring
   const openViewer = (firearm: Firearm, returnFocusEl?: HTMLElement | null) => {
