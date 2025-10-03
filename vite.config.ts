@@ -10,7 +10,10 @@ export default defineConfig({
     {
       name: 'html-transform',
       transformIndexHtml(html) {
-        return html.replace(/%VITE_APP_URL%/g, APP_URL);
+        // Replace custom placeholder in index.html without relying on Vite's
+        // built-in %VITE_*% env replacement to avoid errors when the env var
+        // is not defined. You can still override via VITE_APP_URL.
+        return html.replace(/__APP_URL__/g, APP_URL);
       },
     },
   ],
