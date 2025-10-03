@@ -56,7 +56,7 @@ const ChronologicalSlots: React.FC<ChronologicalSlotsProps> = React.memo(({
         // Dragging from timeline to timeline - remove sourcePosition before passing to onDrop
         const sourcePos = dragData.sourcePosition;
         if (sourcePos !== position) {
-          const { sourcePosition, ...firearmData } = dragData;
+          const { sourcePosition: _sourcePosition, ...firearmData } = dragData;
           // onDrop already handles removing from existing position and swapping
           onDrop(firearmData, position);
         }
