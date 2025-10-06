@@ -178,13 +178,11 @@ const useQuizStore = create<QuizStore>((set, get) => ({
       // Place firearm in new position
       newOrderedFirearms[position] = firearm;
 
-      const sortedBank = newBank.sort((a, b) => parseInt(a.id) - parseInt(b.id));
-
       // Save progress
-      saveProgressToStorage(sortedBank, newOrderedFirearms);
+      saveProgressToStorage(newBank, newOrderedFirearms);
 
       return {
-        bank: sortedBank,
+        bank: newBank,
         orderedFirearms: newOrderedFirearms,
         selectedFirearm: null,
         selectionMode: false,
@@ -206,13 +204,13 @@ const useQuizStore = create<QuizStore>((set, get) => ({
       const newOrderedFirearms = [...state.orderedFirearms];
       newOrderedFirearms[position] = null;
 
-      const sortedBank = [...state.bank, firearm].sort((a, b) => parseInt(a.id) - parseInt(b.id));
+      const newBank = [...state.bank, firearm];
 
       // Save progress
-      saveProgressToStorage(sortedBank, newOrderedFirearms);
+      saveProgressToStorage(newBank, newOrderedFirearms);
 
       return {
-        bank: sortedBank,
+        bank: newBank,
         orderedFirearms: newOrderedFirearms
       };
     });
@@ -239,13 +237,11 @@ const useQuizStore = create<QuizStore>((set, get) => ({
       // Place firearm in new position
       newOrderedFirearms[position] = firearm;
 
-      const sortedBank = newBank.sort((a, b) => parseInt(a.id) - parseInt(b.id));
-
       // Save progress
-      saveProgressToStorage(sortedBank, newOrderedFirearms);
+      saveProgressToStorage(newBank, newOrderedFirearms);
 
       return {
-        bank: sortedBank,
+        bank: newBank,
         orderedFirearms: newOrderedFirearms,
         draggedFirearm: null,
         selectedFirearm: null,
